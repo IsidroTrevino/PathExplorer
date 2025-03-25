@@ -74,7 +74,6 @@ export default [
       'object-curly-spacing': ['error', 'always'],
       'array-bracket-spacing': ['error', 'never'],
       'comma-dangle': ['error', 'always-multiline'],
-      'max-len': ['error', { code: 100 }]
     }
   }
 ];
