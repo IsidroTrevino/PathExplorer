@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,22 +29,22 @@ export default function SignUpPage() {
         //! TODO - Integrate API
     }
 
-    return(
-        <div className={'flex justify-center items-center h-screen'}>
-            <Card className={'w-[467px] h-auto py-10 px-10 flex items-center'}>
+    return (
+        <div className="flex justify-center items-center h-screen">
+            <div className="w-[420px] flex flex-col items-center">
                 <Image
                     src={'/accenture/Acc_Logo_Black_Purple_RGB.png'}
                     alt={'accenture logo'}
                     width={200}
                     height={200}
                 />
-                <CardTitle>
+                <h1 className="text-2xl font-semibold mt-6">
                     Create an account
-                </CardTitle>
-                <CardDescription>
+                </h1>
+                <p className="text-muted-foreground text-sm mt-2 mb-6">
                     Enter the required information to create an account.
-                </CardDescription>
-                <CardContent className="w-full p-0">
+                </p>
+                <div className="w-full">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
                             <div className="space-y-4 w-full">
@@ -115,18 +114,18 @@ export default function SignUpPage() {
                         className="w-full bg-black hover:opacity-95 cursor-pointer"
                         type="button"
                     >
-                        <BsMicrosoft/> <span>Microsoft</span>
+                        <BsMicrosoft /> <span>Microsoft</span>
                     </Button>
-                    <div className={'flex justify-end pt-2'}>
-                        <Button className="cursor-pointer text-[#A001FE] p-0" variant={'link'} onClick={() => router.push('/auth/LogIn')}>Already have an account? Log In</Button>
+                    <div className="flex justify-end pt-2">
+                        <Button className="cursor-pointer text-[#A001FE] p-0" variant="link" onClick={() => router.push('/auth/LogIn')}>Already have an account? Log In</Button>
                     </div>
                     <div>
                         <p className="text-muted-foreground text-sm text-center pt-2 mx-10">
-                            By signing up, you agree to our <span className={'underline cursor-pointer'}>Terms of Service and Privacy Policy</span>.
+                            By signing up, you agree to our <span className="underline cursor-pointer">Terms of Service and Privacy Policy</span>.
                         </p>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </div>
     );
 }
