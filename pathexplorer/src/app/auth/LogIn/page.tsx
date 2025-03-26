@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { BsMicrosoft } from "react-icons/bs";
 import { logInSchema, LogInFormData } from "@/schemas/auth/logInSchema";
-import { SideBar, UserRole } from "@/components/GlobalComponents/SlideBar";
 
 
 export default function LogInPage() {
@@ -51,10 +50,7 @@ export default function LogInPage() {
           </div>
 
           <div>
-            <Input type="password" placeholder="Password" {...register("password")} />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-            )}
+            <Input type="password" placeholder="Password" />
           </div>
 
           <Button
