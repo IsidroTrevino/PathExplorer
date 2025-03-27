@@ -5,9 +5,9 @@ import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { BsMicrosoft } from 'react-icons/bs';
 import { logInSchema, LogInFormData } from '@/schemas/auth/logInSchema';
 import { useRouter } from 'next/navigation';
+import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function LogInPage() {
   const router = useRouter();
@@ -79,12 +79,8 @@ export default function LogInPage() {
               <Separator className="flex-1" />
             </div>
 
-            <Button
-              className="w-full bg-black text-white hover:opacity-95 cursor-pointer gap-2"
-              type="button"
-            >
-              <BsMicrosoft size={18} />
-              <span>Microsoft</span>
+            <Button className="w-full bg-white text-black hover:bg-gray-50 border border-gray-300 cursor-pointer gap-3" type="button">
+              <MicrosoftColorLogo /> <span>Log in with Microsoft</span>
             </Button>
           </div>
         </form>
