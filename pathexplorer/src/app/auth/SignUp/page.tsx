@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { signUpSchema, SignUpFormData } from '@/schemas/auth/signUpSchema';
-import MicrosoftColorLogo from "@/components/GlobalComponents/microsoftLogo";
+import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -117,9 +117,9 @@ export default function SignUpPage() {
                 <Separator className="flex-1" />
               </div>
 
-                <Button className="w-full bg-white text-black hover:bg-gray-50 border border-gray-300 cursor-pointer gap-3" type="button">
-                    <MicrosoftColorLogo /> <span>Log in with Microsoft</span>
-                </Button>
+              <Button className="w-full bg-white text-black hover:bg-gray-50 border border-gray-300 cursor-pointer gap-3" type="button">
+                <MicrosoftColorLogo /> <span>Log in with Microsoft</span>
+              </Button>
             </div>
           </form>
         </Form>

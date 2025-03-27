@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { logInSchema, LogInFormData } from '@/schemas/auth/logInSchema';
 import { useRouter } from 'next/navigation';
-import MicrosoftColorLogo from "@/components/GlobalComponents/microsoftLogo";
+import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function LogInPage() {
   const router = useRouter();
