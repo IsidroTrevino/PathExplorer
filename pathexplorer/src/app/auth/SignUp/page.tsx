@@ -12,22 +12,22 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { signUpSchema, SignUpFormData } from "@/schemas/auth/signUpSchema";
 
 export default function SignUpPage() {
-    const router = useRouter();
+  const router = useRouter();
 
-    const form = useForm<SignUpFormData>({
-        resolver: zodResolver(signUpSchema),
-        defaultValues: {
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-        },
-    });
+  const form = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-    function onSubmit(values: SignUpFormData) {
-        console.log(values);
-        //! TODO - Integrate API
-    }
+  function onSubmit(values: SignUpFormData) {
+    console.log(values);
+    //! TODO - Integrate API
+  }
 
     return (
         <div className="flex justify-center items-center h-screen">
