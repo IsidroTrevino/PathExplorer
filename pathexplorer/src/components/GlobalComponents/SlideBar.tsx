@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { FiLogOut } from "react-icons/fi";
-import { HiOutlineHome, HiOutlineDocumentText } from "react-icons/hi";
-import { MdOutlineFingerprint, MdOutlineAnalytics, MdWorkspacePremium } from "react-icons/md";
-import { FaRegSun } from "react-icons/fa";
-import Link from "next/link";
-import clsx from "clsx";
+import { useState } from 'react';
+import { FiLogOut } from 'react-icons/fi';
+import { HiOutlineHome, HiOutlineDocumentText } from 'react-icons/hi';
+import { MdOutlineFingerprint, MdOutlineAnalytics, MdWorkspacePremium } from 'react-icons/md';
+import { FaRegSun } from 'react-icons/fa';
+import Link from 'next/link';
+import clsx from 'clsx';
 
 export enum UserRole {
-  EMPLOYEE = "employee",
-  MANAGER = "manager",
-  TF = "tf",
+  EMPLOYEE = 'employee',
+  MANAGER = 'manager',
+  TF = 'tf',
 }
 
 interface SideBarProps {
@@ -19,26 +19,26 @@ interface SideBarProps {
 }
 
 export const SideBar = ({ role }: SideBarProps) => {
-  const [active, setActive] = useState("basic");
+  const [active, setActive] = useState('basic');
 
   const baseItems = [
-    { key: "dashboard", label: "Dashboard", icon: <HiOutlineHome />, path: "/dashboard" },
-    { key: "basic", label: "Basic Information", icon: <MdOutlineFingerprint />, path: "/basic" },
-    { key: "curriculum", label: "Curriculum", icon: <HiOutlineDocumentText />, path: "/curriculum" },
-    { key: "path", label: "Professional path", icon: <MdOutlineAnalytics />, path: "/path" },
-    { key: "certs", label: "Certifications", icon: <MdWorkspacePremium />, path: "/certifications" },
+    { key: 'dashboard', label: 'Dashboard', icon: <HiOutlineHome />, path: '/dashboard' },
+    { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/basic' },
+    { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/curriculum' },
+    { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/path' },
+    { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/certifications' },
   ];
 
   const managerItems = [
-    { key: "team", label: "Team Overview", icon: <HiOutlineHome />, path: "/manager/team" },
+    { key: 'team', label: 'Team Overview', icon: <HiOutlineHome />, path: '/manager/team' },
   ];
 
   const tfItems = [
-    { key: "admin", label: "Admin Panel", icon: <HiOutlineHome />, path: "/tf/admin" },
+    { key: 'admin', label: 'Admin Panel', icon: <HiOutlineHome />, path: '/tf/admin' },
   ];
 
   const renderItems = () => {
-    let items = [...baseItems];
+    const items = [...baseItems];
 
     if (role === UserRole.MANAGER) {
       items.push(...managerItems);
@@ -52,10 +52,10 @@ export const SideBar = ({ role }: SideBarProps) => {
       <Link key={item.key} href={item.path}>
         <div
           className={clsx(
-            "flex items-center gap-3 px-4 py-2 rounded-md cursor-pointer transition-all",
+            'flex items-center gap-3 px-4 py-2 rounded-md cursor-pointer transition-all',
             active === item.key
-              ? "bg-purple-500 text-white"
-              : "hover:bg-gray-100 text-black"
+              ? 'bg-purple-500 text-white'
+              : 'hover:bg-gray-100 text-black',
           )}
           onClick={() => setActive(item.key)}
         >

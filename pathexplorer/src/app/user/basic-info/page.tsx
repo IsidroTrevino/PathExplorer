@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { SideBar, UserRole } from "@/components/GlobalComponents/SlideBar";
+import React from 'react';
+import { SideBar, UserRole } from '@/components/GlobalComponents/SlideBar';
 
 export default function BasicInfoPage() {
   return (

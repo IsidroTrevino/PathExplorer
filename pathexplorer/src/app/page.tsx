@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -103,7 +103,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-      <Button onClick={() => router.push("/auth/LogIn")}>Click me! 
+      <Button onClick={() => router.push('/auth/LogIn')}>Click me!
 
       </Button>
     </div>
