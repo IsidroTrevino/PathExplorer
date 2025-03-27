@@ -31,7 +31,6 @@ export default function LogInPage() {
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-white overflow-hidden">
       <div className="absolute bottom-0 left-0 w-full h-80 bg-gradient-to-t from-purple-200 via-white to-transparent pointer-events-none z-0" />
-
       <div className="z-10 w-full max-w-sm px-6 flex flex-col items-center space-y-10">
         <div className="flex flex-col items-center text-cente">
           <div className="mb-4">
@@ -50,7 +49,6 @@ export default function LogInPage() {
           </p>
         </div>
 
-        {/* Div 2: Campos de texto y botones de login */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col space-y-6"
@@ -91,7 +89,6 @@ export default function LogInPage() {
           </div>
         </form>
 
-        {/* Div 3: Navegación extra (fuera del form) */}
         <div className="w-full">
           <div className="flex justify-center">
             <Button
