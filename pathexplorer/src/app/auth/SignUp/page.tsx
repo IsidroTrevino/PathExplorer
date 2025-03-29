@@ -8,14 +8,14 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { signUpSchema, SignUpFormData } from '@/schemas/auth/signUpSchema';
+import { SignUpStepOneData, signUpStepOneSchema } from '@/schemas/auth/signUpSchema';
 import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function SignUpPage() {
   const router = useRouter();
 
-  const form = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<SignUpStepOneData>({
+    resolver: zodResolver(signUpStepOneSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -24,9 +24,10 @@ export default function SignUpPage() {
     },
   });
 
-  function onSubmit(values: SignUpFormData) {
-    console.log(values);
-    //! TODO - Integrate API
+  function onSubmit(values: SignUpStepOneData) {
+    localStorage.setItem('signUpStepOne', JSON.stringify(values));
+
+    router.push('/auth/SignUp/additional-info');
   }
 
   return (
