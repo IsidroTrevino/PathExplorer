@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
+import { UserProvider } from '@/features/context/userContext';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -16,9 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-helvetica antialiased">
-        {children}
-      </body>
+      <UserProvider>
+        <body className="font-helvetica antialiased">
+          {children}
+        </body>
+      </UserProvider>
     </html>
   );
 }

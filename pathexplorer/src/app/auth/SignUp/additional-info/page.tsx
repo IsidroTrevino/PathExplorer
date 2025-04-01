@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SignUpStepOneData, SignUpStepTwoData, signUpStepTwoSchema } from '@/schemas/auth/signUpSchema';
+import { useRegister } from '@/features/auth/register/useRegister';
 
 const positions = [
   'Software Engineer',
@@ -25,6 +26,7 @@ const positions = [
 export default function AdditionalInfoPage() {
   const router = useRouter();
   const [stepOneData, setStepOneData] = useState<SignUpStepOneData | null>(null);
+  const { register } = useRegister();
 
   useEffect(() => {
     const savedData = localStorage.getItem('signUpStepOne');
@@ -53,6 +55,15 @@ export default function AdditionalInfoPage() {
     };
 
     console.log(completeData);
+
+    const response = await register(completeData);
+
+    if (response && response.success) {
+      localStorage.removeItem('signUpStepOne');
+      router.push('/user/basic-info');
+    } else {
+      console.error(response?.message || 'Registration failed');
+    }
   }
 
   if (!stepOneData) return null;
