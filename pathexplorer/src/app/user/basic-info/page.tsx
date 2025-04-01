@@ -24,7 +24,7 @@ export default function BasicInfoPage() {
             <h1 className='text-l font-semibold w-[300px]'>E-mail</h1>
             <Input type="text" placeholder='Personal mail'></Input>
           </div>
-          
+
           <div className='flex items-center gap-40'>
             <h1 className='text-l font-semibold  w-[300px]'>Position</h1>
             <Input type="text" placeholder='Position (dropDOWN)'></Input>
@@ -32,7 +32,7 @@ export default function BasicInfoPage() {
 
           <div className='flex items-center gap-40'>
             <h1 className='text-l font-semibold  w-[300px]'>Seniority</h1>
-            <Input type="text" placeholder='Phone Seniority'></Input>
+            <Input type="text" placeholder='Seniority'></Input>
           </div>
 
           <div className='flex items-center gap-40'>
