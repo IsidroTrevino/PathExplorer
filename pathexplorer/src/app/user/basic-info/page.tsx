@@ -21,18 +21,18 @@ export default function BasicInfoPage() {
           </div>
 
           <div className='flex items-center gap-40'>
-            <h1 className='text-l font-semibold w-[300px]'>Personal e-mail</h1>
+            <h1 className='text-l font-semibold w-[300px]'>E-mail</h1>
             <Input type="text" placeholder='Personal mail'></Input>
           </div>
-
+          
           <div className='flex items-center gap-40'>
-            <h1 className='text-l font-semibold  w-[300px]'>Company e-mail</h1>
-            <Input type="text" placeholder='Company mail'></Input>
+            <h1 className='text-l font-semibold  w-[300px]'>Position</h1>
+            <Input type="text" placeholder='Position (dropDOWN)'></Input>
           </div>
 
           <div className='flex items-center gap-40'>
-            <h1 className='text-l font-semibold  w-[300px]'>Phone number</h1>
-            <Input type="text" placeholder='Phone number'></Input>
+            <h1 className='text-l font-semibold  w-[300px]'>Seniority</h1>
+            <Input type="text" placeholder='Phone Seniority'></Input>
           </div>
 
           <div className='flex items-center gap-40'>
