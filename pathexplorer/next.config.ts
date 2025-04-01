@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/register',
       },
       {
+        source: '/api/my-info',
+        destination: 'https://pathexplorer.vercel.app/my-info',
+      },
+      {
         source: '/api/users/:id',
         destination: 'https://pathexplorer.vercel.app/users/:id',
       },

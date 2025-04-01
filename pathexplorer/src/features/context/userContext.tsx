@@ -1,5 +1,6 @@
 'use client';
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 interface UserAuthData {
     userId: number;
@@ -24,7 +25,7 @@ interface UserContextType {
     error: string | null;
     setUserAuth: (data: UserAuthData) => void;
     setUserDetails: (data: UserDetails) => void;
-    fetchUserDetails: (userId: number, token: string) => Promise<void>;
+    fetchUserDetails: (token: string) => Promise<void>;
     logout: () => void;
 }
 
@@ -36,12 +37,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUserDetails = useCallback(async (userId: number, token: string) => {
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('userAuth');
+    if (savedAuth) {
+      const parsedAuth = JSON.parse(savedAuth);
+      setUserAuth(parsedAuth);
+    }
+  }, []);
+
+  const fetchUserDetails = useCallback(async (token: string) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch('/api/my-info', {
         headers: {
           'accept': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -63,10 +72,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const setUserAuthData = useCallback((data: UserAuthData) => {
+    setUserAuth(data);
+    localStorage.setItem('userAuth', JSON.stringify(data));
+
+    Cookies.set('userAuthToken', data.accessToken, {
+      expires: 7,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    fetchUserDetails(data.accessToken);
+  }, [fetchUserDetails]);
+
   const logout = useCallback(() => {
     setUserAuth(null);
     setUserDetails(null);
     localStorage.removeItem('userAuth');
+    Cookies.remove('userAuthToken');
   }, []);
 
   return (
@@ -77,7 +100,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated: !!userAuth,
         isLoading,
         error,
-        setUserAuth,
+        setUserAuth: setUserAuthData,
         setUserDetails,
         fetchUserDetails,
         logout,
