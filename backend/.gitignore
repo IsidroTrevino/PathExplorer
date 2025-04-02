@@ -1,2 +1,8 @@
 .venv
+<<<<<<< HEAD
 __pycache__
+.vercel
+.env
+=======
+__pycache__
+>>>>>>> parent of cee7673 (API v1)
