@@ -11,21 +11,30 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SignUpStepOneData, SignUpStepTwoData, signUpStepTwoSchema } from '@/schemas/auth/signUpSchema';
 import { useRegister } from '@/features/auth/register/useRegister';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 const positions = [
-  'Software Engineer',
-  'Product Manager',
-  'UX Designer',
-  'Data Scientist',
-  'Business Analyst',
-  'Solutions Architect',
-  'DevOps Engineer',
-  'QA Engineer',
+  'Accenture Leadership (Level 1)',
+  'Accenture Leadership (Level 2)',
+  'Accenture Leadership (Level 3)',
+  'Accenture Leadership (Level 4)',
+  'Associate Director or Principal Director (Level 5)',
+  'Senior Manager or Senior Principal (Level 6)',
+  'Manager or Principal (Level 7)',
+  'Associate Manager or Associate Principal (Level 8)',
+  'Consultant, Team Lead, or Specialist (Level 9)',
+  'Senior Analyst (Level 10)',
+  'Analyst (Level 11)',
+  'Associate (Level 12)',
+  'New Associate or Assistant (Level 13)',
 ];
 
 export default function AdditionalInfoPage() {
   const router = useRouter();
   const [stepOneData, setStepOneData] = useState<SignUpStepOneData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useRegister();
 
   useEffect(() => {
@@ -49,20 +58,27 @@ export default function AdditionalInfoPage() {
   async function onSubmit(values: SignUpStepTwoData) {
     if (!stepOneData) return;
 
-    const completeData = {
-      ...stepOneData,
-      ...values,
-    };
+    setError(null);
+    setIsSubmitting(true);
 
-    console.log(completeData);
+    try {
+      const completeData = {
+        ...stepOneData,
+        ...values,
+      };
 
-    const response = await register(completeData);
+      const response = await register(completeData);
 
-    if (response && response.success) {
-      localStorage.removeItem('signUpStepOne');
-      router.push('/user/basic-info');
-    } else {
-      console.error(response?.message || 'Registration failed');
+      if (response && response.success) {
+        localStorage.removeItem('signUpStepOne');
+        router.push('/user/basic-info');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
+    } catch {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -82,15 +98,24 @@ export default function AdditionalInfoPage() {
             />
           </div>
           <p className="text-black text-lg font-semibold pt-4">
-                        Just some more information...
+              Just some more information...
           </p>
           <p className="text-gray-600 text-sm">
-                        Tell us about your role and experience.
+              Tell us about your role and experience.
           </p>
         </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col space-y-6">
+            {error && (
+              <Alert variant="destructive" className="border-red-500">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="flex flex-col space-y-3">
               <FormField
                 control={form.control}
@@ -99,7 +124,12 @@ export default function AdditionalInfoPage() {
                   <FormItem>
                     <FormLabel>Years of Experience</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Years of experience" {...field} />
+                      <Input
+                        type="number"
+                        placeholder="Years of experience"
+                        disabled={isSubmitting}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,7 +142,11 @@ export default function AdditionalInfoPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Current Role</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isSubmitting}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select your role" />
@@ -136,17 +170,26 @@ export default function AdditionalInfoPage() {
               <Button
                 className="w-full bg-gradient-to-br from-[#A001FE] via-violet-600 to-gray-800 hover:opacity-95 cursor-pointer"
                 type="submit"
+                disabled={isSubmitting}
               >
-                                Complete Registration
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Registering...
+                  </>
+                ) : (
+                  'Complete Registration'
+                )}
               </Button>
 
               <Button
                 variant="outline"
                 className="w-full"
                 type="button"
+                disabled={isSubmitting}
                 onClick={() => router.back()}
               >
-                                Go Back
+                  Go Back
               </Button>
             </div>
           </form>
