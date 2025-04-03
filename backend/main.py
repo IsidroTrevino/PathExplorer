@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import create_access_token
 from schemas import UserBase, UserCreate, EmployeeRegistered, UserLogin, User, UserEdit
@@ -6,9 +6,13 @@ from database import SessionLocal, engine
 from dependencies import get_current_user
 import models
 import bcrypt
+import random
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from config import settings
 
-
-    
 db = SessionLocal()
 
 app = FastAPI()
@@ -61,7 +65,6 @@ def register(user: UserCreate):
         "access_token": access_token,
         "token_type": "bearer"
     }
-    
 
 @app.get("/users/{user_id}", response_model=EmployeeRegistered, status_code=200)
 def getUserInfo(user_id: int, current_user: User = Depends(get_current_user)):
@@ -102,11 +105,8 @@ def getMyInfo(current_user: User = Depends(get_current_user)):
     
     return EmployeeRegistered(id=user.id, email=user.email, name=employee.name, position=employee.position, seniority=employee.seniority, rol=employee.rol)
 
-
-
 @app.put("/edit", response_model=UserEdit, status_code=200)
 def edit_user(user_edit: UserEdit, current_user: User = Depends(get_current_user)):
-
     user_db = db.query(models.User).filter(models.User.id== current_user.id).first()
     if not user_db:
         raise HTTPException(status_code=404, detail="User not found")
@@ -150,3 +150,106 @@ def edit_user(user_edit: UserEdit, current_user: User = Depends(get_current_user
     db.commit()
     
     return {"message": "User updated successfully"}
+
+@app.post("/send-otp")
+def send_otp(input_user: UserBase):
+    email = input_user.email
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El campo 'email' es requerido."
+        )
+    
+    db_user = db.query(models.User).filter(models.User.email == email).first()
+    if db_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado."
+        )
+    
+    # Configuración SMTP
+    port = settings.smtp_port
+    smtp_server = settings.smtp_server
+    smtp_user = settings.smtp_user
+    smtp_password = settings.smtp_password
+    sender_email = "PathExplorer@test-dnvo4d97kjng5r86.mlsender.net"
+    receiver_email = email
+    
+    otp_code = random.randint(100000, 999999)
+    
+    # Contenido HTML
+    html_content = f"""\
+<html lang="en">
+  <body style="margin:0;padding:0;background-color:#F9F9F9;font-family:Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center" style="padding:40px 10px;">
+          <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#ffffff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);overflow:hidden;">
+            <!-- Header con logo incrustado -->
+            <tr>
+              <td style="background-color:#8338EC;padding:30px;text-align:center;">
+                <img src="cid:logo_image" alt="Logo" style="max-width:180px;">
+              </td>
+            </tr>
+            <!-- Cuerpo del mensaje -->
+            <tr>
+              <td style="padding:30px;color:#1A1A1A;">
+                <p style="font-size:16px;line-height:1.6;">Hello Explorer,</p>
+                <p style="font-size:16px;line-height:1.6;">
+                  To reset your password, use the 6-digit code below. This code is valid for the next 60 minutes:
+                </p>
+                <div style="text-align:center;margin:30px 0;">
+                  <div style="display:inline-block;padding:12px 24px;font-size:28px;font-weight:bold;letter-spacing:8px;background-color:#F4F1FF;color:#8338EC;border-radius:8px;">
+                    {otp_code}
+                  </div>
+                </div>
+                <p style="font-size:14px;line-height:1.6;color:#555;">
+                  If you didn’t request a password reset, please ignore this email or contact our support team.
+                </p>
+              </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+              <td style="background-color:#F0F0F0;text-align:center;padding:20px;color:#555;font-size:13px;">
+                © 2025 Path Explorer · All rights reserved<br/>
+                <a href="https://path-explorer.com" style="color:#8338EC;text-decoration:underline;">Visit our website</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+    """
+
+    # Crear objeto del email
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "OTP code for password reset"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    html_part = MIMEText(html_content, "html")
+    message.attach(html_part)
+    
+    # Adjuntar la imagen del logo
+    with open("logo.png", "rb") as img_file:
+            img_data = img_file.read()
+    image = MIMEImage(img_data)
+    image.add_header("Content-ID", "<logo_image>")
+    image.add_header("Content-Disposition", "inline", filename="logo.png")
+    message.attach(image)
+
+    # Enviar el email usando smtplib
+    try:
+        with smtplib.SMTP(smtp_server, port) as server:
+            server.starttls()  # Asegura la conexión
+            server.login(smtp_user, smtp_password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al enviar el correo: {str(e)}"
+        )
+    
+    # Retornar el OTP 
+    return {"otp": otp_code}

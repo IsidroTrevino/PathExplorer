@@ -52,3 +52,4 @@ class UserEdit(BaseModel):
     
     class Config:
         from_attributes = True
+        
