@@ -7,10 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { logInSchema, LogInFormData } from '@/schemas/auth/logInSchema';
 import { useRouter } from 'next/navigation';
+import { useLogin } from '@/features/auth/login/useLogin';
 import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function LogInPage() {
   const router = useRouter();
+  const { login, isLoading, error } = useLogin();
 
   const {
     register,
@@ -19,13 +21,16 @@ export default function LogInPage() {
   } = useForm<LogInFormData>({
     resolver: zodResolver(logInSchema),
     defaultValues: {
-      email: '',
+      username: '',
+      password: '', 
     },
   });
 
-  const onSubmit = (data: LogInFormData) => {
-    console.log('Form Data:', data);
-    // TODO: Integrate API
+  const onSubmit = async (data: LogInFormData) => {
+    const response = await login(data);
+    if (response) {
+      router.replace('/user/basic-info');
+    }
   };
 
   return (
@@ -54,13 +59,13 @@ export default function LogInPage() {
           className="w-full flex flex-col space-y-6"
         >
           <div className="flex flex-col space-y-3">
-            <Input type="email" placeholder="Email" {...register('email')} />
-            {errors.email && (
+            <Input type="email" placeholder="Email" {...register('username')} />
+            {errors.username && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.email.message}
+                {errors.username.message}
               </p>
             )}
-            <Input type="password" placeholder="Password" />
+            <Input type="password" placeholder="Password" {...register('password')} />
           </div>
 
           <div className="flex flex-col space-y-4">

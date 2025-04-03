@@ -82,6 +82,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       secure: process.env.NODE_ENV === 'production',
     });
 
+    // Llamamos a fetchUserDetails automáticamente al establecer la autenticación
     fetchUserDetails(data.accessToken);
   }, [fetchUserDetails]);
 
