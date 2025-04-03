@@ -1,6 +1,5 @@
 'use client';
 
-import React, { use } from 'react';
 import { SideBar, UserRole } from '@/components/GlobalComponents/SlideBar';
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
@@ -46,7 +45,7 @@ export default function BasicInfoPage() {
     },
   });
 
-  const { register, setValue, watch } = form;
+  const { register, setValue } = form;
 
   const { userDetails } = useUser();
 
@@ -58,9 +57,7 @@ export default function BasicInfoPage() {
       setValue('seniority', userDetails.seniority.toString());
       setValue('role', userDetails.rol);
     }
-  }, [userDetails]);
-
-  const formValues = watch();
+  }, [userDetails, setValue]);
 
   return (
     <div className="flex min-h-screen">
