@@ -7,6 +7,8 @@ import { MdOutlineFingerprint, MdOutlineAnalytics, MdWorkspacePremium } from 're
 import { FaRegSun } from 'react-icons/fa';
 import Link from 'next/link';
 import clsx from 'clsx';
+import { useUser } from '@/features/context/userContext';
+import { useRouter } from 'next/navigation';
 
 export enum UserRole {
   EMPLOYEE = 'employee',
@@ -20,6 +22,13 @@ interface SideBarProps {
 
 export const SideBar = ({ role }: SideBarProps) => {
   const [active, setActive] = useState('basic');
+  const { logout } = useUser();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/auth/LogIn');
+  };
 
   const baseItems = [
     { key: 'dashboard', label: 'Dashboard', icon: <HiOutlineHome />, path: '/dashboard' },
@@ -77,10 +86,13 @@ export const SideBar = ({ role }: SideBarProps) => {
         <nav className="flex flex-col space-y-1">{renderItems()}</nav>
       </div>
 
-      <div className="flex items-center gap-2 text-sm cursor-pointer hover:opacity-80">
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-2 text-sm cursor-pointer hover:opacity-80 py-2 px-4 rounded-md hover:bg-gray-100"
+      >
         <FiLogOut />
         <span>Log out</span>
-      </div>
+      </button>
     </div>
   );
 };
