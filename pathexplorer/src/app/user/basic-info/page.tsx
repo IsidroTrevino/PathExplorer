@@ -83,44 +83,48 @@ export default function BasicInfoPage() {
               <Input type="text" placeholder="Personal mail" {...register('email')}></Input>
             </div>
 
-            <div className="flex items-center gap-8">
-              <h1 className="text-l font-semibold  w-[300px]">Position</h1>
+            <div className="flex items-center gap-40">
+              <h1 className="text-l font-semibold w-[300px]">Position</h1>
               <FormField
                 control={form.control}
                 name="position"
                 render={({ field }) => (
-                  <div className="flex items-center">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value} 
-                      {...register('position')}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {positions.map((position) => (
-                          <SelectItem key={position} value={position}>
-                            {position}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={userDetails?.position || ''}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your position" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {positions.map((position) => (
+                        <SelectItem key={position} value={position}>
+                          {position}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               />
             </div>
 
             <div className="flex items-center gap-40">
               <h1 className="text-l font-semibold  w-[300px]">Seniority</h1>
-              <Input type="text" placeholder="Seniority" {...register("seniority")}></Input>
+              <Input type="text" placeholder="Seniority" {...register('seniority')}></Input>
             </div>
 
             <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold  w-[300px]">Department/Role</h1>
-              <Input type="text" placeholder="Department/role" {...register("role")}></Input>
+              <h1 className="text-l font-semibold w-[300px]">Role</h1>
+              <Input
+                type="text"
+                placeholder="Role"
+                {...register('role')}
+                readOnly={true}
+                className="bg-gray-50 cursor-not-allowed"
+              />
             </div>
 
             <div className="flex items-center gap-40">
@@ -137,4 +141,3 @@ export default function BasicInfoPage() {
     </div>
   );
 };
-
