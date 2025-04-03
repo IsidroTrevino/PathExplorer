@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import create_access_token
-from schemas import UserBase, UserCreate, EmployeeRegistered, UserLogin, User, UserEdit
+from schemas import UserBase, UserCreate, EmployeeRegistered, UserLogin, User, UserEdit, UserOTP, UserOTPVerify
 from database import SessionLocal, engine
 from dependencies import get_current_user
 import models
@@ -177,6 +177,10 @@ def send_otp(input_user: UserBase):
     
     otp_code = random.randint(100000, 999999)
     
+    user = db.query(models.OTP).filter(models.OTP.email == email)
+    if user is not None:
+        user.delete()
+        
     # Contenido HTML
     html_content = f"""\
 <html lang="en">
@@ -250,6 +254,25 @@ def send_otp(input_user: UserBase):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error al enviar el correo: {str(e)}"
         )
-    
+    userotp = models.OTP(email = email, otp = otp_code)
+    db.add(userotp)
+    db.commit()
     # Retornar el OTP 
-    return {"otp": otp_code}
+    return {"message": "OTP sent to the email given."}
+
+@app.post("/verify-otp")
+def verify_otp(input_user: UserOTPVerify):
+    user = db.query(models.OTP).filter(models.OTP.otp == input_user.otp).first()
+    print(user)
+    if user is None:
+        raise HTTPException(status_code=404, detail="OTP not found")
+    user.delete()
+    db.commit()
+    userUpdate = {}
+    userUpdate["email"] = input_user.email
+    userUpdate["hashed_password"] = hash_password(input_user.password).decode("utf-8")
+    db.query(models.User).filter(models.User.email == input_user.email).update(userUpdate)
+    db.commit()
+    
+    return {"message": "Success on updating password"}
+    

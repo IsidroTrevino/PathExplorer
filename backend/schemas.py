@@ -52,4 +52,9 @@ class UserEdit(BaseModel):
     
     class Config:
         from_attributes = True
-        
+
+class UserOTP(UserBase):
+    otp: int
+    
+class UserOTPVerify(UserOTP):
+    password: str

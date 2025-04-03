@@ -22,3 +22,9 @@ class Employee(Base):
     seniority = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey("User.id"))
     rol = Column(Enum(EmployeeRole), nullable=False)
+    
+class OTP(Base):
+    __tablename__ = "OTP"
+    otp_id = Column(Integer, primary_key=True, nullable=False)
+    email = Column(String(100), ForeignKey("User.email"))
+    otp = Column(Integer, nullable= False)
