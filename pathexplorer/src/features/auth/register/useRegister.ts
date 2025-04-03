@@ -60,13 +60,7 @@ export const useRegister = (): UseRegisterReturn => {
         tokenType: result.token_type,
       });
 
-      setUserAuth({
-        userId: result.user_id,
-        accessToken: result.access_token,
-        tokenType: result.token_type,
-      });
-
-      await fetchUserDetails(result.user_id, result.access_token);
+      await fetchUserDetails(result.access_token);
 
       return {
         success: true,
