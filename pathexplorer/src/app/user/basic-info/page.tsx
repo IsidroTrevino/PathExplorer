@@ -5,10 +5,14 @@ import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form } from '@/components/ui/form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormControl } from '@/components/ui/form';
 import { FormField } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { useEditInfo } from '@/features/user/useEditInfo';
+import { toast } from 'sonner';
 
 const positions = [
   'Accenture Leadership (Level 1)',
@@ -35,6 +39,10 @@ interface userData {
 }
 
 export default function BasicInfoPage() {
+  const [formModified, setFormModified] = useState(false);
+  const { userDetails } = useUser();
+  const { updateUserInfo, isLoading, error } = useEditInfo();
+
   const form = useForm<userData>({
     defaultValues: {
       name: '',
@@ -45,9 +53,8 @@ export default function BasicInfoPage() {
     },
   });
 
-  const { register, setValue } = form;
-
-  const { userDetails } = useUser();
+  const { register, setValue, handleSubmit, watch } = form;
+  const watchedValues = watch();
 
   useEffect(() => {
     if (userDetails) {
@@ -59,6 +66,34 @@ export default function BasicInfoPage() {
     }
   }, [userDetails, setValue]);
 
+  useEffect(() => {
+    if (!userDetails) return;
+
+    const isModified =
+        watchedValues.name !== userDetails.name ||
+        watchedValues.email !== userDetails.email ||
+        watchedValues.position !== userDetails.position ||
+        watchedValues.seniority !== userDetails.seniority.toString();
+
+    setFormModified(isModified);
+  }, [watchedValues, userDetails]);
+
+  const onSubmit = async (data: userData) => {
+    const success = await updateUserInfo({
+      name: data.name,
+      email: data.email,
+      position: data.position,
+      seniority: parseInt(data.seniority),
+    });
+
+    if (success) {
+      toast.success('Your information has been updated successfully');
+      setFormModified(false);
+    } else if (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       <SideBar role={UserRole.EMPLOYEE} />
@@ -68,8 +103,7 @@ export default function BasicInfoPage() {
         <p>Fill in and verify your personal information, you can modify it whenever you want.</p>
 
         <Form {...form}>
-          <div className="pt-6 pr-96 flex-col space-y-6">
-
+          <form onSubmit={handleSubmit(onSubmit)} className="pt-6 pr-96 flex-col space-y-6">
             <div className="flex items-center gap-40">
               <h1 className="text-l font-semibold w-[300px]">Name</h1>
               <Input type="text" placeholder="Full name" {...register('name')}></Input>
@@ -114,10 +148,10 @@ export default function BasicInfoPage() {
             </div>
 
             <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Role</h1>
+              <h1 className="text-l font-semibold w-[300px]">Department/Role</h1>
               <Input
                 type="text"
-                placeholder="Role"
+                placeholder="Department/role"
                 {...register('role')}
                 readOnly={true}
                 className="bg-gray-50 cursor-not-allowed"
@@ -131,10 +165,28 @@ export default function BasicInfoPage() {
               </div>
             </div>
 
-          </div>
-
+            {formModified && (
+              <div className="flex justify-end pt-4">
+                <Button
+                  type="submit"
+                  style={{ backgroundColor: '#7500C0' }}
+                  className="text-white"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                    </>
+                  ) : (
+                    'Save changes'
+                  )}
+                </Button>
+              </div>
+            )}
+          </form>
         </Form>
       </div>
     </div>
   );
-};
+}
