@@ -9,7 +9,7 @@ import { logInSchema, LogInFormData } from '@/schemas/auth/logInSchema';
 import { useRouter } from 'next/navigation';
 import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
-export default function LogInPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
 
   const {
@@ -42,10 +42,10 @@ export default function LogInPage() {
             />
           </div>
           <p className="text-black text-lg font-semibold pt-4">
-            Log in to your account
+            Forgot your password?
           </p>
           <p className="text-gray-600 text-sm">
-            Enter your email and password below to log in
+            Enter your email below
           </p>
         </div>
 
@@ -60,28 +60,20 @@ export default function LogInPage() {
                 {errors.email.message}
               </p>
             )}
-            <Input type="password" placeholder="Password" />
           </div>
 
           <div className="flex flex-col space-y-4">
             <Button
               className="w-full bg-gradient-to-br from-[#A001FE] via-violet-600 to-gray-800 hover:opacity-95 cursor-pointer"
+              onClick={() => router.push('/auth/reset-password')}
               type="submit"
             >
-              Log In with Email
+              Continue
             </Button>
 
-            <div className="flex items-center space-x-2 w-full">
-              <Separator className="flex-1" />
-              <span className="text-muted-foreground text-xs whitespace-nowrap">
-                OR CONTINUE WITH
-              </span>
-              <Separator className="flex-1" />
-            </div>
+            
 
-            <Button className="w-full bg-white text-black hover:bg-gray-50 border border-gray-300 cursor-pointer gap-3" type="button">
-              <MicrosoftColorLogo /> <span>Log in with Microsoft</span>
-            </Button>
+            
           </div>
         </form>
 
@@ -90,17 +82,11 @@ export default function LogInPage() {
             <Button
               className="cursor-pointer text-[#A001FE] p-0"
               variant={'link'}
-              onClick={() => router.push('/auth/SignUp')}
+              onClick={() => router.push('/auth/LogIn')}
             >
-              Don't have an account? Sign Up
+              Back to LogIn
             </Button>
-            <Button
-              className="cursor-pointer text-[#A001FE] p-0"
-              variant={'link'}
-              onClick={() => router.push('/auth/forgot-password')}
-            >
-              Forgot your password?
-            </Button>
+           
           </div>
         </div>
       </div>
