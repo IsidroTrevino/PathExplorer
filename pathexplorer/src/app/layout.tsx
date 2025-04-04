@@ -3,6 +3,7 @@ import React from 'react';
 import './globals.css';
 import { UserProvider } from '@/features/context/userContext';
 import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
+import { SideBar } from '../components/GlobalComponents/SlideBar';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -14,16 +15,21 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <UserProvider>
-        <InactivityDetector />
-        <body className="font-helvetica antialiased">
-          {children}
-        </body>
-      </UserProvider>
+    <html lang="en" className="h-screen">
+      <body className="h-screen overflow-hidden font-helvetica antialiased">
+        <UserProvider>
+          <InactivityDetector />
+          <div className="flex h-full">
+            <SideBar />
+            <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+              {children}
+            </main>
+          </div>
+        </UserProvider>
+      </body>
     </html>
   );
 }

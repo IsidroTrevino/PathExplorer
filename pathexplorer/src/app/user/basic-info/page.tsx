@@ -1,14 +1,14 @@
 'use client';
 
-import { SideBar, UserRole } from '@/components/GlobalComponents/SlideBar';
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form } from '@/components/ui/form';
+import {
+  Select, SelectContent, SelectItem,
+  SelectTrigger, SelectValue
+} from '@/components/ui/select';
+import { Form, FormField, FormControl } from '@/components/ui/form';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormControl } from '@/components/ui/form';
-import { FormField } from '@/components/ui/form';
 
 const positions = [
   'Accenture Leadership (Level 1)',
@@ -60,81 +60,78 @@ export default function BasicInfoPage() {
   }, [userDetails, setValue]);
 
   return (
-    <div className="flex min-h-screen">
-      <SideBar role={UserRole.EMPLOYEE} />
+    <div className="p-8">
+      <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name}!</h1>
+      <p className="text-gray-600">Fill in and verify your personal information. You can modify it whenever you want.</p>
 
-      <div className="flex-1 p-8">
-        <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name}!</h1>
-        <p>Fill in and verify your personal information, you can modify it whenever you want.</p>
+      <Form {...form}>
+        <div className="pt-6 pr-96 flex-col space-y-6">
 
-        <Form {...form}>
-          <div className="pt-6 pr-96 flex-col space-y-6">
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Name</h1>
-              <Input type="text" placeholder="Full name" {...register('name')}></Input>
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">E-mail</h1>
-              <Input type="text" placeholder="Personal mail" {...register('email')}></Input>
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Position</h1>
-              <FormField
-                control={form.control}
-                name="position"
-                render={({ field }) => (
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={userDetails?.position || ''}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your position" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {positions.map((position) => (
-                        <SelectItem key={position} value={position}>
-                          {position}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold  w-[300px]">Seniority</h1>
-              <Input type="text" placeholder="Seniority" {...register('seniority')}></Input>
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Role</h1>
-              <Input
-                type="text"
-                placeholder="Role"
-                {...register('role')}
-                readOnly={true}
-                className="bg-gray-50 cursor-not-allowed"
-              />
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-bold  w-[300px]">Assignment percentage</h1>
-              <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                <div className="bg-[#A055F5] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}> 38%</div>
-              </div>
-            </div>
-
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-semibold w-[300px]">Name</h1>
+            <Input type="text" placeholder="Full name" {...register('name')} />
           </div>
 
-        </Form>
-      </div>
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-semibold w-[300px]">E-mail</h1>
+            <Input type="text" placeholder="Personal mail" {...register('email')} />
+          </div>
+
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-semibold w-[300px]">Position</h1>
+            <FormField
+              control={form.control}
+              name="position"
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={userDetails?.position || ''}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your position" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {positions.map((position) => (
+                      <SelectItem key={position} value={position}>
+                        {position}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-semibold w-[300px]">Seniority</h1>
+            <Input type="text" placeholder="Seniority" {...register('seniority')} />
+          </div>
+
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-semibold w-[300px]">Role</h1>
+            <Input
+              type="text"
+              placeholder="Role"
+              {...register('role')}
+              readOnly
+              className="bg-gray-50 cursor-not-allowed"
+            />
+          </div>
+
+          <div className="flex items-center gap-40">
+            <h1 className="text-l font-bold w-[300px]">Assignment percentage</h1>
+            <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+              <div className="bg-[#A055F5] text-xs font-medium text-white text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}>
+                38%
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Form>
     </div>
   );
-};
+}

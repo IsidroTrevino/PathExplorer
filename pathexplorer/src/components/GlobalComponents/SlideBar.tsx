@@ -5,24 +5,23 @@ import { FiLogOut } from 'react-icons/fi';
 import { HiOutlineHome, HiOutlineDocumentText } from 'react-icons/hi';
 import { MdOutlineFingerprint, MdOutlineAnalytics, MdWorkspacePremium } from 'react-icons/md';
 import { FaRegSun } from 'react-icons/fa';
+import { RiTeamLine, RiFolderOpenLine } from 'react-icons/ri';
+import { FaUsers } from 'react-icons/fa';
+
 import Link from 'next/link';
 import clsx from 'clsx';
 import { useUser } from '@/features/context/userContext';
 import { useRouter } from 'next/navigation';
 
 export enum UserRole {
-  EMPLOYEE = 'employee',
+  DEVELOPER = 'developer',
   MANAGER = 'manager',
-  TF = 'tf',
+  TFS = 'TFS',
 }
 
-interface SideBarProps {
-  role: UserRole;
-}
-
-export const SideBar = ({ role }: SideBarProps) => {
-  const [active, setActive] = useState('basic');
-  const { logout } = useUser();
+export const SideBar = () => {
+  const [active, setActive] = useState('');
+  const { logout, userDetails } = useUser();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -30,31 +29,43 @@ export const SideBar = ({ role }: SideBarProps) => {
     router.push('/auth/LogIn');
   };
 
-  const baseItems = [
-    { key: 'dashboard', label: 'Dashboard', icon: <HiOutlineHome />, path: '/dashboard' },
-    { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/basic' },
-    { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/curriculum' },
-    { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/path' },
-    { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/certifications' },
-  ];
-
-  const managerItems = [
-    { key: 'team', label: 'Team Overview', icon: <HiOutlineHome />, path: '/manager/team' },
-  ];
-
-  const tfItems = [
-    { key: 'admin', label: 'Admin Panel', icon: <HiOutlineHome />, path: '/tf/admin' },
-  ];
-
   const renderItems = () => {
-    const items = [...baseItems];
+    if (!userDetails) return [];
 
-    if (role === UserRole.MANAGER) {
-      items.push(...managerItems);
+    const normalizedRole = userDetails.rol.toLowerCase();
+
+    const items = [
+      {
+        key: 'dashboard',
+        label: 'Dashboard',
+        icon: <HiOutlineHome />,
+        path: '/user/profesional-path',
+      },
+    ];
+
+    if (normalizedRole === UserRole.DEVELOPER) {
+      items.push(
+        { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
+        { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/user/profesional-path' },
+        { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/user/profesional-path' },
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' }
+      );
     }
 
-    if (role === UserRole.TF) {
-      items.push(...tfItems);
+    if (normalizedRole === UserRole.MANAGER) {
+      items.push(
+        { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
+        { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/profesional-path' },
+        { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/profesional-path' },
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' }
+      );
+    }
+
+    if (userDetails.rol === UserRole.TFS) {
+      items.push(
+        { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
+        { key: 'request', label: 'Request', icon: <FaUsers />, path: '/user/profesional-path' },
+      ); 
     }
 
     return items.map((item) => (
@@ -75,6 +86,8 @@ export const SideBar = ({ role }: SideBarProps) => {
     ));
   };
 
+  if (!userDetails) return null;
+
   return (
     <div className="w-64 h-screen bg-white shadow-md flex flex-col justify-between p-4">
       <div className="space-y-8">
@@ -83,8 +96,8 @@ export const SideBar = ({ role }: SideBarProps) => {
           <FaRegSun />
         </div>
 
-        <nav className="flex flex-col space-y-1">{renderItems()}</nav>
-      </div>
+  <nav className="flex flex-col space-y-1">{renderItems()}</nav>
+</div>
 
       <button
         onClick={handleLogout}
