@@ -3,6 +3,7 @@ import React from 'react';
 import './globals.css';
 import { UserProvider } from '@/features/context/userContext';
 import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -17,10 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-screen">
-      <body className="h-screen overflow-hidden font-helvetica antialiased">
-        <UserProvider>
-          <InactivityDetector />
+    <html lang="en" suppressHydrationWarning>
+      <UserProvider>
+        <InactivityDetector />
+        <body className="font-helvetica antialiased">
+          <Toaster/>
           {children}
         </UserProvider>
       </body>
