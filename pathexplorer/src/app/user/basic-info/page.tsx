@@ -4,15 +4,17 @@ import { SideBar, UserRole } from '@/components/GlobalComponents/SlideBar';
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form } from '@/components/ui/form';
+import { Form, FormMessage } from '@/components/ui/form';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormControl } from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FormControl, FormItem } from '@/components/ui/form';
 import { FormField } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useEditInfo } from '@/features/user/useEditInfo';
 import { toast } from 'sonner';
+import { userInfoSchema, UserInfoFormData } from '@/schemas/user/userInfoSchema';
 
 const positions = [
   'Accenture Leadership (Level 1)',
@@ -30,20 +32,14 @@ const positions = [
   'New Associate or Assistant (Level 13)',
 ];
 
-interface userData {
-  name: string;
-  email: string;
-  position: string;
-  seniority: string;
-  role: string;
-}
-
 export default function BasicInfoPage() {
   const [formModified, setFormModified] = useState(false);
   const { userDetails } = useUser();
   const { updateUserInfo, isLoading, error } = useEditInfo();
+  const [isFormReady, setIsFormReady] = useState(false);
 
-  const form = useForm<userData>({
+  const form = useForm<UserInfoFormData>({
+    resolver: zodResolver(userInfoSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -51,23 +47,27 @@ export default function BasicInfoPage() {
       seniority: '',
       role: '',
     },
+    mode: 'onChange',
   });
 
-  const { register, setValue, handleSubmit, watch } = form;
+  const { handleSubmit, watch, reset, formState: { isDirty } } = form;
   const watchedValues = watch();
 
   useEffect(() => {
     if (userDetails) {
-      setValue('name', userDetails.name);
-      setValue('email', userDetails.email);
-      setValue('position', userDetails.position);
-      setValue('seniority', userDetails.seniority.toString());
-      setValue('role', userDetails.rol);
+      reset({
+        name: userDetails.name,
+        email: userDetails.email,
+        position: userDetails.position,
+        seniority: userDetails.seniority.toString(),
+        role: userDetails.rol,
+      });
+      setIsFormReady(true);
     }
-  }, [userDetails, setValue]);
+  }, [userDetails, reset]);
 
   useEffect(() => {
-    if (!userDetails) return;
+    if (!userDetails || !isFormReady) return;
 
     const isModified =
         watchedValues.name !== userDetails.name ||
@@ -75,10 +75,10 @@ export default function BasicInfoPage() {
         watchedValues.position !== userDetails.position ||
         watchedValues.seniority !== userDetails.seniority.toString();
 
-    setFormModified(isModified);
-  }, [watchedValues, userDetails]);
+    setFormModified(isModified && isDirty);
+  }, [watchedValues, userDetails, isDirty, isFormReady]);
 
-  const onSubmit = async (data: userData) => {
+  const onSubmit = async (data: UserInfoFormData) => {
     const success = await updateUserInfo({
       name: data.name,
       email: data.email,
@@ -102,90 +102,149 @@ export default function BasicInfoPage() {
         <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name}!</h1>
         <p>Fill in and verify your personal information, you can modify it whenever you want.</p>
 
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="pt-6 pr-96 flex-col space-y-6">
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Name</h1>
-              <Input type="text" placeholder="Full name" {...register('name')}></Input>
-            </div>
+        {!isFormReady ? (
+          <div className="flex justify-center my-10">
+            <Loader2 className="h-8 w-8 animate-spin text-[#7500C0]" />
+          </div>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)} className="pt-6 pr-96 flex-col space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-40">
+                      <h1 className="text-l font-semibold w-[300px]">Name</h1>
+                      <div className="w-full">
+                        <FormControl>
+                          <Input type="text" placeholder="Full name" {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-sm mt-1" />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">E-mail</h1>
-              <Input type="text" placeholder="Personal mail" {...register('email')}></Input>
-            </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-40">
+                      <h1 className="text-l font-semibold w-[300px]">E-mail</h1>
+                      <div className="w-full">
+                        <FormControl>
+                          <Input type="text" placeholder="Personal mail" {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-sm mt-1" />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Position</h1>
               <FormField
                 control={form.control}
                 name="position"
                 render={({ field }) => (
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={userDetails?.position || ''}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your position" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {positions.map((position) => (
-                        <SelectItem key={position} value={position}>
-                          {position}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormItem>
+                    <div className="flex items-center gap-40">
+                      <h1 className="text-l font-semibold w-[300px]">Position</h1>
+                      <div className="w-full">
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select your position" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {positions.map((position) => (
+                              <SelectItem key={position} value={position}>
+                                {position}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage className="text-red-500 text-sm mt-1" />
+                      </div>
+                    </div>
+                  </FormItem>
                 )}
               />
-            </div>
 
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold  w-[300px]">Seniority</h1>
-              <Input type="text" placeholder="Seniority" {...register('seniority')}></Input>
-            </div>
-
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-semibold w-[300px]">Department/Role</h1>
-              <Input
-                type="text"
-                placeholder="Department/role"
-                {...register('role')}
-                readOnly={true}
-                className="bg-gray-50 cursor-not-allowed"
+              <FormField
+                control={form.control}
+                name="seniority"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-40">
+                      <h1 className="text-l font-semibold w-[300px]">Seniority</h1>
+                      <div className="w-full">
+                        <FormControl>
+                          <Input type="text" placeholder="Seniority" {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-sm mt-1" />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="flex items-center gap-40">
-              <h1 className="text-l font-bold  w-[300px]">Assignment percentage</h1>
-              <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                <div className="bg-[#A055F5] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}> 38%</div>
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-40">
+                      <h1 className="text-l font-semibold w-[300px]">Department/Role</h1>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Department/role"
+                          {...field}
+                          readOnly={true}
+                          className="bg-gray-50 cursor-not-allowed"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex items-center gap-40">
+                <h1 className="text-l font-bold w-[300px]">Assignment percentage</h1>
+                <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                  <div className="bg-[#A055F5] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}> 38%</div>
+                </div>
               </div>
-            </div>
 
-            {formModified && (
-              <div className="flex justify-end pt-4">
-                <Button
-                  type="submit"
-                  style={{ backgroundColor: '#7500C0' }}
-                  className="text-white"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {formModified && (
+                <div className="flex justify-end pt-4">
+                  <Button
+                    type="submit"
+                    style={{ backgroundColor: '#7500C0' }}
+                    className="text-white"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Saving...
-                    </>
-                  ) : (
-                    'Save changes'
-                  )}
-                </Button>
-              </div>
-            )}
-          </form>
-        </Form>
+                      </>
+                    ) : (
+                      'Save changes'
+                    )}
+                  </Button>
+                </div>
+              )}
+            </form>
+          </Form>
+        )}
       </div>
     </div>
   );
