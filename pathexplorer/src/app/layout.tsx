@@ -3,7 +3,6 @@ import React from 'react';
 import './globals.css';
 import { UserProvider } from '@/features/context/userContext';
 import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
-import { SideBar } from '../components/GlobalComponents/SlideBar';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -22,12 +21,7 @@ export default function RootLayout({
       <body className="h-screen overflow-hidden font-helvetica antialiased">
         <UserProvider>
           <InactivityDetector />
-          <div className="flex h-full">
-            <SideBar />
-            <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
-              {children}
-            </main>
-          </div>
+          {children}
         </UserProvider>
       </body>
     </html>

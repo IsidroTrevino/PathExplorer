@@ -7,6 +7,9 @@ import { MdOutlineFingerprint, MdOutlineAnalytics, MdWorkspacePremium } from 're
 import { FaRegSun } from 'react-icons/fa';
 import { RiTeamLine, RiFolderOpenLine } from 'react-icons/ri';
 import { FaUsers } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+
 
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -20,9 +23,35 @@ export enum UserRole {
 }
 
 export const SideBar = () => {
+  
   const [active, setActive] = useState('');
   const { logout, userDetails } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname) {
+      if (pathname.includes('/user/basic-info')) {
+        setActive('basic');
+      } else if (pathname.includes('/user/profesional-path')) {
+        if (pathname === '/user/profesional-path') {
+          setActive('dashboard');
+        } else if (pathname.includes('curriculum')) {
+          setActive('curriculum');
+        } else if (pathname.includes('certifications')) {
+          setActive('certs');
+        } else if (pathname.includes('projects')) {
+          setActive('projects');
+        } else if (pathname.includes('employees')) {
+          setActive('employees');
+        } else if (pathname.includes('request')) {
+          setActive('request');
+        } else {
+          setActive('path');
+        }
+      }
+    }
+  }, [pathname]);
 
   const handleLogout = () => {
     logout();
