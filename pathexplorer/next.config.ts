@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
         source: '/api/edit',
         destination: 'https://pathexplorer.vercel.app/edit',
       },
+      {
+        source: '/api/send-otp',
+        destination: 'https://pathexplorer.vercel.app/send-otp',
+      },
+      {
+        source: '/api/verify-otp',
+        destination: 'https://pathexplorer.vercel.app/verify-otp',
+      },
     ];
   },
 };

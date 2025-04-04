@@ -1,37 +1,46 @@
 'use client';
-
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { logInSchema, LogInFormData } from '@/schemas/auth/logInSchema';
+import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useLogin } from '@/features/auth/login/useLogin';
-import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
+import { useSendOTP } from '@/features/auth/OTP/useSendOTP';
+import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
-export default function LogInPage() {
+const forgotPasswordSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email' }),
+});
+
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { login, isLoading, error } = useLogin();
+  const { sendOTP, isLoading, error } = useSendOTP();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LogInFormData>({
-    resolver: zodResolver(logInSchema),
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      username: '',
-      password: '',
+      email: '',
     },
   });
 
-  const onSubmit = async (data: LogInFormData) => {
-    const response = await login(data);
-    if (response) {
-      router.replace('/user/basic-info');
+  const onSubmit = async (data: ForgotPasswordFormData) => {
+    setServerError(null);
+    const success = await sendOTP(data.email);
+
+    if (success) {
+      sessionStorage.setItem('resetEmail', data.email);
+      router.push('/auth/verify-otp');
+    } else {
+      setServerError('Failed to send OTP. Please try again.');
     }
   };
 
@@ -49,10 +58,10 @@ export default function LogInPage() {
             />
           </div>
           <p className="text-black text-lg font-semibold pt-4">
-            Log in to your account
+              Forgot your password?
           </p>
           <p className="text-gray-600 text-sm">
-            Enter your email and password below to log in
+              Enter your email below to receive a verification code
           </p>
         </div>
 
@@ -61,23 +70,22 @@ export default function LogInPage() {
           className="w-full flex flex-col space-y-6"
         >
           <div className="flex flex-col space-y-3">
-            <Input
-              type="email"
-              placeholder="Email"
-              {...register('username')}
-              disabled={isLoading}
-            />
-            {errors.username && (
+            <Input type="email" placeholder="Email" {...register('email')} />
+            {errors.email && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.username.message}
+                {errors.email.message}
               </p>
             )}
-            <Input
-              type="password"
-              placeholder="Password"
-              {...register('password')}
-              disabled={isLoading}
-            />
+            {serverError && (
+              <p className="text-red-500 text-xs mt-1">
+                {serverError}
+              </p>
+            )}
+            {error && (
+              <p className="text-red-500 text-xs mt-1">
+                {error}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col space-y-4">
@@ -89,27 +97,11 @@ export default function LogInPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Logging In...
+                      Sending...
                 </>
               ) : (
-                'Log In with Email'
+                'Continue'
               )}
-            </Button>
-
-            <div className="flex items-center space-x-2 w-full">
-              <Separator className="flex-1" />
-              <span className="text-muted-foreground text-xs whitespace-nowrap">
-                OR CONTINUE WITH
-              </span>
-              <Separator className="flex-1" />
-            </div>
-
-            <Button
-              className="w-full bg-white text-black hover:bg-gray-50 border border-gray-300 cursor-pointer gap-3"
-              type="button"
-              disabled={isLoading}
-            >
-              <MicrosoftColorLogo /> <span>Log in with Microsoft</span>
             </Button>
           </div>
         </form>
@@ -118,18 +110,10 @@ export default function LogInPage() {
           <div className="flex flex-col justify-center">
             <Button
               className="cursor-pointer text-[#A001FE] p-0"
-              variant="link"
-              onClick={() => router.push('/auth/SignUp')}
-              disabled={isLoading}
-            >
-              Don't have an account? Sign Up
-            </Button>
-            <Button
-              className="cursor-pointer text-[#A001FE] p-0"
               variant={'link'}
-              onClick={() => router.push('/auth/forgot-password')}
+              onClick={() => router.push('/auth/LogIn')}
             >
-              Forgot your password?
+                Back to LogIn
             </Button>
           </div>
         </div>
