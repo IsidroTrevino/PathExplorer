@@ -201,7 +201,7 @@ export default function BasicInfoPage() {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">Department/Role</h1>
+                      <h1 className="text-l font-semibold w-[300px]">Role</h1>
                       <FormControl>
                         <Input
                           type="text"
