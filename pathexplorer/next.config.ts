@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
         source: '/api/users/:id',
         destination: 'https://pathexplorer.vercel.app/users/:id',
       },
+      {
+        source: '/api/send-otp',
+        destination: 'https://pathexplorer.vercel.app/send-otp',
+      },
+      {
+        source: '/api/verify-otp',
+        destination: 'https://pathexplorer.vercel.app/verify-otp',
+      },
     ];
   },
 };
