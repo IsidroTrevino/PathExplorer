@@ -19,11 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <UserProvider>
-        <InactivityDetector />
-        <body className="font-helvetica antialiased">
-          <Toaster/>
+      <body className="font-helvetica antialiased">
+        <UserProvider>
+          <InactivityDetector />
           {children}
+          <Toaster richColors position="top-center" />
         </UserProvider>
       </body>
     </html>

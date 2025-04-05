@@ -9,6 +9,7 @@ import { RiTeamLine, RiFolderOpenLine } from 'react-icons/ri';
 import { FaUsers } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
 
 
 import Link from 'next/link';
@@ -101,14 +102,14 @@ export const SideBar = () => {
       <Link key={item.key} href={item.path}>
         <div
           className={clsx(
-            'flex items-center gap-3 px-4 py-2 rounded-md cursor-pointer transition-all',
+            'flex items-center gap-3 px-4 py-3 rounded-full cursor-pointer transition-all',
             active === item.key
               ? 'bg-purple-500 text-white'
-              : 'hover:bg-gray-100 text-black',
+              : 'hover:bg-gray-100 text-gray-700',
           )}
           onClick={() => setActive(item.key)}
         >
-          <span className="text-xl">{item.icon}</span>
+          <span className="text-lg">{item.icon}</span>
           <span className="text-sm font-medium">{item.label}</span>
         </div>
       </Link>
@@ -118,19 +119,30 @@ export const SideBar = () => {
   if (!userDetails) return null;
 
   return (
-    <div className="w-64 h-screen bg-white shadow-md flex flex-col justify-between p-4">
+    <div className="w-64 h-screen bg-white shadow-lg flex flex-col justify-between p-6 rounded-r-xl">
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-lg">PathExplorer</span>
-          <FaRegSun />
+        <div className="flex items-center justify-between pb-4">
+          <div className="flex items-center">
+            <Image
+              src="/accenture/Acc_GT_Solid_P1_RGB.png"
+              alt="logo-accenture"
+              width={22}
+              height={22}
+              className="mr-2"
+            />
+            <span className="font-bold text-lg">PathExplorer</span>
+          </div>
+          <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
+            <FaRegSun className="text-gray-600" />
+          </div>
         </div>
 
-  <nav className="flex flex-col space-y-1">{renderItems()}</nav>
-</div>
+        <nav className="flex flex-col space-y-3">{renderItems()}</nav>
+      </div>
 
       <button
         onClick={handleLogout}
-        className="flex items-center gap-2 text-sm cursor-pointer hover:opacity-80 py-2 px-4 rounded-md hover:bg-gray-100"
+        className="flex items-center gap-3 text-sm cursor-pointer hover:opacity-80 py-3 px-4 rounded-full hover:bg-gray-100 text-gray-700 mt-4"
       >
         <FiLogOut />
         <span>Log out</span>
