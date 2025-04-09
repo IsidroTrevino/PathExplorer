@@ -8,14 +8,14 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { signUpSchema, SignUpFormData } from '@/schemas/auth/signUpSchema';
+import { SignUpStepOneData, signUpStepOneSchema } from '@/schemas/auth/signUpSchema';
 import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
 
 export default function SignUpPage() {
   const router = useRouter();
 
-  const form = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<SignUpStepOneData>({
+    resolver: zodResolver(signUpStepOneSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -24,15 +24,16 @@ export default function SignUpPage() {
     },
   });
 
-  function onSubmit(values: SignUpFormData) {
-    console.log(values);
-    //! TODO - Integrate API
+  function onSubmit(values: SignUpStepOneData) {
+    localStorage.setItem('signUpStepOne', JSON.stringify(values));
+
+    router.push('/auth/SignUp/additional-info');
   }
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-white overflow-hidden">
       <div className="absolute bottom-0 left-0 w-full h-80 bg-gradient-to-t from-purple-200 via-white to-transparent pointer-events-none z-0" />
-      <div className="z-10 w-full max-w-sm px-6 flex flex-col items-center space-y-10">
+      <div className="z-10 w-full pr- max-w-sm px-6 flex flex-col items-center space-y-10">
         <div className="flex flex-col items-center text-center">
           <div className="mb-4">
             <Image
