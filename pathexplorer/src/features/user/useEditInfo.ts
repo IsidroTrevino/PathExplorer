@@ -2,10 +2,16 @@ import { useState } from 'react';
 import { useUser } from '@/features/context/userContext';
 
 interface EditInfoData {
-    name: string;
-    email: string;
-    position: string;
-    seniority: number;
+  email: string;
+  name: string;
+  last_name_1: string;
+  last_name_2: string;
+  phone_number: string;
+  location: string;
+  capability: string;
+  position: string;
+  seniority: number;
+  role: string;
 }
 
 export const useEditInfo = () => {
@@ -24,7 +30,7 @@ export const useEditInfo = () => {
 
     try {
       const response = await fetch('/api/edit', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${userAuth.accessToken}`,
@@ -33,7 +39,8 @@ export const useEditInfo = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update information');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update information');
       }
 
       await fetchUserDetails(userAuth.accessToken);

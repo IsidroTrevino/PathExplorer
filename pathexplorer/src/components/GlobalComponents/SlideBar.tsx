@@ -11,7 +11,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Image from 'next/image';
 
-
 import Link from 'next/link';
 import clsx from 'clsx';
 import { useUser } from '@/features/context/userContext';
@@ -24,7 +23,7 @@ export enum UserRole {
 }
 
 export const SideBar = () => {
-  
+
   const [active, setActive] = useState('');
   const { logout, userDetails } = useUser();
   const router = useRouter();
@@ -62,7 +61,7 @@ export const SideBar = () => {
   const renderItems = () => {
     if (!userDetails) return [];
 
-    const normalizedRole = userDetails.rol.toLowerCase();
+    const normalizedRole = userDetails.role.toLowerCase();
 
     const items = [
       {
@@ -78,7 +77,7 @@ export const SideBar = () => {
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/user/profesional-path' },
         { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/user/profesional-path' },
-        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' }
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
       );
     }
 
@@ -87,7 +86,7 @@ export const SideBar = () => {
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/profesional-path' },
         { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/profesional-path' },
-        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' }
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
       );
     }
 
@@ -95,7 +94,7 @@ export const SideBar = () => {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'request', label: 'Request', icon: <FaUsers />, path: '/user/profesional-path' },
-      ); 
+      );
     }
 
     return items.map((item) => (

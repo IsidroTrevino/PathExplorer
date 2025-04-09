@@ -166,7 +166,7 @@ export default function VerifyOTPPage() {
               onClick={() => router.push('/auth/forgot-password')}
             >
                 Back
-            </Button> 
+            </Button>
           </div>
         </div>
       </div>
