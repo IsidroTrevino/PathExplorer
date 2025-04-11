@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { SignUpStepOneData, signUpStepOneSchema } from '@/schemas/auth/signUpSchema';
 import MicrosoftColorLogo from '@/components/GlobalComponents/microsoftLogo';
+import { PhoneNumberInput } from '@/components/GlobalComponents/phoneInput';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-white overflow-hidden">
+    <div className=" p-10 relative flex justify-center items-center min-h-screen bg-white overflow-hidden">
       <div className="absolute bottom-0 left-0 w-full h-80 bg-gradient-to-t from-purple-200 via-white to-transparent pointer-events-none z-0" />
       <div className="z-10 w-full max-w-xl px-6 flex flex-col items-center space-y-6">
         <div className="flex flex-col items-center text-center">
@@ -63,12 +64,14 @@ export default function SignUpPage() {
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
                         <Input placeholder="John" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -76,12 +79,14 @@ export default function SignUpPage() {
                   control={form.control}
                   name="last_name_1"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Doe" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -89,12 +94,14 @@ export default function SignUpPage() {
                   control={form.control}
                   name="last_name_2"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Second Last Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Optional" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -109,12 +116,19 @@ export default function SignUpPage() {
                   control={form.control}
                   name="phone_number"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="+1 555 123 4567" {...field} />
+                        <PhoneNumberInput
+                          value={field.value}
+                          onChange={field.onChange}
+                          disabled={false}
+                          placeholder="+1 (555) 123-4567"
+                        />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -122,12 +136,14 @@ export default function SignUpPage() {
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input placeholder="john.doe@example.com" type="email" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -136,12 +152,14 @@ export default function SignUpPage() {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="relative pb-5">
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                           <Input placeholder="••••••••" type="password" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <div className="absolute bottom-0 left-0">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -149,12 +167,14 @@ export default function SignUpPage() {
                     control={form.control}
                     name="confirmPassword"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="relative pb-5">
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
                           <Input placeholder="••••••••" type="password" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <div className="absolute bottom-0 left-0">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />

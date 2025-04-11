@@ -14,7 +14,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function LogInPage() {
   const router = useRouter();
-  const { login, isLoading, error } = useLogin();
+  const { login, isLoading } = useLogin();
 
   const {
     register,

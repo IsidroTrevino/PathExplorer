@@ -90,7 +90,7 @@ export const SideBar = () => {
       );
     }
 
-    if (userDetails.rol === UserRole.TFS) {
+    if (userDetails.role === UserRole.TFS) {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'request', label: 'Request', icon: <FaUsers />, path: '/user/profesional-path' },

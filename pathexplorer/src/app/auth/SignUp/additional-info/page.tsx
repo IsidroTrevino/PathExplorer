@@ -31,6 +31,37 @@ const positions = [
   'New Associate or Assistant (Level 13)',
 ];
 
+const capabilities = [
+  'DevOps',
+  'Experience Design',
+  'Business Analysis',
+  'Data & Analytics',
+  'MS Business Apps',
+  'Cloud',
+  'MS Platform',
+  'Program Project Management',
+  'Workday',
+  'Quality Engineering',
+  'SAP',
+  'MS Cloud Security',
+  'MS Data & Augmented insights',
+  'Capital Markets Processes',
+  'Hostcentric Platform',
+  'Industry Portfolio Delivery',
+  'Solutions',
+  'ServiceNow',
+  'Content & Commerce Management',
+  'P&PES',
+  'Back End Engineering',
+  'IO',
+  'Security',
+  'Security- Mnemo',
+  'Oracle',
+  'Mobility Services',
+  'Agile',
+  'Front End Engineering',
+];
+
 export default function AdditionalInfoPage() {
   const router = useRouter();
   const [stepOneData, setStepOneData] = useState<SignUpStepOneData | null>(null);
@@ -128,7 +159,7 @@ export default function AdditionalInfoPage() {
                 control={form.control}
                 name="location"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="relative pb-5">
                     <FormLabel>Where are you located?</FormLabel>
                     <FormControl>
                       <Input
@@ -137,7 +168,9 @@ export default function AdditionalInfoPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="absolute bottom-0 left-0">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -151,16 +184,29 @@ export default function AdditionalInfoPage() {
                   control={form.control}
                   name="capability"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Capability</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g., Cloud, Security, Frontend"
-                          disabled={isSubmitting}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isSubmitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select capability" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {capabilities.map((capability) => (
+                            <SelectItem key={capability} value={capability}>
+                              {capability}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -168,17 +214,23 @@ export default function AdditionalInfoPage() {
                   control={form.control}
                   name="seniority"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative pb-5">
                       <FormLabel>Years of Experience</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          placeholder="Years of experience"
+                          placeholder="Enter years of experience"
                           disabled={isSubmitting}
                           {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value ? value : '0');
+                          }}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
@@ -192,7 +244,7 @@ export default function AdditionalInfoPage() {
                 control={form.control}
                 name="position"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="relative pb-5">
                     <FormLabel>Select your current level at Accenture</FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -212,12 +264,13 @@ export default function AdditionalInfoPage() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <div className="absolute bottom-0 left-0">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
 
-              {/* Hidden field for role that's always set to "Developer" */}
               <FormField
                 control={form.control}
                 name="role"
