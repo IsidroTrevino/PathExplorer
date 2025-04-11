@@ -35,9 +35,14 @@ export const useRegister = (): UseRegisterReturn => {
           email: data.email,
           password: data.password,
           name: data.name,
+          last_name_1: data.last_name_1,
+          last_name_2: data.last_name_2 || '',
+          phone_number: data.phone_number,
+          location: data.location,
+          capability: data.capability,
           position: data.position,
           seniority: parseInt(data.seniority),
-          rol: 'Developer',
+          role: data.role,
         }),
       });
 

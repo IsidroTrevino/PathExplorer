@@ -1,6 +1,5 @@
 'use client';
 
-import { SideBar, UserRole } from '@/components/GlobalComponents/SlideBar';
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -60,7 +59,7 @@ export default function BasicInfoPage() {
         email: userDetails.email,
         position: userDetails.position,
         seniority: userDetails.seniority.toString(),
-        role: userDetails.rol,
+        role: userDetails.role,
       });
       setIsFormReady(true);
     }

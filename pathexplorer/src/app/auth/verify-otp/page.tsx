@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 const otpSchema = z.object({
   otp: z.string().length(6, { message: 'OTP must be 6 digits' }),
@@ -18,14 +18,14 @@ export default function VerifyOTPPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [otpValues, setOtpValues] = useState(['', '', '', '', '', '']);
-  const inputRefs = [
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-    useRef<HTMLInputElement>(null),
-  ];
+  const ref1 = useRef<HTMLInputElement>(null);
+  const ref2 = useRef<HTMLInputElement>(null);
+  const ref3 = useRef<HTMLInputElement>(null);
+  const ref4 = useRef<HTMLInputElement>(null);
+  const ref5 = useRef<HTMLInputElement>(null);
+  const ref6 = useRef<HTMLInputElement>(null);
+
+  const inputRefs = useMemo(() => [ref1, ref2, ref3, ref4, ref5, ref6], []);
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('resetEmail');
@@ -35,11 +35,10 @@ export default function VerifyOTPPage() {
     }
     setEmail(storedEmail);
 
-    // Focus first input on page load
     if (inputRefs[0].current) {
       inputRefs[0].current.focus();
     }
-  }, [router]);
+  }, [router, inputRefs]);
 
   const {
     handleSubmit,
@@ -166,7 +165,7 @@ export default function VerifyOTPPage() {
               onClick={() => router.push('/auth/forgot-password')}
             >
                 Back
-            </Button> 
+            </Button>
           </div>
         </div>
       </div>
