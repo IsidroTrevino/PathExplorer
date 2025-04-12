@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="font-helvetica antialiased">
+    <html lang="en">
+      <body className="font-helvetica antialiased" suppressHydrationWarning={true}>
         <UserProvider>
           <InactivityDetector />
           {children}
