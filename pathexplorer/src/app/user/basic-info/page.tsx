@@ -150,7 +150,7 @@ export default function BasicInfoPage() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex-1 p-8 max-w-5xl mx-16">
-        <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name}!</h1>
+        <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name + ' ' + userDetails?.last_name_1 + ' ' + userDetails?.last_name_2}!</h1>
         <p className="text-gray-600 mb-6">Fill in and verify your personal information, you can modify it whenever you want.</p>
 
         {!isFormReady ? (
