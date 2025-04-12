@@ -61,7 +61,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const data = await response.json();
-      setUserDetails(data);
+
+      const processedData: UserDetails = {
+        id: data.id,
+        name: data.name || '',
+        email: data.email || '',
+        last_name_1: data.last_name_1 || '',
+        last_name_2: data.last_name_2 || '',
+        phone_number: data.phone_number || '',
+        location: data.location || '',
+        capability: data.capability || '',
+        position: data.position || '',
+        seniority: typeof data.seniority === 'number' ? data.seniority : 0,
+        role: data.role || '',
+      };
+
+      console.log('User details received:', data);
+      console.log('Processed user details:', processedData);
+
+      setUserDetails(processedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching user details:', err);

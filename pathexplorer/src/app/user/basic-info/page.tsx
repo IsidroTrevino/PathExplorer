@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/features/context/userContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Form, FormMessage } from '@/components/ui/form';
+import { Form, FormMessage, FormLabel } from '@/components/ui/form';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,8 @@ import { Loader2 } from 'lucide-react';
 import { useEditInfo } from '@/features/user/useEditInfo';
 import { toast } from 'sonner';
 import { userInfoSchema, UserInfoFormData } from '@/schemas/user/userInfoSchema';
+import { PhoneNumberInput } from '@/components/GlobalComponents/phoneInput';
+import { Separator } from '@/components/ui/separator';
 
 const positions = [
   'Accenture Leadership (Level 1)',
@@ -31,6 +33,37 @@ const positions = [
   'New Associate or Assistant (Level 13)',
 ];
 
+const capabilities = [
+  'DevOps',
+  'Experience Design',
+  'Business Analysis',
+  'Data & Analytics',
+  'MS Business Apps',
+  'Cloud',
+  'MS Platform',
+  'Program Project Management',
+  'Workday',
+  'Quality Engineering',
+  'SAP',
+  'MS Cloud Security',
+  'MS Data & Augmented insights',
+  'Capital Markets Processes',
+  'Hostcentric Platform',
+  'Industry Portfolio Delivery',
+  'Solutions',
+  'ServiceNow',
+  'Content & Commerce Management',
+  'P&PES',
+  'Back End Engineering',
+  'IO',
+  'Security',
+  'Security- Mnemo',
+  'Oracle',
+  'Mobility Services',
+  'Agile',
+  'Front End Engineering',
+];
+
 export default function BasicInfoPage() {
   const [formModified, setFormModified] = useState(false);
   const { userDetails } = useUser();
@@ -42,8 +75,13 @@ export default function BasicInfoPage() {
     defaultValues: {
       name: '',
       email: '',
+      last_name_1: '',
+      last_name_2: '',
+      phone_number: '',
+      location: '',
+      capability: '',
       position: '',
-      seniority: '',
+      seniority: 0,
       role: '',
     },
     mode: 'onChange',
@@ -55,11 +93,16 @@ export default function BasicInfoPage() {
   useEffect(() => {
     if (userDetails) {
       reset({
-        name: userDetails.name,
-        email: userDetails.email,
-        position: userDetails.position,
-        seniority: userDetails.seniority.toString(),
-        role: userDetails.role,
+        name: userDetails.name || '',
+        email: userDetails.email || '',
+        last_name_1: userDetails.last_name_1 || '',
+        last_name_2: userDetails.last_name_2 || '',
+        phone_number: userDetails.phone_number || '',
+        location: userDetails.location || '',
+        capability: userDetails.capability || '',
+        position: userDetails.position || '',
+        seniority: userDetails.seniority || 0,
+        role: userDetails.role || '',
       });
       setIsFormReady(true);
     }
@@ -71,8 +114,13 @@ export default function BasicInfoPage() {
     const isModified =
         watchedValues.name !== userDetails.name ||
         watchedValues.email !== userDetails.email ||
+        watchedValues.last_name_1 !== userDetails.last_name_1 ||
+        watchedValues.last_name_2 !== userDetails.last_name_2 ||
+        watchedValues.phone_number !== userDetails.phone_number ||
+        watchedValues.location !== userDetails.location ||
+        watchedValues.capability !== userDetails.capability ||
         watchedValues.position !== userDetails.position ||
-        watchedValues.seniority !== userDetails.seniority.toString();
+        watchedValues.seniority !== userDetails.seniority;
 
     setFormModified(isModified && isDirty);
   }, [watchedValues, userDetails, isDirty, isFormReady]);
@@ -81,8 +129,14 @@ export default function BasicInfoPage() {
     const success = await updateUserInfo({
       name: data.name,
       email: data.email,
+      last_name_1: data.last_name_1,
+      last_name_2: data.last_name_2 || '',
+      phone_number: data.phone_number,
+      location: data.location,
+      capability: data.capability,
       position: data.position,
-      seniority: parseInt(data.seniority),
+      seniority: Number(data.seniority),
+      role: data.role,
     });
 
     if (success) {
@@ -94,10 +148,10 @@ export default function BasicInfoPage() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="flex-1 p-8">
+    <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 p-8 max-w-5xl mx-16">
         <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name}!</h1>
-        <p>Fill in and verify your personal information, you can modify it whenever you want.</p>
+        <p className="text-gray-600 mb-6">Fill in and verify your personal information, you can modify it whenever you want.</p>
 
         {!isFormReady ? (
           <div className="flex justify-center my-10">
@@ -105,118 +159,221 @@ export default function BasicInfoPage() {
           </div>
         ) : (
           <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="pt-6 pr-96 flex-col space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">Name</h1>
-                      <div className="w-full">
-                        <FormControl>
-                          <Input type="text" placeholder="Full name" {...field} />
-                        </FormControl>
-                        <FormMessage className="text-red-500 text-sm mt-1" />
-                      </div>
-                    </div>
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              <div>
+                <h2 className="text-xl font-medium mb-2">Personal Information</h2>
+                <Separator className="mb-4" />
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">First Name</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="First name" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">E-mail</h1>
-                      <div className="w-full">
-                        <FormControl>
-                          <Input type="text" placeholder="Personal mail" {...field} />
-                        </FormControl>
-                        <FormMessage className="text-red-500 text-sm mt-1" />
-                      </div>
-                    </div>
-                  </FormItem>
-                )}
-              />
+                    <FormField
+                      control={form.control}
+                      name="last_name_1"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">First Last Name</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="First last name" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-              <FormField
-                control={form.control}
-                name="position"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">Position</h1>
-                      <div className="w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="last_name_2"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Second Last Name</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="Second last name (optional)" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Email</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="Personal email" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="phone_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-medium">Phone Number</FormLabel>
+                        <FormControl>
+                          <PhoneNumberInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="+52 (555) 123-4567"
+                            defaultCountry="MX"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-500 text-sm" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-medium mb-2">Location Information</h2>
+                <Separator className="mb-4" />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-medium">Location</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="City, Country (e.g., Monterrey, MX)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-medium mb-2">Professional Information</h2>
+                <Separator className="mb-4" />
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="capability"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-medium">Capability</FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select your position" />
+                              <SelectValue placeholder="Select your capability" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {positions.map((position) => (
-                              <SelectItem key={position} value={position}>
-                                {position}
+                            {capabilities.map((capability) => (
+                              <SelectItem key={capability} value={capability}>
+                                {capability}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage className="text-red-500 text-sm mt-1" />
-                      </div>
-                    </div>
-                  </FormItem>
-                )}
-              />
+                        <FormMessage className="text-red-500 text-sm" />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name="seniority"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">Seniority</h1>
-                      <div className="w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="position"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Position</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select your position" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {positions.map((position) => (
+                                <SelectItem key={position} value={position}>
+                                  {position}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="seniority"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-medium">Years of Experience</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="Years of experience" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-500 text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-medium">Role</FormLabel>
                         <FormControl>
-                          <Input type="text" placeholder="Seniority" {...field} />
+                          <Input
+                            type="text"
+                            placeholder="Department/role"
+                            {...field}
+                            readOnly={true}
+                            className="bg-gray-50 cursor-not-allowed"
+                          />
                         </FormControl>
-                        <FormMessage className="text-red-500 text-sm mt-1" />
-                      </div>
-                    </div>
-                  </FormItem>
-                )}
-              />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-40">
-                      <h1 className="text-l font-semibold w-[300px]">Role</h1>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Department/role"
-                          {...field}
-                          readOnly={true}
-                          className="bg-gray-50 cursor-not-allowed"
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center gap-40">
-                <h1 className="text-l font-bold w-[300px]">Assignment percentage</h1>
-                <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                  <div className="bg-[#A055F5] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}> 38%</div>
+              <div>
+                <h2 className="text-xl font-medium mb-2">Assignment Information</h2>
+                <Separator className="mb-4" />
+                <div className="flex items-center gap-4">
+                  <div className="w-1/3">
+                    <p className="text-base font-medium">Assignment percentage</p>
+                  </div>
+                  <div className="w-2/3 bg-gray-200 rounded-full dark:bg-gray-700">
+                    <div className="bg-[#A055F5] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: '38%' }}> 38%</div>
+                  </div>
                 </div>
               </div>
 
@@ -224,14 +381,13 @@ export default function BasicInfoPage() {
                 <div className="flex justify-end pt-4">
                   <Button
                     type="submit"
-                    style={{ backgroundColor: '#7500C0' }}
-                    className="text-white"
+                    className="bg-[#7500C0] text-white hover:bg-[#6200a0]"
                     disabled={isLoading}
                   >
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
+                                Saving...
                       </>
                     ) : (
                       'Save changes'

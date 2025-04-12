@@ -30,7 +30,7 @@ export const useEditInfo = () => {
 
     try {
       const response = await fetch('/api/edit', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${userAuth.accessToken}`,
