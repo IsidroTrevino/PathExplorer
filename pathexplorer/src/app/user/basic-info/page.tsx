@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { userInfoSchema, UserInfoFormData } from '@/schemas/user/userInfoSchema';
 import { PhoneNumberInput } from '@/components/GlobalComponents/phoneInput';
 import { Separator } from '@/components/ui/separator';
+import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 
 const positions = [
   'Accenture Leadership (Level 1)',
@@ -150,8 +151,7 @@ export default function BasicInfoPage() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="flex-1 p-8 max-w-5xl mx-16">
-        <h1 className="text-2xl font-bold">Welcome back, {userDetails?.name + ' ' + userDetails?.last_name_1 + ' ' + userDetails?.last_name_2}!</h1>
-        <p className="text-gray-600 mb-6">Fill in and verify your personal information, you can modify it whenever you want.</p>
+        <PageHeader title={`Welcome back, ${userDetails?.name} ${userDetails?.last_name_1} ${userDetails?.last_name_2}!`} subtitle={'Fill in and verify your personal information, you can modify it whenever you want.'}/>
 
         {!isFormReady ? (
           <div className="flex justify-center my-10">
