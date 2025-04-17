@@ -1,168 +1,355 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MoreHorizontal, ChevronDown, ChevronUp, Search, Filter, X, EyeIcon, Trash2Icon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
-export interface Employee {
-    id: number;
-    name: string;
-    last_name_1: string;
-    position: string;
-    role: string;
-    assigned_project: string;
-    status: 'Available' | 'Assigned' | 'On Leave' | 'Training';
-    assignment_percentage: number;
+interface Employee {
+  id: number;
+  name: string;
+  last_name_1: string;
+  position: string;
+  role: string;
+  assigned_project: string;
+  status: 'Assigned' | 'Staff';
+  assignment_percentage: number;
 }
-
-const MOCK_EMPLOYEES: Employee[] = [
-  { id: 1, name: 'John', last_name_1: 'Doe', position: 'Senior Developer', role: 'Developer', assigned_project: 'PathExplorer', status: 'Assigned', assignment_percentage: 100 },
-  { id: 2, name: 'Jane', last_name_1: 'Smith', position: 'UX Designer', role: 'Designer', assigned_project: 'Client Portal', status: 'Assigned', assignment_percentage: 75 },
-  { id: 3, name: 'Mike', last_name_1: 'Johnson', position: 'Project Manager', role: 'Manager', assigned_project: 'PathExplorer', status: 'Assigned', assignment_percentage: 50 },
-  { id: 4, name: 'Sarah', last_name_1: 'Williams', position: 'QA Engineer', role: 'QA', assigned_project: 'None', status: 'Available', assignment_percentage: 0 },
-  { id: 5, name: 'David', last_name_1: 'Brown', position: 'Junior Developer', role: 'Developer', assigned_project: 'Internal Tools', status: 'Assigned', assignment_percentage: 100 },
-  { id: 6, name: 'Emily', last_name_1: 'Davis', position: 'Business Analyst', role: 'Analyst', assigned_project: 'Client Portal', status: 'Assigned', assignment_percentage: 60 },
-  { id: 7, name: 'Carlos', last_name_1: 'Rodriguez', position: 'DevOps Engineer', role: 'DevOps', assigned_project: 'None', status: 'Training', assignment_percentage: 0 },
-  { id: 8, name: 'Michelle', last_name_1: 'Garcia', position: 'Product Owner', role: 'Product', assigned_project: 'PathExplorer', status: 'Assigned', assignment_percentage: 90 },
-  { id: 9, name: 'Robert', last_name_1: 'Wilson', position: 'Full Stack Developer', role: 'Developer', assigned_project: 'Internal Tools', status: 'On Leave', assignment_percentage: 0 },
-  { id: 10, name: 'Lisa', last_name_1: 'Taylor', position: 'UI Designer', role: 'Designer', assigned_project: 'Client Portal', status: 'Assigned', assignment_percentage: 80 },
-];
 
 interface EmployeeTableProps {
-    employees?: Employee[];
+  data: Employee[];
+  onDelete?: (id: number) => void;
 }
 
-export const EmployeeTable = ({ employees = MOCK_EMPLOYEES }: EmployeeTableProps) => {
+export function EmployeeTable({ data, onDelete }: EmployeeTableProps) {
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortField, setSortField] = useState<keyof Employee>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [projectFilter, setProjectFilter] = useState<string>('all');
+  const [positionFilter, setPositionFilter] = useState<string>('all');
+  const rowsPerPage = 10;
 
-  const uniqueRoles = useMemo(() => {
-    const roles = new Set(employees.map(emp => emp.role));
-    return Array.from(roles);
-  }, [employees]);
+  useEffect(() => {
+    setEmployees(data);
+  }, [data]);
 
-  const filteredEmployees = useMemo(() => {
-    return employees
-      .filter(emp => {
-        const fullName = `${emp.name} ${emp.last_name_1}`.toLowerCase();
-        return fullName.includes(searchTerm.toLowerCase()) &&
-                    (roleFilter === '' || emp.role === roleFilter);
-      })
-      .sort((a, b) => {
-        const nameA = `${a.name} ${a.last_name_1}`.toLowerCase();
-        const nameB = `${b.name} ${b.last_name_1}`.toLowerCase();
-        return sortOrder === 'asc'
-          ? nameA.localeCompare(nameB)
-          : nameB.localeCompare(nameA);
-      });
-  }, [employees, searchTerm, roleFilter, sortOrder]);
+  const uniqueProjects = Array.from(new Set(employees.map(e => e.assigned_project))).sort();
+  const uniquePositions = Array.from(new Set(employees.map(e => e.position))).sort();
 
-  const getStatusColor = (status: Employee['status']) => {
-    switch (status) {
-    case 'Available': return 'bg-green-100 text-green-800';
-    case 'Assigned': return 'bg-blue-100 text-blue-800';
-    case 'On Leave': return 'bg-yellow-100 text-yellow-800';
-    case 'Training': return 'bg-purple-100 text-purple-800';
-    default: return 'bg-gray-100 text-gray-800';
+  const filteredEmployees = employees.filter(employee => {
+    const fullName = `${employee.name} ${employee.last_name_1}`.toLowerCase();
+    const matchesSearch = fullName.includes(searchTerm.toLowerCase()) ||
+        employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.assigned_project.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = statusFilter === 'all' ? true : employee.status === statusFilter;
+    const matchesProject = projectFilter === 'all' ? true : employee.assigned_project === projectFilter;
+    const matchesPosition = positionFilter === 'all' ? true : employee.position === positionFilter;
+
+    return matchesSearch && matchesStatus && matchesProject && matchesPosition;
+  });
+
+  const sortedEmployees = [...filteredEmployees].sort((a, b) => {
+    if (sortField === 'name') {
+      const aFullName = `${a.name} ${a.last_name_1}`;
+      const bFullName = `${b.name} ${b.last_name_1}`;
+      if (aFullName < bFullName) return sortDirection === 'asc' ? -1 : 1;
+      if (aFullName > bFullName) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    } else {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    }
+  });
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, projectFilter, positionFilter, searchTerm]);
+
+  const paginatedEmployees = sortedEmployees.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
+  );
+
+  const pageCount = Math.ceil(sortedEmployees.length / rowsPerPage);
+
+  const handleSort = (field: keyof Employee) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
     }
   };
 
+  const SortIcon = ({ field }: { field: keyof Employee }) => {
+    if (field !== sortField) return null;
+    return sortDirection === 'asc' ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />;
+  };
+
+  const resetFilters = () => {
+    setStatusFilter('all');
+    setProjectFilter('all');
+    setPositionFilter('all');
+    setSearchTerm('');
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col md:flex-row gap-4 justify-between">
-        <div className="w-full md:w-1/3">
-          <input
-            type="text"
-            placeholder="Search by name..."
-            className="w-full p-2 border border-gray-300 rounded-md"
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search employees..."
+            className="pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="flex gap-4">
-          <select
-            className="p-2 border border-gray-300 rounded-md"
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-          >
-            <option value="">All Roles</option>
-            {uniqueRoles.map(role => (
-              <option key={role} value={role}>{role}</option>
-            ))}
-          </select>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm">Filters:</span>
+            {(statusFilter !== 'all' || projectFilter !== 'all' || positionFilter !== 'all') && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2"
+                onClick={resetFilters}
+              >
+                <X className="h-4 w-4 mr-1" /> Clear
+              </Button>
+            )}
+          </div>
 
-          <button
-            className="flex items-center gap-1 p-2 border border-gray-300 rounded-md"
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-          >
-            <span>Sort</span>
-            {sortOrder === 'asc' ?
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293V3.5z"/>
-                <path d="M7 14V2h2v12H7zm3-12h4a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
-              </svg> :
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.498.498 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707V12.5zm3.5-9h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
-              </svg>
-            }
-          </button>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="Assigned">Assigned</SelectItem>
+              <SelectItem value="Staff">Staff</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={projectFilter} onValueChange={setProjectFilter}>
+            <SelectTrigger className="w-[180px] h-9">
+              <SelectValue placeholder="Project" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Projects</SelectItem>
+              {uniqueProjects.map(project => (
+                <SelectItem key={project} value={project}>{project}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={positionFilter} onValueChange={setPositionFilter}>
+            <SelectTrigger className="w-[180px] h-9">
+              <SelectValue placeholder="Position" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Positions</SelectItem>
+              {uniquePositions.map(position => (
+                <SelectItem key={position} value={position}>{position}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assignment</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredEmployees.map((employee) => (
-              <tr key={employee.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-gray-900">{employee.name} {employee.last_name_1}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">{employee.position}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">{employee.role}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                  {employee.assigned_project === 'None' ?
-                    <span className="text-gray-400">Unassigned</span> :
-                    employee.assigned_project
-                  }
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(employee.status)}`}>
-                    {employee.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="bg-blue-600 h-2.5 rounded-full"
-                      style={{ width: `${employee.assignment_percentage}%` }}>
-                    </div>
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    {employee.assignment_percentage}%
-                  </span>
-                </td>
-              </tr>
-            ))}
-            {filteredEmployees.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                                No employees found matching your search criteria
-                </td>
-              </tr>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('name')}
+              >
+                <div className="flex items-center">
+                    Name <SortIcon field="name" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('position')}
+              >
+                <div className="flex items-center">
+                    Position <SortIcon field="position" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('role')}
+              >
+                <div className="flex items-center">
+                    Role <SortIcon field="role" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('assigned_project')}
+              >
+                <div className="flex items-center">
+                    Assigned Project <SortIcon field="assigned_project" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('status')}
+              >
+                <div className="flex items-center">
+                    Status <SortIcon field="status" />
+                </div>
+              </TableHead>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort('assignment_percentage')}
+              >
+                <div className="flex items-center">
+                    Assignment % <SortIcon field="assignment_percentage" />
+                </div>
+              </TableHead>
+              <TableHead className="w-16">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedEmployees.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                      No employees found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedEmployees.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell className="font-medium">{`${employee.name} ${employee.last_name_1}`}</TableCell>
+                  <TableCell>{employee.position}</TableCell>
+                  <TableCell>{employee.role}</TableCell>
+                  <TableCell>{employee.assigned_project}</TableCell>
+                  <TableCell>
+                    <Badge
+                      className={cn(employee.status === 'Assigned' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800')}
+                    >
+                      {employee.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{employee.assignment_percentage}%</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => {
+                          console.log('View employee:', employee);
+                        }}>
+                          <EyeIcon/>
+                          View Employee
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => {
+                            if (onDelete) {
+                              onDelete(employee.id);
+                            } else {
+                              console.log('Delete employee:', employee);
+                              if (confirm(`Are you sure you want to delete ${employee.name} ${employee.last_name_1}?`)) {
+                                setEmployees(prev => prev.filter(e => e.id !== employee.id));
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2Icon/>
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
+
+      {pageCount > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              {currentPage > 1 ? (
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                />
+              ) : (
+                <PaginationPrevious
+                  className="pointer-events-none opacity-50"
+                  onClick={() => {}}
+                />
+              )}
+            </PaginationItem>
+            <PaginationItem className="flex items-center">
+              <span className="text-sm">
+          Page {currentPage} of {pageCount}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              {currentPage < pageCount ? (
+                <PaginationNext
+                  onClick={() => setCurrentPage(p => Math.min(pageCount, p + 1))}
+                />
+              ) : (
+                <PaginationNext
+                  className="pointer-events-none opacity-50"
+                  onClick={() => {}}
+                />
+              )}
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
-};
+}
