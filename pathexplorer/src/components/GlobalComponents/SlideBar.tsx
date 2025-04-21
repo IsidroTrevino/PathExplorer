@@ -85,7 +85,7 @@ export const SideBar = () => {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/profesional-path' },
-        { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/profesional-path' },
+        { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/projects' },
         { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
       );
     }
