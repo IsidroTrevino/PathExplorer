@@ -1,16 +1,12 @@
-// src/app/user/projects/page.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useCreateProjectModal } from '@/features/projects/useCreateProjectModal';
 import { CreateProjectModal } from '@/features/projects/createProjectModal';
-import { useProjects } from '@/features/context/projectContext';
-import { ProjectCard } from '@/components/GlobalComponents/projectCard';
 
 export default function ProjectsPage() {
   const { isOpen, onOpen, onClose } = useCreateProjectModal();
-  const { projects } = useProjects();
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -18,10 +14,10 @@ export default function ProjectsPage() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold">
-                            Projects
+                Projects
             </h1>
             <p className="text-gray-600 mb-2">
-                            Create new projects for the company and review assigned employees.
+                Create new projects for the company and review assigned employees.
             </p>
           </div>
           <Button
@@ -35,19 +31,11 @@ export default function ProjectsPage() {
 
         <hr className="mb-8 border-gray-200" />
 
-        {projects.length > 0 ? (
-          <div className="space-y-6">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <div className="text-center py-10">
+            <p className="text-gray-500">No projects found. Create your first project to get started.</p>
           </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="text-center py-10">
-              <p className="text-gray-500">No projects found. Create your first project to get started.</p>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
 
       <CreateProjectModal isOpen={isOpen} onClose={onClose} />
