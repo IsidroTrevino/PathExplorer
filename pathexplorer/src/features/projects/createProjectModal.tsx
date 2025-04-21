@@ -34,7 +34,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { useCreateProject } from './useCreateProject';
 
 const projectSchema = z.object({
   title: z.string().min(3, { message: 'Project title must be at least 3 characters' }),
@@ -55,10 +54,9 @@ interface CreateProjectModalProps {
 
 export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
   const { userDetails } = useUser();
-  const [isSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [deliveryDateOpen, setDeliveryDateOpen] = useState(false);
-  const { createProject } = useCreateProject();
 
   const today = new Date();
   const nextMonth = new Date();
@@ -78,14 +76,16 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
   });
 
   const onSubmit = async (data: ProjectFormValues) => {
+    setIsSubmitting(true);
     try {
-      const result = await createProject(data);
-      if (result) {
-        form.reset();
-        onClose();
-      }
+      console.log('Project data to submit:', data);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      form.reset();
+      onClose();
     } catch (error) {
       console.error('Error creating project:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
