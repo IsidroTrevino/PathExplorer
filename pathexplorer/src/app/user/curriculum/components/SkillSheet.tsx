@@ -4,30 +4,35 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 import { Skill } from "../types/curriculum";
-import clsx from "clsx"; // Asegúrate de tener clsx instalado o usa template strings para clases
+import clsx from "clsx";
 
-const predefinedSkills = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Fullstack Developer",
-  "DevOps Engineer",
-  "UI/UX Designer",
-  "Data Scientist",
-  "Mobile Developer",
-  "QA Engineer",
-];
+type SkillSheetProps = {
+  onAdd: (skill: Skill) => void;
+  skillOptions: string[];
+  title?: string;
+};
 
-export const SkillSheet = ({ onAdd }: { onAdd: (skill: Skill) => void }) => {
+export const SkillSheet = ({
+  onAdd,
+  skillOptions,
+  title = "Agregar Skill",
+}: SkillSheetProps) => {
   const [name, setName] = useState("");
   const [level, setLevel] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; level?: string }>({});
 
   const validate = () => {
-    const newErrors: { name?: string; level?: string } = {};
+    const newErrors: typeof errors = {};
     if (!name) newErrors.name = "Skill is required";
     const numLevel = Number(level);
     if (!level || isNaN(numLevel) || numLevel < 1 || numLevel > 100) {
@@ -39,7 +44,7 @@ export const SkillSheet = ({ onAdd }: { onAdd: (skill: Skill) => void }) => {
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ name, level: Number(level) });
+    onAdd({ name, level: Number(level), type: "technical" });
     setIsOpen(false);
     setName("");
     setLevel("");
@@ -53,26 +58,34 @@ export const SkillSheet = ({ onAdd }: { onAdd: (skill: Skill) => void }) => {
       </SheetTrigger>
       <SheetContent>
         <div className="space-y-4 p-4">
-          <DialogTitle>Agregar Skill</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
 
-          {/* Skill Select con validación */}
           <div className="space-y-1">
-            <Select value={name} onValueChange={(value) => { setName(value); setErrors((e) => ({ ...e, name: undefined })); }}>
-              <SelectTrigger className={clsx("w-full", errors.name && "border-red-500")}>
+            <Select
+              value={name}
+              onValueChange={(value) => {
+                setName(value);
+                setErrors((e) => ({ ...e, name: undefined }));
+              }}
+            >
+              <SelectTrigger
+                className={clsx("w-full", errors.name && "border-red-500")}
+              >
                 <SelectValue placeholder="Select a skill" />
               </SelectTrigger>
               <SelectContent>
-                {predefinedSkills.map((skill) => (
+                {skillOptions.map((skill) => (
                   <SelectItem key={skill} value={skill}>
                     {skill}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
 
-          {/* Nivel input con validación */}
           <div className="space-y-1">
             <Input
               type="number"
@@ -86,7 +99,9 @@ export const SkillSheet = ({ onAdd }: { onAdd: (skill: Skill) => void }) => {
               }}
               className={clsx(errors.level && "border-red-500")}
             />
-            {errors.level && <p className="text-sm text-red-500">{errors.level}</p>}
+            {errors.level && (
+              <p className="text-sm text-red-500">{errors.level}</p>
+            )}
           </div>
 
           <Button

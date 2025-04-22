@@ -1,19 +1,46 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Skill, Goal } from '../curriculum/types/curriculum';
-import { SkillCard } from './components/SkillCard';
-import { GoalCard } from './components/GoalCard';
-import { SkillSheet } from './components/SkillSheet';
-import { GoalSheet } from './components/GoalSheet';
-import { Separator } from '@/components/ui/separator';
+import React, { useState } from "react";
+import { Skill, Goal } from "../curriculum/types/curriculum";
+import { SkillCard } from "./components/SkillCard";
+import { GoalCard } from "./components/GoalCard";
+import { SkillSheet } from "./components/SkillSheet";
+import { GoalSheet } from "./components/GoalSheet";
+import { Separator } from "@/components/ui/separator";
 
 export default function CurriculumPage() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [technicalSkillsList, setTechnicalSkillsList] = useState<Skill[]>([]);
+  const [softSkillsList, setSoftSkillsList] = useState<Skill[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
 
-  const handleAddSkill = (skill: Skill) => setSkills([...skills, skill]);
+  const handleAddTechnicalSkill = (skill: Skill) =>
+    setTechnicalSkillsList((prev) => [...prev, { ...skill, type: "technical" }]);
+
+  const handleAddSoftSkill = (skill: Skill) =>
+    setSoftSkillsList((prev) => [...prev, { ...skill, type: "soft" }]);
+
   const handleAddGoal = (goal: Goal) => setGoals([...goals, goal]);
+
+  const technicalSkills = [
+    "Frontend Developer",
+    "Backend Developer",
+    "Fullstack Developer",
+    "DevOps Engineer",
+    "UI/UX Designer",
+    "Data Scientist",
+    "Mobile Developer",
+    "QA Engineer",
+  ];
+
+  const softSkills = [
+    "Communication",
+    "Teamwork",
+    "Problem Solving",
+    "Adaptability",
+    "Time Management",
+    "Leadership",
+    "Creativity",
+  ];
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -29,11 +56,17 @@ export default function CurriculumPage() {
         <section>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Technical skills</h2>
-            <SkillSheet onAdd={handleAddSkill} />
+            <SkillSheet
+              onAdd={handleAddTechnicalSkill}
+              skillOptions={technicalSkills}
+              title="Add Technical Skill"
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
-            {skills.length > 0 ? (
-              skills.map((skill, i) => <SkillCard key={i} {...skill} />)
+            {technicalSkillsList.length > 0 ? (
+              technicalSkillsList.map((skill, i) => (
+                <SkillCard key={`tech-${i}`} {...skill} />
+              ))
             ) : (
               <p className="col-span-full text-gray-400 italic">
                 No technical skills added yet.
@@ -47,11 +80,15 @@ export default function CurriculumPage() {
         <section>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Soft skills</h2>
-            <SkillSheet onAdd={handleAddSkill} />
+            <SkillSheet
+              onAdd={handleAddSoftSkill}
+              skillOptions={softSkills}
+              title="Add Soft Skill"
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
-            {skills.length > 0 ? (
-              skills.map((skill, i) => (
+            {softSkillsList.length > 0 ? (
+              softSkillsList.map((skill, i) => (
                 <SkillCard key={`soft-${i}`} {...skill} />
               ))
             ) : (
