@@ -75,7 +75,7 @@ export const SideBar = () => {
     if (normalizedRole === UserRole.DEVELOPER) {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
-        { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/user/profesional-path' },
+        { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/user/curriculum' },
         { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/user/profesional-path' },
         { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
       );
