@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
 import { useGetEmployees } from '@/features/user/useGetEmployees';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EmployeesPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(20);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
@@ -54,19 +53,15 @@ export default function EmployeesPage() {
         />
 
         <div className="mt-8">
-          {loading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-96 w-full" />
-            </div>
-          ) : error ? (
+          {error ? (
             <div className="rounded-md bg-red-50 p-4 text-red-700">
               {error}
             </div>
           ) : (
             <div className="h-[calc(100vh-250px)] overflow-auto">
               <EmployeeTable
-                data={employees}
+                data={loading ? [] : employees}
+                loading={loading}
                 onPageChange={handlePageChange}
                 currentPage={currentPage}
                 totalPages={totalPages}

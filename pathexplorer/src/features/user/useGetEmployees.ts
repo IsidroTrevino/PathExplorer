@@ -55,7 +55,7 @@ const DUMMY_PROJECTS = ['PathExplorer', 'Client Portal', 'Internal Tools', 'Data
 
 export function useGetEmployees({
   page = 1,
-  size = 10,
+  size = 20,
   role = null,
   alphabetical = null,
   search = null,
@@ -137,7 +137,9 @@ export function useGetEmployees({
       }
     };
 
-    fetchEmployees();
+    fetchEmployees().catch(err => {
+      console.error('Unhandled promise rejection:', err);
+    });
   }, [page, size, role, alphabetical, search, userAuth]);
 
   return {
