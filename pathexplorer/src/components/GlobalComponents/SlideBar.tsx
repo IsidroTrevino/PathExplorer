@@ -84,7 +84,7 @@ export const SideBar = () => {
     if (normalizedRole === UserRole.MANAGER) {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
-        { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/profesional-path' },
+        { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/employees' },
         { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/profesional-path' },
         { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
       );
