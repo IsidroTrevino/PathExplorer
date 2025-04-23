@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Table,
   TableBody,
@@ -35,8 +35,8 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Employee } from '@/features/user/useGetEmployees';
 
-// src/components/GlobalComponents/employeeTable.tsx
 interface EmployeeTableProps {
   data: Employee[];
   onDelete?: (id: number) => void;
@@ -55,88 +55,42 @@ interface EmployeeTableProps {
 
 export function EmployeeTable({
   data,
-  onDelete,
+  loading,
+  totalPages,
+  currentPage,
   onPageChange,
-  currentPage = 1,
-  totalPages = 1,
+  onSearch,
   onRoleFilter,
   onSort,
-  onSearch,
-  isExternalPagination = true,
-  loading = false,
-  currentSearch = null,
-  currentRole = null,
-  currentAlphabetical = null,
+  onDelete,
 }: EmployeeTableProps) {
-  // Initialize with parent values or defaults
-  const [searchTerm, setSearchTerm] = useState(currentSearch || '');
-  const [roleFilter, setRoleFilter] = useState<string>(currentRole || 'all');
-  const [isAlphabetical, setIsAlphabetical] = useState(currentAlphabetical || false);
-  const debouncedSearchRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('all');
+  const [isAlphabetical, setIsAlphabetical] = useState(false);
+  const debouncedSearchRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync with parent component values when they change
-  useEffect(() => {
-    if (currentSearch !== null) {
-      setSearchTerm(currentSearch);
-    }
-  }, [currentSearch]);
-
-  useEffect(() => {
-    if (currentRole !== null) {
-      setRoleFilter(currentRole);
-    } else {
-      setRoleFilter('all');
-    }
-  }, [currentRole]);
-
-  useEffect(() => {
-    if (currentAlphabetical !== null) {
-      setIsAlphabetical(currentAlphabetical);
-    }
-  }, [currentAlphabetical]);
-
-  // Handle search input changes with debounce
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    // Clear any existing timeout
     if (debouncedSearchRef.current) {
       clearTimeout(debouncedSearchRef.current);
     }
 
-    // Set new timeout for search
     debouncedSearchRef.current = setTimeout(() => {
-      if (onSearch) {
-        onSearch(value.trim() ? value : null);
-      }
-    }, 500);
+      onSearch && onSearch(value);
+    }, 300);
   };
 
-  // Handle role filter changes
   const handleRoleChange = (value: string) => {
     setRoleFilter(value);
-    if (onRoleFilter) {
-      onRoleFilter(value === 'all' ? null : value);
-    }
+    onRoleFilter && onRoleFilter(value === 'all' ? null : value);
   };
 
-  // Handle alphabetical sorting toggle
-  const handleAlphabeticalToggle = (checked: boolean) => {
-    setIsAlphabetical(checked);
-    if (onSort) {
-      onSort(checked ? true : null);
-    }
+  const handleAlphabeticalToggle = (value: boolean) => {
+    setIsAlphabetical(value);
+    onSort && onSort(value);
   };
-
-  // Clean up debounce timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (debouncedSearchRef.current) {
-        clearTimeout(debouncedSearchRef.current);
-      }
-    };
-  }, []);
 
   const getStatusColor = (status: Employee['status']) => {
     switch (status) {
@@ -148,7 +102,6 @@ export function EmployeeTable({
 
   return (
     <div className="space-y-4">
-      {/* Search and filters - always visible */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -161,7 +114,6 @@ export function EmployeeTable({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-center">
-          {/* Role filter dropdown */}
           <Select
             value={roleFilter}
             onValueChange={handleRoleChange}
@@ -177,7 +129,6 @@ export function EmployeeTable({
             </SelectContent>
           </Select>
 
-          {/* Alphabetical sorting switch */}
           <div className="flex items-center space-x-2">
             <Switch
               id="alphabetical-sort"
@@ -192,9 +143,8 @@ export function EmployeeTable({
         </div>
       </div>
 
-      {/* Table section - only table body shows loading state */}
       <div className="rounded-md border">
-        <div className="h-[calc(100vh-350px)] overflow-y-auto">
+        <div className="h-[calc(100vh-380px)] overflow-y-auto">
           <Table>
             <TableHeader className="sticky top-0 bg-white">
               <TableRow>
@@ -221,39 +171,36 @@ export function EmployeeTable({
             </TableHeader>
             <TableBody>
               {loading ? (
-                Array(5).fill(0).map((_, i) => (
-                  <TableRow key={`skeleton-${i}`}>
+                Array(7).fill(0).map((_, i) => (
+                  <TableRow key={`skeleton-${i}`} className="animate-pulse">
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <Skeleton className="h-5 w-[140px]" />
+                        <Skeleton className="h-5 w-[120px] bg-gray-200" />
+                        <Skeleton className="h-3 w-[80px] bg-gray-100" />
                       </div>
                     </TableCell>
-
                     <TableCell>
-                      <Skeleton className="h-5 w-[100px]" />
+                      <Skeleton className={`h-5 w-[${80 + (i % 3) * 10}px] bg-gray-200`} />
                     </TableCell>
-
                     <TableCell>
-                      <Skeleton className="h-5 w-[90px]" />
+                      <Skeleton className={`h-5 w-[${70 + (i % 4) * 8}px] bg-gray-200`} />
                     </TableCell>
-
                     <TableCell>
-                      <Skeleton className="h-5 w-[120px]" />
+                      <Skeleton className={`h-5 w-[${100 + (i % 3) * 15}px] bg-gray-200`} />
                     </TableCell>
-
                     <TableCell>
-                      <Skeleton className="h-6 w-20 rounded-full" />
+                      <Skeleton className="h-6 w-20 rounded-full bg-blue-100" />
                     </TableCell>
-
                     <TableCell>
-                      <div className="space-y-1">
-                        <Skeleton className="h-2.5 w-full rounded-full" />
-                        <Skeleton className="h-4 w-8 ml-auto" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-2.5 w-full rounded-full bg-gray-200" />
+                        <div className="flex justify-end">
+                          <Skeleton className="h-4 w-8 rounded-sm bg-gray-200" />
+                        </div>
                       </div>
                     </TableCell>
-
-                    <TableCell>
-                      <Skeleton className="h-8 w-8 rounded-md" />
+                    <TableCell className="flex justify-center">
+                      <Skeleton className="h-8 w-8 rounded-md bg-gray-200" />
                     </TableCell>
                   </TableRow>
                 ))
@@ -316,14 +263,13 @@ export function EmployeeTable({
         </div>
       </div>
 
-      {/* Pagination - Only show when there's data */}
-      {!loading && totalPages > 1 && (
+      {!loading && (totalPages ?? 1) > 1 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              {currentPage > 1 ? (
+              {(currentPage ?? 1) > 1 ? (
                 <PaginationPrevious
-                  onClick={() => onPageChange && onPageChange(currentPage - 1)}
+                  onClick={() => onPageChange && onPageChange((currentPage ?? 1) - 1)}
                 />
               ) : (
                 <PaginationPrevious className="pointer-events-none opacity-50" />
@@ -331,13 +277,13 @@ export function EmployeeTable({
             </PaginationItem>
             <PaginationItem className="flex items-center">
               <span className="text-sm">
-                Page {currentPage} of {totalPages}
+    Page {currentPage ?? 1} of {totalPages ?? 1}
               </span>
             </PaginationItem>
             <PaginationItem>
-              {currentPage < totalPages ? (
+              {(currentPage ?? 1) < (totalPages ?? 1) ? (
                 <PaginationNext
-                  onClick={() => onPageChange && onPageChange(currentPage + 1)}
+                  onClick={() => onPageChange && onPageChange((currentPage ?? 1) + 1)}
                 />
               ) : (
                 <PaginationNext className="pointer-events-none opacity-50" />
