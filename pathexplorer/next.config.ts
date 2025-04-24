@@ -5,11 +5,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/register',
-        destination: 'https://pathexplorer.vercel.app/register',
+        destination: 'https://pathexplorer.vercel.app/auth/register',
       },
       {
         source: '/api/my-info',
-        destination: 'https://pathexplorer.vercel.app/my-info',
+        destination: 'https://pathexplorer.vercel.app/profile/my-info',
       },
       {
         source: '/api/users',
@@ -21,19 +21,19 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/token',
-        destination: 'https://pathexplorer.vercel.app/token',
+        destination: 'https://pathexplorer.vercel.app/auth/token',
       },
       {
         source: '/api/edit',
-        destination: 'https://pathexplorer.vercel.app/edit',
+        destination: 'https://pathexplorer.vercel.app/profile/edit',
       },
       {
         source: '/api/send-otp',
-        destination: 'https://pathexplorer.vercel.app/send-otp',
+        destination: 'https://pathexplorer.vercel.app/otp/send-otp',
       },
       {
         source: '/api/verify-otp',
-        destination: 'https://pathexplorer.vercel.app/verify-otp',
+        destination: 'https://pathexplorer.vercel.app/otp/verify-otp',
       },
       {
         source: '/api/project',
