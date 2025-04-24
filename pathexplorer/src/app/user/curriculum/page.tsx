@@ -1,7 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { Skill, Goal } from "../curriculum/types/curriculum";
+import React from "react";
+import { useGetSkills } from "./hooks/useGetSkills";
+import { usePostSkill } from "./hooks/usePostSkill";
+import { useGetGoals } from "./hooks/useGetGoals";
+import { usePostGoal } from "./hooks/usePostGoal";
+import { Skill, Goal } from "./types/curriculum";
+
 import { SkillCard } from "./components/SkillCard";
 import { GoalCard } from "./components/GoalCard";
 import { SkillSheet } from "./components/SkillSheet";
@@ -9,38 +14,64 @@ import { GoalSheet } from "./components/GoalSheet";
 import { Separator } from "@/components/ui/separator";
 
 export default function CurriculumPage() {
-  const [technicalSkillsList, setTechnicalSkillsList] = useState<Skill[]>([]);
-  const [softSkillsList, setSoftSkillsList] = useState<Skill[]>([]);
-  const [goals, setGoals] = useState<Goal[]>([]);
+  const {
+    data: skills,
+    loading: loadingSkills,
+    error: errorSkills,
+    refetch: refetchSkills,
+  } = useGetSkills();
 
-  const handleAddTechnicalSkill = (skill: Skill) =>
-    setTechnicalSkillsList((prev) => [...prev, { ...skill, type: "hard" }]);
+  const { addSkill } = usePostSkill();
 
-  const handleAddSoftSkill = (skill: Skill) =>
-    setSoftSkillsList((prev) => [...prev, { ...skill, type: "soft" }]);
+  const {
+    data: goals,
+    loading: loadingGoals,
+    error: errorGoals,
+    refetch: refetchGoals,
+  } = useGetGoals();
 
-  const handleAddGoal = (goal: Goal) => setGoals([...goals, goal]);
+  const { addGoal } = usePostGoal();
 
-  const technicalSkills = [
-    "Frontend Developer",
-    "Backend Developer",
-    "Fullstack Developer",
-    "DevOps Engineer",
-    "UI/UX Designer",
-    "Data Scientist",
-    "Mobile Developer",
-    "QA Engineer",
-  ];
+  if (loadingSkills || loadingGoals) {
+    return <p className="p-8">Loading...</p>;
+  }
+  if (errorSkills) {
+    return (
+      <p className="p-8 text-red-600">
+        Error loading skills: {errorSkills}
+      </p>
+    );
+  }
+  if (errorGoals) {
+    return (
+      <p className="p-8 text-red-600">
+        Error loading goals: {errorGoals}
+      </p>
+    );
+  }
 
-  const softSkills = [
-    "Communication",
-    "Teamwork",
-    "Problem Solving",
-    "Adaptability",
-    "Time Management",
-    "Leadership",
-    "Creativity",
-  ];
+  const technicalSkillsList = skills.filter((s: Skill) => s.type === "hard");
+  const softSkillsList = skills.filter((s: Skill) => s.type === "soft");
+
+  const handleAddTechnicalSkill = async (skill: Skill) => {
+    await addSkill({ name: skill.name, type: "hard", level: skill.level });
+    refetchSkills();
+  };
+
+  const handleAddSoftSkill = async (skill: Skill) => {
+    await addSkill({ name: skill.name, type: "soft", level: skill.level });
+    refetchSkills();
+  };
+
+  const handleAddGoal = async (goal: Goal) => {
+    await addGoal({
+      title: goal.title,
+      category: goal.category,
+      description: goal.description,
+      term: goal.term,
+    });
+    refetchGoals();
+  };
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -58,7 +89,16 @@ export default function CurriculumPage() {
             <h2 className="text-xl font-semibold">Technical skills</h2>
             <SkillSheet
               onAdd={handleAddTechnicalSkill}
-              skillOptions={technicalSkills}
+              skillOptions={[
+                "Frontend Developer",
+                "Backend Developer",
+                "Fullstack Developer",
+                "DevOps Engineer",
+                "UI/UX Designer",
+                "Data Scientist",
+                "Mobile Developer",
+                "QA Engineer",
+              ]}
               title="Add Technical Skill"
             />
           </div>
@@ -74,6 +114,7 @@ export default function CurriculumPage() {
             )}
           </div>
         </section>
+
         <Separator className="my-8" />
 
         {/* Soft skills */}
@@ -82,7 +123,15 @@ export default function CurriculumPage() {
             <h2 className="text-xl font-semibold">Soft skills</h2>
             <SkillSheet
               onAdd={handleAddSoftSkill}
-              skillOptions={softSkills}
+              skillOptions={[
+                "Communication",
+                "Teamwork",
+                "Problem Solving",
+                "Adaptability",
+                "Time Management",
+                "Leadership",
+                "Creativity",
+              ]}
               title="Add Soft Skill"
             />
           </div>
@@ -98,6 +147,7 @@ export default function CurriculumPage() {
             )}
           </div>
         </section>
+
         <Separator className="my-8" />
 
         {/* Goals */}
