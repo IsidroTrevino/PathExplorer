@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useUser } from '@/features/context/userContext';
 
-interface CreateProjectParams {
+interface EditProjectParams {
+  id: string;
   projectName: string;
   client: string;
   startDate: Date;
@@ -10,22 +11,12 @@ interface CreateProjectParams {
   description: string;
 }
 
-interface CreateProjectResponse {
-    id: string;
-    projectName: string;
-    client: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    employees_req: number;
-}
-
-export function useCreateProject() {
+export function useEditProject() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const createProject = async (data: CreateProjectParams): Promise<CreateProjectResponse | null> => {
+  const editProject = async (data: EditProjectParams): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
@@ -43,8 +34,8 @@ export function useCreateProject() {
         employees_req: data.employees_req,
       };
 
-      const response = await fetch('/api/projects', {
-        method: 'POST',
+      const response = await fetch(`/api/projects/${data.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${userAuth?.accessToken}`,
@@ -59,30 +50,18 @@ export function useCreateProject() {
         );
       }
 
-      const apiResponse = await response.json();
-
-      const result: CreateProjectResponse = {
-        id: apiResponse.project_id.toString(),
-        projectName: apiResponse.projectname,
-        client: apiResponse.client,
-        description: apiResponse.description,
-        startDate: apiResponse.startdate,
-        endDate: apiResponse.enddate,
-        employees_req: apiResponse.employees_req,
-      };
-
-      return result;
+      return true;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create project';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update project';
       setError(errorMessage);
-      return null;
+      return false;
     } finally {
       setIsLoading(false);
     }
   };
 
   return {
-    createProject,
+    editProject,
     isLoading,
     error,
   };
