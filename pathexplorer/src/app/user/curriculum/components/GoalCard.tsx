@@ -2,9 +2,9 @@ import React from "react";
 import { Goal } from "../types/curriculum";
 
 const termColors = {
-  corto: "bg-purple-500",
-  medio: "bg-yellow-500",
-  largo: "bg-green-500",
+  Short: "bg-purple-500",
+  Medium: "bg-yellow-500",
+  Large: "bg-green-500",
 };
 
 export const GoalCard: React.FC<Goal> = ({ title, category, description, term }) => (

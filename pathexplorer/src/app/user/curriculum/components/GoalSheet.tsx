@@ -29,7 +29,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [term, setTerm] = useState<"corto" | "medio" | "largo" | "">("");
+  const [term, setTerm] = useState<"Short" | "Medium" | "Large" | "">("");
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
@@ -50,11 +50,11 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ title, category, description, term: term as "corto" | "medio" | "largo" });
+    onAdd({ title, category, description, term: term as "Short" | "Medium" | "Large" });
     setTitle("");
     setCategory("");
     setDescription("");
-    setTerm("corto");
+    setTerm("Short");
     setErrors({});
     setIsOpen(false);
   };
@@ -121,16 +121,16 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
 
           <div className="space-y-1">
             <Select value={term} onValueChange={(value) => {
-              setTerm(value as "corto" | "medio" | "largo");
+              setTerm(value as "Short" | "Medium" | "Large");
               setErrors((e) => ({ ...e, term: undefined }));
             }}>
               <SelectTrigger className={clsx("w-full", errors.term && "border-red-500")}>
                 <SelectValue placeholder="Select term" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="corto">Corto</SelectItem>
-                <SelectItem value="medio">Medio</SelectItem>
-                <SelectItem value="largo">Largo</SelectItem>
+                <SelectItem value="Short">Short</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Large">Large</SelectItem>
               </SelectContent>
             </Select>
             {errors.term && (

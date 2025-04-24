@@ -44,7 +44,7 @@ export const SkillSheet = ({
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ name, level: Number(level), type: "technical" });
+    onAdd({ name, level: Number(level), type: "hard" });
     setIsOpen(false);
     setName("");
     setLevel("");
