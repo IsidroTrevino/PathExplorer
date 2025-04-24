@@ -40,10 +40,6 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/projects',
       },
       {
-        source: '/api/projects',
-        destination: 'https://pathexplorer.vercel.app/projects',
-      },
-      {
         source: '/api/projects/:project_id',
         destination: 'https://pathexplorer.vercel.app/projects/:project_id',
       },
