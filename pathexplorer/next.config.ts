@@ -16,10 +16,6 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/users',
       },
       {
-        source: '/api/users',
-        destination: 'https://pathexplorer.vercel.app/users',
-      },
-      {
         source: '/api/users/:id',
         destination: 'https://pathexplorer.vercel.app/users/:id',
       },
