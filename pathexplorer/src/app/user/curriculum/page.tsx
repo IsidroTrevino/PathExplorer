@@ -14,7 +14,7 @@ export default function CurriculumPage() {
   const [goals, setGoals] = useState<Goal[]>([]);
 
   const handleAddTechnicalSkill = (skill: Skill) =>
-    setTechnicalSkillsList((prev) => [...prev, { ...skill, type: "technical" }]);
+    setTechnicalSkillsList((prev) => [...prev, { ...skill, type: "hard" }]);
 
   const handleAddSoftSkill = (skill: Skill) =>
     setSoftSkillsList((prev) => [...prev, { ...skill, type: "soft" }]);
