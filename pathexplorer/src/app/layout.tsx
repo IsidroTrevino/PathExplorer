@@ -4,7 +4,6 @@ import './globals.css';
 import { UserProvider } from '@/features/context/userContext';
 import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
 import { Toaster } from 'sonner';
-import { ProjectProvider } from '@/features/context/projectContext';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -23,9 +22,7 @@ export default function RootLayout({
       <body className="font-helvetica antialiased" suppressHydrationWarning={true}>
         <UserProvider>
           <InactivityDetector />
-          <ProjectProvider>
-            {children}
-          </ProjectProvider>
+          {children}
           <Toaster richColors position="top-center" />
         </UserProvider>
       </body>

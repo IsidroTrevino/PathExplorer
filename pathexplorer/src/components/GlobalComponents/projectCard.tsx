@@ -1,10 +1,10 @@
-// src/components/GlobalComponents/projectCard.tsx
 'use client';
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, Users, User } from 'lucide-react';
+import { useUser } from '@/features/context/userContext';
 
 interface ProjectCardProps {
     project: {
@@ -16,13 +16,19 @@ interface ProjectCardProps {
         endDate: string;
         employees_req: number;
         createdBy?: string;
+        manager_id?: number;
     };
+    onEdit?: (project: ProjectCardProps['project']) => void;
+    onDelete?: (projectId: string) => void;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, onEdit }: ProjectCardProps) {
+  const { userDetails } = useUser();
+  const isCreator = userDetails?.id === project.manager_id;
+
   const formatDate = (dateString: string) => {
     try {
-      if (!dateString || typeof dateString !== 'string') {
+      if (!dateString) {
         return 'Date not specified';
       }
 
@@ -83,10 +89,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
                     Project ID: {project.id}
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Edit className="h-4 w-4 mr-1" />
-                        Edit
-          </Button>
+          {isCreator && onEdit && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onEdit(project)}
+            >
+              <Edit className="h-4 w-4 mr-1" />
+                            Edit
+            </Button>
+          )}
           <Button
             size="sm"
             className="bg-[#7500C0] hover:bg-[#6200a0] text-white"

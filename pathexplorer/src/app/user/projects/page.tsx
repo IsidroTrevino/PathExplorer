@@ -1,44 +1,156 @@
-// src/app/user/projects/page.tsx
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { useCreateProjectModal } from '@/features/projects/useCreateProjectModal';
 import { CreateProjectModal } from '@/features/projects/createProjectModal';
-import { useProjects } from '@/features/context/projectContext';
 import { ProjectCard } from '@/components/GlobalComponents/projectCard';
+import { ProjectFilters } from '@/components/GlobalComponents/projectFilters';
+import { Project, useGetProjects } from '@/features/projects/useGetProjects';
+import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { EditProjectModal } from '@/features/projects/editProjectModal';
+import { useDeleteProject } from '@/features/projects/useDeleteProject';
+import { toast } from 'sonner';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 export default function ProjectsPage() {
   const { isOpen, onOpen, onClose } = useCreateProjectModal();
-  const { projects } = useProjects();
+  const { deleteProject } = useDeleteProject();
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
+
+  const {
+    data: projects,
+    totalPages,
+    loading,
+    error,
+    refetch,
+  } = useGetProjects({
+    page: currentPage,
+    size: pageSize,
+    search: searchTerm,
+    alphabetical,
+    start_date: startDate,
+    end_date: endDate,
+  });
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (search: string | null) => {
+    setSearchTerm(search);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (isAlphabetical: boolean | null) => {
+    setAlphabetical(isAlphabetical);
+    setCurrentPage(1);
+  };
+
+  const handleStartDateFilter = (date: string | null) => {
+    setStartDate(date);
+    setCurrentPage(1);
+  };
+
+  const handleEndDateFilter = (date: string | null) => {
+    setEndDate(date);
+    setCurrentPage(1);
+  };
+
+  const handleEdit = (project: Project) => {
+    setProjectToEdit(project);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = async (projectId: string) => {
+    if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+      try {
+        const success = await deleteProject(projectId);
+        if (success) {
+          toast.success('Project deleted successfully');
+          await refetch();
+        } else {
+          toast.error('Failed to delete the project. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        toast.error('An unexpected error occurred.');
+      }
+    }
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm(null);
+    setAlphabetical(null);
+    setStartDate(null);
+    setEndDate(null);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-bold">
-                            Projects
-            </h1>
-            <p className="text-gray-600 mb-2">
-                            Create new projects for the company and review assigned employees.
-            </p>
-          </div>
+        <PageHeader
+          title="Projects"
+          subtitle="Create new projects for the company and review assigned employees."
+        />
+
+        <div className="flex justify-end mt-4 mb-6">
           <Button
             onClick={onOpen}
-            className="bg-[#7500C0] hover:bg-[#6200a0] text-white self-start sm:self-auto"
+            className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
           >
             <PlusCircle className="mr-2 h-5 w-5" />
-                        Create Project
+              Create Project
           </Button>
+        </div>
+
+        <div className="mb-6">
+          <ProjectFilters
+            onSearch={handleSearch}
+            onSort={handleSort}
+            onStartDate={handleStartDateFilter}
+            onEndDate={handleEndDateFilter}
+            onClearFilters={handleClearFilters}
+          />
         </div>
 
         <hr className="mb-8 border-gray-200" />
 
-        {projects.length > 0 ? (
+        {error ? (
+          <div className="bg-red-50 p-4 rounded-md text-red-700">
+            {error}
+          </div>
+        ) : loading ? (
+          <div className="space-y-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-gray-100 animate-pulse h-48 rounded-lg"></div>
+            ))}
+          </div>
+        ) : projects.length > 0 ? (
           <div className="space-y-6">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         ) : (
@@ -48,9 +160,50 @@ export default function ProjectsPage() {
             </div>
           </div>
         )}
+
+        {!loading && (totalPages ?? 1) > 1 && (
+          <div className="mt-8 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  {currentPage > 1 ? (
+                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
+                  ) : (
+                    <PaginationPrevious className="pointer-events-none opacity-50" />
+                  )}
+                </PaginationItem>
+                <PaginationItem className="flex items-center">
+                  <span className="text-sm">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  {currentPage < (totalPages ?? 1) ? (
+                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
+                  ) : (
+                    <PaginationNext className="pointer-events-none opacity-50" />
+                  )}
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
 
-      <CreateProjectModal isOpen={isOpen} onClose={onClose} />
+      <CreateProjectModal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          refetch();
+        }}
+      />
+
+      <EditProjectModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        project={projectToEdit}
+        onSuccess={refetch}
+      />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useUser } from '@/features/context/userContext';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -35,16 +34,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { useCreateProject } from './useCreateProject';
-
-const projectSchema = z.object({
-  title: z.string().min(3, { message: 'Project title must be at least 3 characters' }),
-  client: z.string().min(2, { message: 'Client name must be at least 2 characters' }),
-  startDate: z.date({ required_error: 'Start date is required' }),
-  deliveryDate: z.date({ required_error: 'Estimated delivery date is required' }),
-  necessaryEmployees: z.number().int().positive({ message: 'Number of employees must be positive' }),
-  description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
-  createdBy: z.string(),
-});
+import { projectSchema } from '@/schemas/projects/projectSchemas';
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
@@ -54,12 +44,9 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
-  const { userDetails } = useUser();
-  const [isSubmitting] = useState(false);
   const [startDateOpen, setStartDateOpen] = useState(false);
-  const [deliveryDateOpen, setDeliveryDateOpen] = useState(false);
-  const { createProject } = useCreateProject();
-
+  const [endDateOpen, setEndDateOpen] = useState(false);
+  const { createProject, isLoading } = useCreateProject();
   const today = new Date();
   const nextMonth = new Date();
   nextMonth.setMonth(today.getMonth() + 1);
@@ -67,13 +54,12 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: '',
+      projectName: '',
       client: '',
       startDate: today,
-      deliveryDate: nextMonth,
-      necessaryEmployees: 1,
+      endDate: nextMonth,
+      employees_req: 1,
       description: '',
-      createdBy: userDetails ? `${userDetails.name} ${userDetails.last_name_1} ${userDetails.last_name_2 || ''}`.trim() : '',
     },
   });
 
@@ -103,7 +89,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="title"
+              name="projectName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Project Title</FormLabel>
@@ -187,11 +173,11 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
               <FormField
                 control={form.control}
-                name="deliveryDate"
+                name="endDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Estimated Delivery Date</FormLabel>
-                    <Popover open={deliveryDateOpen} onOpenChange={setDeliveryDateOpen}>
+                    <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -203,7 +189,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
                             )}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setDeliveryDateOpen(true);
+                              setEndDateOpen(true);
                             }}
                           >
                             {field.value ? (
@@ -227,7 +213,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
                             onSelect={(date) => {
                               if (date) {
                                 field.onChange(date);
-                                setTimeout(() => setDeliveryDateOpen(false), 100);
+                                setTimeout(() => setEndDateOpen(false), 100);
                               }
                             }}
                             initialFocus
@@ -247,7 +233,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
             <FormField
               control={form.control}
-              name="necessaryEmployees"
+              name="employees_req"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Necessary Employees</FormLabel>
@@ -283,37 +269,24 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="createdBy"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Created By</FormLabel>
-                  <FormControl>
-                    <Input {...field} readOnly className="bg-gray-50 cursor-not-allowed" />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
             <DialogFooter>
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                disabled={isSubmitting}
+                disabled={isLoading}
               >
                                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
-                disabled={isSubmitting}
+                disabled={isLoading}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
+                            Creating...
                   </>
                 ) : (
                   'Create Project'
