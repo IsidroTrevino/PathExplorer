@@ -80,6 +80,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.log('Processed user details:', processedData);
 
       setUserDetails(processedData);
+      Cookies.set('userRole', processedData.role, { expires: 1 });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error fetching user details:', err);
