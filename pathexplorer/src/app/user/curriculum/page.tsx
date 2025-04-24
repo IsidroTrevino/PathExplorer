@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useGetSkills } from "./hooks/useGetSkills";
 import { usePostSkill } from "./hooks/usePostSkill";
 import { useGetGoals } from "./hooks/useGetGoals";
@@ -14,6 +14,10 @@ import { GoalSheet } from "./components/GoalSheet";
 import { Separator } from "@/components/ui/separator";
 
 export default function CurriculumPage() {
+  const [isAddingTechnicalSkill, setIsAddingTechnicalSkill] = useState(false);
+  const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
+  const [isAddingGoal, setIsAddingGoal] = useState(false);
+
   const {
     data: skills,
     loading: loadingSkills,
@@ -32,9 +36,6 @@ export default function CurriculumPage() {
 
   const { addGoal } = usePostGoal();
 
-  if (loadingSkills || loadingGoals) {
-    return <p className="p-8">Loading...</p>;
-  }
   if (errorSkills) {
     return (
       <p className="p-8 text-red-600">
@@ -50,27 +51,33 @@ export default function CurriculumPage() {
     );
   }
 
-  const technicalSkillsList = skills.filter((s: Skill) => s.type === "hard");
-  const softSkillsList = skills.filter((s: Skill) => s.type === "soft");
+  const technicalSkillsList = skills ? skills.filter((s) => s.type === "hard") : [];
+  const softSkillsList = skills ? skills.filter((s) => s.type === "soft") : [];
 
   const handleAddTechnicalSkill = async (skill: Skill) => {
+    setIsAddingTechnicalSkill(true);
     await addSkill({ name: skill.name, type: "hard", level: skill.level });
-    refetchSkills();
+    await refetchSkills();
+    setIsAddingTechnicalSkill(false);
   };
 
   const handleAddSoftSkill = async (skill: Skill) => {
+    setIsAddingSoftSkill(true);
     await addSkill({ name: skill.name, type: "soft", level: skill.level });
-    refetchSkills();
+    await refetchSkills();
+    setIsAddingSoftSkill(false);
   };
 
   const handleAddGoal = async (goal: Goal) => {
+    setIsAddingGoal(true);
     await addGoal({
       title: goal.title,
       category: goal.category,
       description: goal.description,
       term: goal.term,
     });
-    refetchGoals();
+    await refetchGoals();
+    setIsAddingGoal(false);
   };
 
   return (
@@ -103,7 +110,17 @@ export default function CurriculumPage() {
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
-            {technicalSkillsList.length > 0 ? (
+            {loadingSkills || isAddingTechnicalSkill ? (
+              Array.from({ length: isAddingTechnicalSkill ? (technicalSkillsList.length + 1) : 3 }).map((_, i) => (
+                <div key={`tech-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="bg-gray-200 h-5 rounded-md w-3/4"></div>
+                    <div className="bg-gray-200 h-5 rounded-md w-10"></div>
+                  </div>
+                  <div className="bg-gray-200 h-4 rounded-md w-1/3 mt-2"></div>
+                </div>
+              ))
+            ) : technicalSkillsList.length > 0 ? (
               technicalSkillsList.map((skill, i) => (
                 <SkillCard key={`tech-${i}`} {...skill} />
               ))
@@ -136,7 +153,17 @@ export default function CurriculumPage() {
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
-            {softSkillsList.length > 0 ? (
+            {loadingSkills || isAddingSoftSkill ? (
+              Array.from({ length: isAddingSoftSkill ? (softSkillsList.length + 1) : 3 }).map((_, i) => (
+                <div key={`soft-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="bg-gray-200 h-5 rounded-md w-3/4"></div>
+                    <div className="bg-gray-200 h-5 rounded-md w-10"></div>
+                  </div>
+                  <div className="bg-gray-200 h-4 rounded-md w-1/3 mt-2"></div>
+                </div>
+              ))
+            ) : softSkillsList.length > 0 ? (
               softSkillsList.map((skill, i) => (
                 <SkillCard key={`soft-${i}`} {...skill} />
               ))
@@ -157,7 +184,19 @@ export default function CurriculumPage() {
             <GoalSheet onAdd={handleAddGoal} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
-            {goals.length > 0 ? (
+            {loadingGoals || isAddingGoal ? (
+              Array.from({ length: isAddingGoal ? (goals?.length + 1 || 1) : 3 }).map((_, i) => (
+                <div key={`goal-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="bg-gray-200 h-5 rounded-md w-3/4"></div>
+                    <div className="bg-gray-200 h-5 rounded-md w-16"></div>
+                  </div>
+                  <div className="bg-gray-200 h-4 rounded-md w-1/2 mt-1"></div>
+                  <div className="bg-gray-200 h-4 rounded-md w-full mt-3"></div>
+                  <div className="bg-gray-200 h-4 rounded-md w-3/4 mt-1"></div>
+                </div>
+              ))
+            ) : goals && goals.length > 0 ? (
               goals.map((goal, i) => <GoalCard key={i} {...goal} />)
             ) : (
               <p className="col-span-full text-gray-400 italic">
