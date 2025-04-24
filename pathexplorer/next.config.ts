@@ -35,6 +35,14 @@ const nextConfig: NextConfig = {
         source: '/api/verify-otp',
         destination: 'https://pathexplorer.vercel.app/otp/verify-otp',
       },
+      {
+        source: '/api/projects',
+        destination: 'https://pathexplorer.vercel.app/projects',
+      },
+      {
+        source: '/api/projects/:project_id',
+        destination: 'https://pathexplorer.vercel.app/projects/:project_id',
+      },
     ];
   },
 };
