@@ -24,7 +24,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, onEdit }: ProjectCardProps) {
   const { userDetails } = useUser();
-  const isCreator = userDetails?.id === project.manager_id;
+  const isCreator = userDetails?.employee_id === project.manager_id;
 
   const formatDate = (dateString: string) => {
     try {

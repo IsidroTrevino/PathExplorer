@@ -11,6 +11,7 @@ interface UserAuthData {
 interface UserDetails {
     id: number;
     name: string;
+    employee_id: number;
     email: string;
     last_name_1: string;
     last_name_2: string;
@@ -66,6 +67,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         id: data.id,
         name: data.name || '',
         email: data.email || '',
+        employee_id: data.employee_id || 0,
         last_name_1: data.last_name_1 || '',
         last_name_2: data.last_name_2 || '',
         phone_number: data.phone_number || '',
