@@ -44,6 +44,18 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/projects/:project_id',
       },
       {
+        source: '/api/certifications/add',
+        destination: 'https://pathexplorer.vercel.app/certifications/add',
+      },
+      {
+        source: '/api/certifications/my-certifications',
+        destination: 'https://pathexplorer.vercel.app/certifications/my-certifications',
+      },
+      {
+        source: '/api/certifications/refresh-status',
+        destination: 'https://pathexplorer.vercel.app/certifications/refresh-status',
+      },
+      {
         source: '/api/skills/add',
         destination: 'https://pathexplorer.vercel.app/skills/add',
       },
