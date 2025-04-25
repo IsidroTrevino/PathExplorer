@@ -46,7 +46,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
     if (!category) newErrors.category = 'Category is required';
     if (!description) newErrors.description = 'Description is required';
     if (!term) newErrors.term = 'Term is required';
-        
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
