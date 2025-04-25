@@ -1,6 +1,6 @@
-import React from "react";
-import { Skill } from "../types/curriculum";
-import { Code } from "lucide-react";
+import React from 'react';
+import { Skill } from '../types/curriculum';
+import { Code } from 'lucide-react';
 
 export const SkillCard: React.FC<Skill> = ({ name, level }) => (
   <div className="rounded-lg border bg-white p-4 shadow-sm w-full max-w-[240px]">

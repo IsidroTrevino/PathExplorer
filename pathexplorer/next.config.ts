@@ -44,21 +44,33 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/projects/:project_id',
       },
       {
+        source: '/api/certifications/add',
+        destination: 'https://pathexplorer.vercel.app/certifications/add',
+      },
+      {
+        source: '/api/certifications/my-certifications',
+        destination: 'https://pathexplorer.vercel.app/certifications/my-certifications',
+      },
+      {
+        source: '/api/certifications/refresh-status',
+        destination: 'https://pathexplorer.vercel.app/certifications/refresh-status',
+      },
+      {
         source: '/api/skills/add',
         destination: 'https://pathexplorer.vercel.app/skills/add',
-      }, 
+      },
       {
         source: '/api/skills/my-skills',
         destination: 'https://pathexplorer.vercel.app/skills/my-skills',
-      }, 
+      },
       {
         source: '/api/goals/add',
         destination: 'https://pathexplorer.vercel.app/goals/add',
-      }, 
+      },
       {
         source: '/api/goals/my-goals',
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
-      }
+      },
     ];
   },
 };

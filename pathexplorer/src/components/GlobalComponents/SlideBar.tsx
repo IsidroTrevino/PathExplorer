@@ -77,7 +77,7 @@ export const SideBar = () => {
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'curriculum', label: 'Curriculum', icon: <HiOutlineDocumentText />, path: '/user/curriculum' },
         { key: 'path', label: 'Professional path', icon: <MdOutlineAnalytics />, path: '/user/profesional-path' },
-        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/certifications' },
       );
     }
 
@@ -86,7 +86,7 @@ export const SideBar = () => {
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
         { key: 'employees', label: 'Employees', icon: <RiTeamLine />, path: '/user/employees' },
         { key: 'projects', label: 'Projects', icon: <RiFolderOpenLine />, path: '/user/projects' },
-        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/profesional-path' },
+        { key: 'certs', label: 'Certifications', icon: <MdWorkspacePremium />, path: '/user/certifications' },
       );
     }
 
