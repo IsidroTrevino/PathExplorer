@@ -27,7 +27,7 @@ export function useGetSkills({
     setLoading(true);
     setError(null);
     try {
-      let url = `/api/skills/my-skills`;
+      let url = '/api/skills/my-skills';
       if (type) url += `?type=${encodeURIComponent(type)}`;
 
       const res = await fetch(url, {
