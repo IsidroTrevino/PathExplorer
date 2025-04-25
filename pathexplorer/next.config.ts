@@ -43,6 +43,22 @@ const nextConfig: NextConfig = {
         source: '/api/projects/:project_id',
         destination: 'https://pathexplorer.vercel.app/projects/:project_id',
       },
+      {
+        source: '/api/skills/add',
+        destination: 'https://pathexplorer.vercel.app/skills/add',
+      }, 
+      {
+        source: '/api/skills/my-skills',
+        destination: 'https://pathexplorer.vercel.app/skills/my-skills',
+      }, 
+      {
+        source: '/api/goals/add',
+        destination: 'https://pathexplorer.vercel.app/goals/add',
+      }, 
+      {
+        source: '/api/goals/my-goals',
+        destination: 'https://pathexplorer.vercel.app/goals/my-goals',
+      }
     ];
   },
 };
