@@ -12,7 +12,7 @@ import { GoalCard } from './components/GoalCard';
 import { SkillSheet } from './components/SkillSheet';
 import { GoalSheet } from './components/GoalSheet';
 import { Separator } from '@/components/ui/separator';
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 export default function CurriculumPage() {
@@ -25,12 +25,11 @@ export default function CurriculumPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const storedPdf = localStorage.getItem("curriculumPDF");
-    const storedName = localStorage.getItem("curriculumPDFName");
+    const storedPdf = localStorage.getItem('curriculumPDF');
+    const storedName = localStorage.getItem('curriculumPDFName');
     if (storedPdf) setCvPdf(storedPdf);
     if (storedName) setFileName(storedName);
   }, []);
-
 
   const {
     data: skills,
@@ -106,7 +105,6 @@ export default function CurriculumPage() {
           Here, you will see your skills, experience, and goals for your career.
         </p>
 
-
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">Load Curriculum (PDF)</h2>
           <div className="flex items-center gap-4">
@@ -120,11 +118,11 @@ export default function CurriculumPage() {
                   const reader = new FileReader();
                   reader.onloadend = () => {
                     const base64 = reader.result as string;
-                    localStorage.setItem("curriculumPDF", base64);
-                    localStorage.setItem("curriculumPDFName", file.name);
+                    localStorage.setItem('curriculumPDF', base64);
+                    localStorage.setItem('curriculumPDFName', file.name);
                     setCvPdf(base64);
                     setFileName(file.name);
-                    toast.success("Curriculum uploaded successfully.");
+                    toast.success('Curriculum uploaded successfully.');
                   };
                   reader.readAsDataURL(file);
                 }
@@ -141,8 +139,8 @@ export default function CurriculumPage() {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  localStorage.removeItem("curriculumPDF");
-                  localStorage.removeItem("curriculumPDFName");
+                  localStorage.removeItem('curriculumPDF');
+                  localStorage.removeItem('curriculumPDFName');
                   setCvPdf(null);
                   setFileName(null);
                 }}
@@ -172,8 +170,6 @@ export default function CurriculumPage() {
             </div>
           )}
         </div>
-
-
 
         <Separator className="mb-8" />
 
