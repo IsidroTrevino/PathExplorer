@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
+
 import {
   Select,
   SelectItem,
@@ -30,6 +31,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [term, setTerm] = useState<'Short' | 'Medium' | 'Large' | ''>('');
+
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
@@ -44,6 +46,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
     if (!category) newErrors.category = 'Category is required';
     if (!description) newErrors.description = 'Description is required';
     if (!term) newErrors.term = 'Term is required';
+        
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
