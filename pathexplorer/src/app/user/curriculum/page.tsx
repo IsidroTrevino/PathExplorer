@@ -12,6 +12,7 @@ import { GoalCard } from "./components/GoalCard";
 import { SkillSheet } from "./components/SkillSheet";
 import { GoalSheet } from "./components/GoalSheet";
 import { Separator } from "@/components/ui/separator";
+import { toast } from 'sonner';
 
 export default function CurriculumPage() {
   const [isAddingTechnicalSkill, setIsAddingTechnicalSkill] = useState(false);
@@ -58,6 +59,7 @@ export default function CurriculumPage() {
     setIsAddingTechnicalSkill(true);
     await addSkill({ name: skill.name, type: "hard", level: skill.level });
     await refetchSkills();
+    toast.success("New skill added successfully to your profile.");
     setIsAddingTechnicalSkill(false);
   };
 
@@ -65,6 +67,7 @@ export default function CurriculumPage() {
     setIsAddingSoftSkill(true);
     await addSkill({ name: skill.name, type: "soft", level: skill.level });
     await refetchSkills();
+    toast.success("New skill added successfully to your profile.");
     setIsAddingSoftSkill(false);
   };
 
@@ -77,6 +80,7 @@ export default function CurriculumPage() {
       term: goal.term,
     });
     await refetchGoals();
+    toast.success("New goal added successfully to your profile.");
     setIsAddingGoal(false);
   };
 
@@ -109,7 +113,7 @@ export default function CurriculumPage() {
               title="Add Technical Skill"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 min-h-[120px]">
             {loadingSkills || isAddingTechnicalSkill ? (
               Array.from({ length: isAddingTechnicalSkill ? (technicalSkillsList.length + 1) : 3 }).map((_, i) => (
                 <div key={`tech-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">
@@ -152,7 +156,7 @@ export default function CurriculumPage() {
               title="Add Soft Skill"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 min-h-[120px]">
             {loadingSkills || isAddingSoftSkill ? (
               Array.from({ length: isAddingSoftSkill ? (softSkillsList.length + 1) : 3 }).map((_, i) => (
                 <div key={`soft-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">
@@ -183,7 +187,7 @@ export default function CurriculumPage() {
             <h2 className="text-xl font-semibold">Goals</h2>
             <GoalSheet onAdd={handleAddGoal} />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[120px]">
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2 min-h-[120px]">
             {loadingGoals || isAddingGoal ? (
               Array.from({ length: isAddingGoal ? (goals?.length + 1 || 1) : 3 }).map((_, i) => (
                 <div key={`goal-skeleton-${i}`} className="border rounded-lg p-4 animate-pulse">

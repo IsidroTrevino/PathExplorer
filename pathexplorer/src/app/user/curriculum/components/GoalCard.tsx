@@ -8,7 +8,7 @@ const termColors = {
 };
 
 export const GoalCard: React.FC<Goal> = ({ title, category, description, term }) => (
-  <div className="min-w-[250px] rounded-lg border bg-white p-4 shadow-sm mr-4">
+  <div className="min-w-[250px] w-full max-w-[280px] rounded-lg border bg-white p-4 shadow-sm mr-4">
     <p className="text-xs font-medium flex items-center mb-1">
       <span className={`w-2 h-2 rounded-full mr-2 ${termColors[term]}`} />
       Goal term: {term}
