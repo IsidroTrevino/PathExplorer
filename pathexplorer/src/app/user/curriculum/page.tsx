@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useGetSkills } from "./hooks/useGetSkills";
 import { usePostSkill } from "./hooks/usePostSkill";
 import { useGetGoals } from "./hooks/useGetGoals";
@@ -12,12 +12,26 @@ import { GoalCard } from "./components/GoalCard";
 import { SkillSheet } from "./components/SkillSheet";
 import { GoalSheet } from "./components/GoalSheet";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+
 import { toast } from 'sonner';
 
 export default function CurriculumPage() {
   const [isAddingTechnicalSkill, setIsAddingTechnicalSkill] = useState(false);
   const [isAddingSoftSkill, setIsAddingSoftSkill] = useState(false);
   const [isAddingGoal, setIsAddingGoal] = useState(false);
+
+  const [cvPdf, setCvPdf] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const storedPdf = localStorage.getItem("curriculumPDF");
+    const storedName = localStorage.getItem("curriculumPDFName");
+    if (storedPdf) setCvPdf(storedPdf);
+    if (storedName) setFileName(storedName);
+  }, []);
+
 
   const {
     data: skills,
@@ -92,6 +106,76 @@ export default function CurriculumPage() {
         <p className="text-gray-600 mb-4">
           Here, you will see your skills, experience, and goals for your career.
         </p>
+
+
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">Load Curriculum (PDF)</h2>
+          <div className="flex items-center gap-4">
+            <input
+              type="file"
+              accept="application/pdf"
+              ref={inputRef}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    const base64 = reader.result as string;
+                    localStorage.setItem("curriculumPDF", base64);
+                    localStorage.setItem("curriculumPDFName", file.name);
+                    setCvPdf(base64);
+                    setFileName(file.name);
+                    toast.success("Curriculum uploaded successfully.");
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+              className="hidden"
+            />
+            <Button
+              className="bg-purple-600 text-white"
+              onClick={() => inputRef.current?.click()}
+            >
+              Upload
+            </Button>
+            {cvPdf && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  localStorage.removeItem("curriculumPDF");
+                  localStorage.removeItem("curriculumPDFName");
+                  setCvPdf(null);
+                  setFileName(null);
+                }}
+                className="text-red-600 hover:text-red-800"
+              >
+                Remove Curriculum
+              </Button>
+            )}
+          </div>
+
+          {fileName && (
+            <p className="text-sm text-gray-500 mt-2">
+              Selected file: <strong>{fileName}</strong>
+            </p>
+          )}
+
+          {cvPdf && (
+            <div className="border rounded p-4 bg-gray-50 mt-4">
+              <h3 className="text-md font-medium mb-2">Preview:</h3>
+              <iframe
+                src={cvPdf}
+                title="Curriculum PDF"
+                width="100%"
+                height="500px"
+                className="border rounded"
+              />
+            </div>
+          )}
+        </div>
+
+
+
         <Separator className="mb-8" />
 
         {/* Technical skills */}
