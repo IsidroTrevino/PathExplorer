@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useGetSkills } from "./hooks/useGetSkills";
-import { usePostSkill } from "./hooks/usePostSkill";
-import { useGetGoals } from "./hooks/useGetGoals";
-import { usePostGoal } from "./hooks/usePostGoal";
-import { Skill, Goal } from "./types/curriculum";
+import React, { useState } from 'react';
+import { useGetSkills } from './hooks/useGetSkills';
+import { usePostSkill } from './hooks/usePostSkill';
+import { useGetGoals } from './hooks/useGetGoals';
+import { usePostGoal } from './hooks/usePostGoal';
+import { Skill, Goal } from './types/curriculum';
 
-import { SkillCard } from "./components/SkillCard";
-import { GoalCard } from "./components/GoalCard";
-import { SkillSheet } from "./components/SkillSheet";
-import { GoalSheet } from "./components/GoalSheet";
-import { Separator } from "@/components/ui/separator";
+import { SkillCard } from './components/SkillCard';
+import { GoalCard } from './components/GoalCard';
+import { SkillSheet } from './components/SkillSheet';
+import { GoalSheet } from './components/GoalSheet';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 
 export default function CurriculumPage() {
@@ -52,22 +52,22 @@ export default function CurriculumPage() {
     );
   }
 
-  const technicalSkillsList = skills ? skills.filter((s) => s.type === "hard") : [];
-  const softSkillsList = skills ? skills.filter((s) => s.type === "soft") : [];
+  const technicalSkillsList = skills ? skills.filter((s) => s.type === 'hard') : [];
+  const softSkillsList = skills ? skills.filter((s) => s.type === 'soft') : [];
 
   const handleAddTechnicalSkill = async (skill: Skill) => {
     setIsAddingTechnicalSkill(true);
-    await addSkill({ name: skill.name, type: "hard", level: skill.level });
+    await addSkill({ name: skill.name, type: 'hard', level: skill.level });
     await refetchSkills();
-    toast.success("New skill added successfully to your profile.");
+    toast.success('New skill added successfully to your profile.');
     setIsAddingTechnicalSkill(false);
   };
 
   const handleAddSoftSkill = async (skill: Skill) => {
     setIsAddingSoftSkill(true);
-    await addSkill({ name: skill.name, type: "soft", level: skill.level });
+    await addSkill({ name: skill.name, type: 'soft', level: skill.level });
     await refetchSkills();
-    toast.success("New skill added successfully to your profile.");
+    toast.success('New skill added successfully to your profile.');
     setIsAddingSoftSkill(false);
   };
 
@@ -80,7 +80,7 @@ export default function CurriculumPage() {
       term: goal.term,
     });
     await refetchGoals();
-    toast.success("New goal added successfully to your profile.");
+    toast.success('New goal added successfully to your profile.');
     setIsAddingGoal(false);
   };
 
@@ -101,14 +101,14 @@ export default function CurriculumPage() {
             <SkillSheet
               onAdd={handleAddTechnicalSkill}
               skillOptions={[
-                "Frontend Developer",
-                "Backend Developer",
-                "Fullstack Developer",
-                "DevOps Engineer",
-                "UI/UX Designer",
-                "Data Scientist",
-                "Mobile Developer",
-                "QA Engineer",
+                'Frontend Developer',
+                'Backend Developer',
+                'Fullstack Developer',
+                'DevOps Engineer',
+                'UI/UX Designer',
+                'Data Scientist',
+                'Mobile Developer',
+                'QA Engineer',
               ]}
               title="Add Technical Skill"
             />
@@ -145,13 +145,13 @@ export default function CurriculumPage() {
             <SkillSheet
               onAdd={handleAddSoftSkill}
               skillOptions={[
-                "Communication",
-                "Teamwork",
-                "Problem Solving",
-                "Adaptability",
-                "Time Management",
-                "Leadership",
-                "Creativity",
+                'Communication',
+                'Teamwork',
+                'Problem Solving',
+                'Adaptability',
+                'Time Management',
+                'Leadership',
+                'Creativity',
               ]}
               title="Add Soft Skill"
             />

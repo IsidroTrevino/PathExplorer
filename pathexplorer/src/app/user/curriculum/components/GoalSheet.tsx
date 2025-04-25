@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
 import {
   Select,
   SelectItem,
   SelectTrigger,
   SelectValue,
   SelectContent,
-} from "@/components/ui/select";
-import { Goal } from "../types/curriculum";
-import { DialogTitle } from "@/components/ui/dialog";
-import clsx from "clsx";
+} from '@/components/ui/select';
+import { Goal } from '../types/curriculum';
+import { DialogTitle } from '@/components/ui/dialog';
+import clsx from 'clsx';
 
 const categoryOptions = [
-  "Professional Development",
-  "Education",
-  "Health",
-  "Finance",
-  "Personal Growth",
-  "Community",
+  'Professional Development',
+  'Education',
+  'Health',
+  'Finance',
+  'Personal Growth',
+  'Community',
 ];
 
 export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [term, setTerm] = useState<"Short" | "Medium" | "Large" | "">("");
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [term, setTerm] = useState<'Short' | 'Medium' | 'Large' | ''>('');
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
@@ -40,21 +40,21 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
 
   const validate = () => {
     const newErrors: typeof errors = {};
-    if (!title) newErrors.title = "Title is required";
-    if (!category) newErrors.category = "Category is required";
-    if (!description) newErrors.description = "Description is required";
-    if (!term) newErrors.term = "Term is required";
+    if (!title) newErrors.title = 'Title is required';
+    if (!category) newErrors.category = 'Category is required';
+    if (!description) newErrors.description = 'Description is required';
+    if (!term) newErrors.term = 'Term is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ title, category, description, term: term as "Short" | "Medium" | "Large" });
-    setTitle("");
-    setCategory("");
-    setDescription("");
-    setTerm("Short");
+    onAdd({ title, category, description, term: term as 'Short' | 'Medium' | 'Large' });
+    setTitle('');
+    setCategory('');
+    setDescription('');
+    setTerm('Short');
     setErrors({});
     setIsOpen(false);
   };
@@ -76,7 +76,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
                 setTitle(e.target.value);
                 setErrors((e) => ({ ...e, title: undefined }));
               }}
-              className={clsx(errors.title && "border-red-500")}
+              className={clsx(errors.title && 'border-red-500')}
             />
             {errors.title && (
               <p className="text-sm text-red-500">{errors.title}</p>
@@ -88,7 +88,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
               setCategory(value);
               setErrors((e) => ({ ...e, category: undefined }));
             }}>
-              <SelectTrigger className={clsx("w-full", errors.category && "border-red-500")}>
+              <SelectTrigger className={clsx('w-full', errors.category && 'border-red-500')}>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -112,7 +112,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
                 setDescription(e.target.value);
                 setErrors((e) => ({ ...e, description: undefined }));
               }}
-              className={clsx(errors.description && "border-red-500")}
+              className={clsx(errors.description && 'border-red-500')}
             />
             {errors.description && (
               <p className="text-sm text-red-500">{errors.description}</p>
@@ -121,10 +121,10 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
 
           <div className="space-y-1">
             <Select value={term} onValueChange={(value) => {
-              setTerm(value as "Short" | "Medium" | "Large");
+              setTerm(value as 'Short' | 'Medium' | 'Large');
               setErrors((e) => ({ ...e, term: undefined }));
             }}>
-              <SelectTrigger className={clsx("w-full", errors.term && "border-red-500")}>
+              <SelectTrigger className={clsx('w-full', errors.term && 'border-red-500')}>
                 <SelectValue placeholder="Select term" />
               </SelectTrigger>
               <SelectContent>

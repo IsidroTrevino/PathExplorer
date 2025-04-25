@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { DialogTitle } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
-import { Skill } from "../types/curriculum";
-import clsx from "clsx";
-
+} from '@/components/ui/select';
+import { useState } from 'react';
+import { Skill } from '../types/curriculum';
+import clsx from 'clsx';
 
 type SkillSheetProps = {
   onAdd: (skill: Skill) => void;
@@ -25,19 +24,19 @@ type SkillSheetProps = {
 export const SkillSheet = ({
   onAdd,
   skillOptions,
-  title = "Agregar Skill",
+  title = 'Agregar Skill',
 }: SkillSheetProps) => {
-  const [name, setName] = useState("");
-  const [level, setLevel] = useState("");
+  const [name, setName] = useState('');
+  const [level, setLevel] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; level?: string }>({});
 
   const validate = () => {
     const newErrors: typeof errors = {};
-    if (!name) newErrors.name = "Skill is required";
+    if (!name) newErrors.name = 'Skill is required';
     const numLevel = Number(level);
     if (!level || isNaN(numLevel) || numLevel < 1 || numLevel > 100) {
-      newErrors.level = "Level must be between 1 and 100";
+      newErrors.level = 'Level must be between 1 and 100';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -45,10 +44,10 @@ export const SkillSheet = ({
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ name, level: Number(level), type: "hard" });
+    onAdd({ name, level: Number(level), type: 'hard' });
     setIsOpen(false);
-    setName("");
-    setLevel("");
+    setName('');
+    setLevel('');
     setErrors({});
   };
 
@@ -70,7 +69,7 @@ export const SkillSheet = ({
               }}
             >
               <SelectTrigger
-                className={clsx("w-full", errors.name && "border-red-500")}
+                className={clsx('w-full', errors.name && 'border-red-500')}
               >
                 <SelectValue placeholder="Select a skill" />
               </SelectTrigger>
@@ -98,7 +97,7 @@ export const SkillSheet = ({
                 setLevel(e.target.value);
                 setErrors((e) => ({ ...e, level: undefined }));
               }}
-              className={clsx(errors.level && "border-red-500")}
+              className={clsx(errors.level && 'border-red-500')}
             />
             {errors.level && (
               <p className="text-sm text-red-500">{errors.level}</p>

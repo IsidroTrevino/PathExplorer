@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
       {
         source: '/api/goals/my-goals',
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
-      }
+      },
       {
         source: '/api/certifications/add',
         destination: 'https://pathexplorer.vercel.app/certifications/add',
