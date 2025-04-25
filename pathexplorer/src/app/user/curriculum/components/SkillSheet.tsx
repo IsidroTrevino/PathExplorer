@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Skill } from "../types/curriculum";
 import clsx from "clsx";
 
+
 type SkillSheetProps = {
   onAdd: (skill: Skill) => void;
   skillOptions: string[];
