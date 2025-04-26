@@ -3,15 +3,19 @@ import { format } from 'date-fns';
 
 interface CertificationCardProps {
   certification: Certification;
+  onClick: (certification: Certification) => void;
 }
 
-export function CertificationCard({ certification }: CertificationCardProps) {
+export function CertificationCard({ certification, onClick }: CertificationCardProps) {
   const isExpired = certification.status === 'expired';
   const certDate = format(new Date(certification.certification_date), 'MMM d, yyyy');
   const expDate = format(new Date(certification.expiration_date), 'MMM d, yyyy');
 
   return (
-    <div className="p-4 border-b border-gray-300 hover:bg-gray-100 transition-colors">
+    <div
+      className="p-5 border-b border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer"
+      onClick={() => onClick(certification)}
+    >
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center gap-3">
@@ -38,7 +42,7 @@ export function CertificationCard({ certification }: CertificationCardProps) {
         </div>
       </div>
 
-      <div className="flex gap-6 mt-3 text-xs text-gray-500 border-t border-gray-100 pt-2">
+      <div className="flex gap-6 mt-3 text-xs text-gray-500 border-t border-gray-200 pt-2">
         <div className="flex items-center">
           <span className="font-medium mr-1">Certified:</span> {certDate}
         </div>

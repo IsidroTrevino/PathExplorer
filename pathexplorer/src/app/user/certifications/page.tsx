@@ -9,9 +9,17 @@ import { useGetCertifications } from '@/features/certifications/useGetCertificat
 import { CertificationCard } from '@/features/certifications/certificationCard';
 import { ExpiringCertificationsScroll } from '@/features/certifications/expiringCertificationsScroll';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useUpdateCertificateModal } from '@/features/certifications/useUpdateCertificationModal';
+import { UpdateCertificateModal } from '@/features/certifications/updateCertificateModal';
 
 export default function CertificationsPage() {
   const { isOpen, onOpen, onClose } = useCreateCertificateModal();
+  const {
+    isOpen: isUpdateOpen,
+    selectedCertification,
+    onOpen: onUpdateOpen,
+    onClose: onUpdateClose,
+  } = useUpdateCertificateModal();
   const { certifications, loading, error, refetch } = useGetCertifications();
 
   return (
@@ -59,7 +67,11 @@ export default function CertificationsPage() {
               </div>
             ) : (
               certifications.map(certification => (
-                <CertificationCard key={certification.certification_id} certification={certification} />
+                <CertificationCard
+                  key={certification.certification_id}
+                  certification={certification}
+                  onClick={onUpdateOpen}
+                />
               ))
             )}
           </div>
@@ -73,6 +85,15 @@ export default function CertificationsPage() {
             onClose();
             refetch();
           }}
+        />
+
+        <UpdateCertificateModal
+          isOpen={isUpdateOpen}
+          onClose={() => {
+            onUpdateClose();
+            refetch();
+          }}
+          certification={selectedCertification}
         />
       </div>
     </div>
