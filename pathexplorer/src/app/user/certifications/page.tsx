@@ -2,11 +2,12 @@
 
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { CreateCertificateModal } from '@/features/certifications/createCertificateModal';
 import { useCreateCertificateModal } from '@/features/certifications/useCreateCertificateModal';
 import { useGetCertifications } from '@/features/certifications/useGetCertifications';
 import { CertificationCard } from '@/features/certifications/certificationCard';
+import { ExpiringCertificationsScroll } from '@/features/certifications/expiringCertificationsScroll';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CertificationsPage() {
@@ -63,6 +64,8 @@ export default function CertificationsPage() {
             )}
           </div>
         </div>
+
+        <ExpiringCertificationsScroll />
 
         <CreateCertificateModal
           isOpen={isOpen}
