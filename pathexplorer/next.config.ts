@@ -71,6 +71,10 @@ const nextConfig: NextConfig = {
         source: '/api/goals/my-goals',
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
       },
+      {
+        source: '/api/certifications/expiring',
+        destination: 'https://pathexplorer.vercel.app/certifications/expiring',
+      },
     ];
   },
 };
