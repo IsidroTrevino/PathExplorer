@@ -75,6 +75,10 @@ const nextConfig: NextConfig = {
         source: '/api/certifications/expiring',
         destination: 'https://pathexplorer.vercel.app/certifications/expiring',
       },
+      {
+        source: '/api/certifications/update/:id',
+        destination: 'https://pathexplorer.vercel.app/certifications/update/:id',
+      },
     ];
   },
 };
