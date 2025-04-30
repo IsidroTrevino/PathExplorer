@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
+import { UserProvider } from '@/features/context/userContext';
+import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: 'PathExplorer',
@@ -12,12 +15,16 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className="font-helvetica antialiased">
-        {children}
+      <body className="font-helvetica antialiased" suppressHydrationWarning={true}>
+        <UserProvider>
+          <InactivityDetector />
+          {children}
+          <Toaster richColors position="top-center" />
+        </UserProvider>
       </body>
     </html>
   );
