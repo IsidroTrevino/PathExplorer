@@ -29,11 +29,11 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/send-otp',
-        destination: 'https://pathexplorer.vercel.app/otp/send-otp',
+        destination: 'https://pathexplorer.vercel.app/otp/send',
       },
       {
         source: '/api/verify-otp',
-        destination: 'https://pathexplorer.vercel.app/otp/verify-otp',
+        destination: 'https://pathexplorer.vercel.app/otp/verify',
       },
       {
         source: '/api/projects',
