@@ -67,7 +67,7 @@ export function CreateCertificateModal({ isOpen, onClose }: CreateCertificateMod
         certification_date: '',
         expiration_date: '',
       });
-    } catch (err) {
+    } catch {
       // Error is handled in the hook
     }
   };
