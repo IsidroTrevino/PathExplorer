@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 import { format } from 'date-fns';
 
 interface UpdateCertificationData {
-    name: string;
-    type: string;
-    description: string;
-    certification_date: Date | undefined;
-    expiration_date: Date | undefined;
+  name: string;
+  type: string;
+  description: string;
+  certification_date: Date | undefined;
+  expiration_date: Date | undefined;
 }
 
 export function useUpdateCertification() {
@@ -15,7 +15,7 @@ export function useUpdateCertification() {
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const updateCertification = async (
+  const updateCertification = useCallback(async (
     certificationId: number,
     data: UpdateCertificationData,
   ) => {
@@ -49,7 +49,7 @@ export function useUpdateCertification() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userAuth]);
 
   return {
     updateCertification,

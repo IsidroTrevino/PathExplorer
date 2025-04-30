@@ -28,14 +28,13 @@ export function UpdateCertificateModal({ isOpen, onClose, certification }: Updat
     certification_date: Date | undefined;
     expiration_date: Date | undefined;
   }>({
-    name: certification?.name || '',
-    type: certification?.type || '',
-    description: certification?.description || '',
-    certification_date: certification?.certification_date ? new Date(certification.certification_date) : undefined,
-    expiration_date: certification?.expiration_date ? new Date(certification.expiration_date) : undefined,
+    name: '',
+    type: '',
+    description: '',
+    certification_date: undefined,
+    expiration_date: undefined,
   });
 
-  // Update form data when certification changes
   useEffect(() => {
     if (certification) {
       setFormData({

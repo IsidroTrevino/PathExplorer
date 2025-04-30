@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 
 interface APIEmployeeResponse {
@@ -49,6 +49,7 @@ interface EmployeesResponse {
     totalItems: number;
     loading: boolean;
     error: string | null;
+    refetch: () => Promise<void>;
 }
 
 const DUMMY_PROJECTS = ['PathExplorer', 'Client Portal', 'Internal Tools', 'Data Analytics', 'Mobile App', 'None'];
@@ -68,79 +69,81 @@ export function useGetEmployees({
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchEmployees = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        let url = `/api/users?page=${page}&size=${size}`;
+    try {
+      let url = `/api/users?page=${page}&size=${size}`;
 
-        if (role) {
-          url += `&role=${role}`;
-        }
-
-        if (alphabetical !== null) {
-          url += `&alphabetical=${alphabetical}`;
-        }
-
-        if (search) {
-          url += `&search=${encodeURIComponent(search)}`;
-        }
-
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userAuth?.accessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch employees: ${response.status} ${response.statusText}`);
-        }
-
-        const apiData: APIEmployeeResponse = await response.json();
-
-        const enhancedData: Employee[] = apiData.items.map((emp, index) => {
-          const assignedProject = Math.random() < 0.2
-            ? 'None'
-            : DUMMY_PROJECTS[Math.floor(Math.random() * (DUMMY_PROJECTS.length - 1))];
-
-          const status = assignedProject === 'None' ? 'Staff' : 'Assigned';
-
-          const assignmentPercentage = assignedProject === 'None'
-            ? 0
-            : Math.floor(Math.random() * 51) + 50;
-
-          return {
-            id: index + 1,
-            name: emp.name,
-            last_name_1: emp.last_name_1,
-            position: emp.position,
-            role: emp.role,
-            assigned_project: assignedProject,
-            status,
-            assignment_percentage: assignmentPercentage,
-          };
-        });
-
-        setData(enhancedData);
-        setTotalPages(apiData.pages);
-        setCurrentPage(apiData.page);
-        setTotalItems(apiData.total);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error('Error fetching employees:', err);
-      } finally {
-        setLoading(false);
+      if (role) {
+        url += `&role=${role}`;
       }
-    };
 
-    fetchEmployees().catch(err => {
-      console.error('Unhandled promise rejection:', err);
-    });
+      if (alphabetical !== null) {
+        url += `&alphabetical=${alphabetical}`;
+      }
+
+      if (search) {
+        url += `&search=${encodeURIComponent(search)}`;
+      }
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userAuth?.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch employees: ${response.status} ${response.statusText}`);
+      }
+
+      const apiData: APIEmployeeResponse = await response.json();
+
+      const enhancedData: Employee[] = apiData.items.map((emp, index) => {
+        const assignedProject = Math.random() < 0.2
+          ? 'None'
+          : DUMMY_PROJECTS[Math.floor(Math.random() * (DUMMY_PROJECTS.length - 1))];
+
+        const status = assignedProject === 'None' ? 'Staff' : 'Assigned';
+
+        const assignmentPercentage = assignedProject === 'None'
+          ? 0
+          : Math.floor(Math.random() * 51) + 50;
+
+        return {
+          id: index + 1,
+          name: emp.name,
+          last_name_1: emp.last_name_1,
+          position: emp.position,
+          role: emp.role,
+          assigned_project: assignedProject,
+          status,
+          assignment_percentage: assignmentPercentage,
+        };
+      });
+
+      setData(enhancedData);
+      setTotalPages(apiData.pages);
+      setCurrentPage(apiData.page);
+      setTotalItems(apiData.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      console.error('Error fetching employees:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [page, size, role, alphabetical, search, userAuth]);
+
+  useEffect(() => {
+    if (userAuth?.accessToken) {
+      fetchEmployees().catch(err => {
+        console.error('Unhandled promise rejection:', err);
+      });
+    }
+  }, [fetchEmployees, userAuth]);
 
   return {
     data,
@@ -149,5 +152,6 @@ export function useGetEmployees({
     totalItems,
     loading,
     error,
+    refetch: fetchEmployees,
   };
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 
 export interface Certification {
@@ -17,12 +17,11 @@ export function useGetCertifications() {
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const fetchCertifications = async () => {
+  const fetchCertifications = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // First refresh the certification statuses
       const refreshResponse = await fetch('/api/certifications/refresh-status', {
         method: 'POST',
         headers: {
@@ -34,7 +33,6 @@ export function useGetCertifications() {
         console.warn('Failed to refresh certification statuses');
       }
 
-      // Then fetch the certifications
       const response = await fetch('/api/certifications/my-certifications', {
         method: 'GET',
         headers: {
@@ -53,11 +51,13 @@ export function useGetCertifications() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userAuth]);
 
   useEffect(() => {
-    fetchCertifications();
-  }, [userAuth?.accessToken]);
+    if (userAuth?.accessToken) {
+      fetchCertifications();
+    }
+  }, [fetchCertifications, userAuth]);
 
   return {
     certifications,
