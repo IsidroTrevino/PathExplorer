@@ -11,10 +11,16 @@ interface UserAuthData {
 interface UserDetails {
     id: number;
     name: string;
+    employee_id: number;
     email: string;
+    last_name_1: string;
+    last_name_2: string;
+    phone_number: string;
+    location: string;
+    capability: string;
     position: string;
     seniority: number;
-    rol: string;
+    role: string;
 }
 
 interface UserContextType {
@@ -45,64 +51,73 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const response = await fetch('/api/my-info', {
+        method: 'GET',
         headers: {
-          'accept': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        setError('Failed to fetch user details');
-        return;
+        throw new Error('Failed to fetch user details');
       }
 
-      const userData = await response.json();
-      setUserDetails(userData);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Error fetching user details';
-      setError(errorMessage);
+      const data = await response.json();
+
+      const processedData: UserDetails = {
+        id: data.id,
+        name: data.name || '',
+        email: data.email || '',
+        employee_id: data.employee_id || 0,
+        last_name_1: data.last_name_1 || '',
+        last_name_2: data.last_name_2 || '',
+        phone_number: data.phone_number || '',
+        location: data.location || '',
+        capability: data.capability || '',
+        position: data.position || '',
+        seniority: typeof data.seniority === 'number' ? data.seniority : 0,
+        role: data.role || '',
+      };
+
+      console.log('User details received:', data);
+      console.log('Processed user details:', processedData);
+
+      setUserDetails(processedData);
+      Cookies.set('userRole', processedData.role, { expires: 1 });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error fetching user details:', err);
     } finally {
       setIsLoading(false);
+      setIsInitializing(false);
     }
   }, []);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const savedAuth = localStorage.getItem('userAuth');
-        if (savedAuth) {
-          const parsedAuth = JSON.parse(savedAuth);
-          setUserAuth(parsedAuth);
-          await fetchUserDetails(parsedAuth.accessToken);
-        }
-      } catch (err) {
-        console.error('Error initializing auth:', err);
-      } finally {
-        setTimeout(() => setIsInitializing(false), 0);
-      }
-    };
+    const storedAuth = Cookies.get('userAuthToken');
 
-    initializeAuth();
+    if (storedAuth) {
+      try {
+        const parsedAuth = JSON.parse(storedAuth);
+        setUserAuth(parsedAuth);
+        fetchUserDetails(parsedAuth.accessToken);
+      } catch (err) {
+        console.error('Error parsing stored auth:', err);
+        Cookies.remove('userAuthToken');
+        setIsInitializing(false);
+      }
+    } else {
+      setIsInitializing(false);
+    }
   }, [fetchUserDetails]);
 
   const setUserAuthData = useCallback((data: UserAuthData) => {
     setUserAuth(data);
-    localStorage.setItem('userAuth', JSON.stringify(data));
-
-    Cookies.set('userAuthToken', data.accessToken, {
-      expires: 7,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
-
-    // Llamamos a fetchUserDetails automáticamente al establecer la autenticación
-    fetchUserDetails(data.accessToken);
-  }, [fetchUserDetails]);
+    Cookies.set('userAuthToken', JSON.stringify(data), { expires: 1 });
+  }, []);
 
   const logout = useCallback(() => {
     setUserAuth(null);
     setUserDetails(null);
-    localStorage.removeItem('userAuth');
     Cookies.remove('userAuthToken');
   }, []);
 

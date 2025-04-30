@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SignUpStepOneData, SignUpStepTwoData, signUpStepTwoSchema } from '@/schemas/auth/signUpSchema';
 import { useRegister } from '@/features/auth/register/useRegister';
@@ -28,6 +29,37 @@ const positions = [
   'Analyst (Level 11)',
   'Associate (Level 12)',
   'New Associate or Assistant (Level 13)',
+];
+
+const capabilities = [
+  'DevOps',
+  'Experience Design',
+  'Business Analysis',
+  'Data & Analytics',
+  'MS Business Apps',
+  'Cloud',
+  'MS Platform',
+  'Program Project Management',
+  'Workday',
+  'Quality Engineering',
+  'SAP',
+  'MS Cloud Security',
+  'MS Data & Augmented insights',
+  'Capital Markets Processes',
+  'Hostcentric Platform',
+  'Industry Portfolio Delivery',
+  'Solutions',
+  'ServiceNow',
+  'Content & Commerce Management',
+  'P&PES',
+  'Back End Engineering',
+  'IO',
+  'Security',
+  'Security- Mnemo',
+  'Oracle',
+  'Mobility Services',
+  'Agile',
+  'Front End Engineering',
 ];
 
 export default function AdditionalInfoPage() {
@@ -52,6 +84,9 @@ export default function AdditionalInfoPage() {
     defaultValues: {
       seniority: '',
       position: '',
+      location: '',
+      capability: '',
+      role: 'Developer',
     },
   });
 
@@ -65,6 +100,7 @@ export default function AdditionalInfoPage() {
       const completeData = {
         ...stepOneData,
         ...values,
+        role: 'Developer',
       };
 
       const response = await register(completeData);
@@ -73,7 +109,7 @@ export default function AdditionalInfoPage() {
         localStorage.removeItem('signUpStepOne');
         router.push('/user/basic-info');
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(response?.message || 'Something went wrong. Please try again.');
       }
     } catch {
       setError('An unexpected error occurred. Please try again.');
@@ -87,26 +123,26 @@ export default function AdditionalInfoPage() {
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-white overflow-hidden">
       <div className="absolute bottom-0 left-0 w-full h-80 bg-gradient-to-t from-purple-200 via-white to-transparent pointer-events-none z-0" />
-      <div className="z-10 w-full max-w-sm px-6 flex flex-col items-center space-y-10">
+      <div className="z-10 w-full max-w-xl px-6 flex flex-col items-center space-y-6">
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4">
+          <div className="mb-1">
             <Image
               src={'/accenture/Acc_Logo_Black_Purple_RGB.png'}
               alt={'accenture logo'}
-              width={263}
-              height={69}
+              width={200}
+              height={52}
             />
           </div>
-          <p className="text-black text-lg font-semibold pt-4">
-              Just some more information...
+          <p className="text-black text-lg font-semibold pt-1">
+              Professional Information
           </p>
           <p className="text-gray-600 text-sm">
-              Tell us about your role and experience.
+              Tell us about your experience as a Developer.
           </p>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col space-y-4">
             {error && (
               <Alert variant="destructive" className="border-red-500">
                 <AlertCircle className="h-4 w-4" />
@@ -116,32 +152,100 @@ export default function AdditionalInfoPage() {
               </Alert>
             )}
 
-            <div className="flex flex-col space-y-3">
+            <div>
+              <h2 className="text-xl font-medium mb-2">Location</h2>
+              <Separator className="mb-3" />
               <FormField
                 control={form.control}
-                name="seniority"
+                name="location"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Years of Experience</FormLabel>
+                  <FormItem className="relative pb-5">
+                    <FormLabel>Where are you located?</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        placeholder="Years of experience"
+                        placeholder="City, Country (e.g., Monterrey, MX)"
                         disabled={isSubmitting}
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="absolute bottom-0 left-0">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
+            </div>
 
+            <div className="pt-1">
+              <h2 className="text-xl font-medium mb-2">Professional Information</h2>
+              <Separator className="mb-3" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="capability"
+                  render={({ field }) => (
+                    <FormItem className="relative pb-5">
+                      <FormLabel>Capability</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isSubmitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select capability" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {capabilities.map((capability) => (
+                            <SelectItem key={capability} value={capability}>
+                              {capability}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="seniority"
+                  render={({ field }) => (
+                    <FormItem className="relative pb-5">
+                      <FormLabel>Years of Experience</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Enter years of experience"
+                          disabled={isSubmitting}
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value ? value : '0');
+                          }}
+                        />
+                      </FormControl>
+                      <div className="absolute bottom-0 left-0">
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <h2 className="text-xl font-medium mb-2">Current Position</h2>
+              <Separator className="mb-3" />
               <FormField
                 control={form.control}
                 name="position"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Role</FormLabel>
+                  <FormItem className="relative pb-5">
+                    <FormLabel>Select your current level at Accenture</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -149,7 +253,7 @@ export default function AdditionalInfoPage() {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select your role" />
+                          <SelectValue placeholder="Select your position" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -160,13 +264,23 @@ export default function AdditionalInfoPage() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <div className="absolute bottom-0 left-0">
+                      <FormMessage />
+                    </div>
                   </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <input type="hidden" {...field} value="Developer" />
                 )}
               />
             </div>
 
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-3 pt-4">
               <Button
                 className="w-full bg-gradient-to-br from-[#A001FE] via-violet-600 to-gray-800 hover:opacity-95 cursor-pointer"
                 type="submit"

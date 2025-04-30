@@ -2,3 +2,10 @@ fastapi
 sqlalchemy
 uvicorn
 psycopg2-binary
+bcrypt
+python-jose
+pydantic_settings
+fastapi.security
+datetime
+python-multipart
+fastapi-pagination
