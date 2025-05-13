@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 import { Goal } from '../types/curriculum';
 
@@ -17,7 +17,7 @@ export function useGetGoals(): UseGetGoalsResponse {
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const fetchGoals = async () => {
+  const fetchGoals = useCallback (async () => {
     setLoading(true);
     setError(null);
     try {
@@ -37,9 +37,10 @@ export function useGetGoals(): UseGetGoalsResponse {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userAuth]);
 
   useEffect(() => {
+    if (!userAuth) return;
     fetchGoals();
   }, [userAuth]);
 

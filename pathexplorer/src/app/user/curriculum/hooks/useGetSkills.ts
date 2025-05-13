@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 import { Skill } from '../types/curriculum';
 
@@ -23,7 +23,7 @@ export function useGetSkills({
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const fetchSkills = async () => {
+  const fetchSkills = useCallback (async () => {
     setLoading(true);
     setError(null);
     try {
@@ -47,9 +47,10 @@ export function useGetSkills({
     } finally {
       setLoading(false);
     }
-  };
+  }, [type, userAuth]);
 
   useEffect(() => {
+    if (!userAuth) return;
     fetchSkills();
   }, [type, userAuth]);
 

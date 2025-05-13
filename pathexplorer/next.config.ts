@@ -72,6 +72,22 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
       },
       {
+        source: '/api/skills/update/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/update/:id',
+      },
+      {
+        source: '/api/skills/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/delete/:id',
+      },
+      {
+        source: '/api/goals/update/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/update/:id',
+      },
+      {
+        source: '/api/goals/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/delete/:id',
+      },
+      {
         source: '/api/certifications/expiring',
         destination: 'https://pathexplorer.vercel.app/certifications/expiring',
       },
