@@ -32,7 +32,7 @@ interface APIEmployee {
   days_since_last_project: number;
 }
 
-interface Employee {
+export interface Employee {
   id: number;
   name: string;
   last_name_1: string;
