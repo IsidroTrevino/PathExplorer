@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
 import { useGetEmployees } from '@/features/user/useGetEmployees';
 
-export default function EmployeesPage() {
+export default function AvailableEmployeesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(20);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
@@ -24,7 +24,7 @@ export default function EmployeesPage() {
     role: roleFilter,
     alphabetical,
     search: searchTerm,
-    assigned: null,
+    assigned: false, // Only show unassigned employees
   });
 
   const handlePageChange = (page: number) => {
@@ -50,8 +50,8 @@ export default function EmployeesPage() {
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PageHeader
-          title="Employees"
-          subtitle="Search through the employees currently registered and visualize their information."
+          title="Available Employees"
+          subtitle="View employees who are not currently assigned to any project"
         />
 
         <div className="mt-8">
