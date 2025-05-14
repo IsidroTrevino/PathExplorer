@@ -95,6 +95,18 @@ const nextConfig: NextConfig = {
         source: '/api/certifications/update/:id',
         destination: 'https://pathexplorer.vercel.app/certifications/update/:id',
       },
+      {
+        source: '/api/r2/upload',
+        destination: '/api/r2/upload',
+      },
+      {
+        source: '/api/r2/download',
+        destination: '/api/r2/download',
+      },
+      {
+        source: '/api/curriculum',
+        destination: 'https://pathexplorer.vercel.app/curriculum',
+      },
     ];
   },
 };

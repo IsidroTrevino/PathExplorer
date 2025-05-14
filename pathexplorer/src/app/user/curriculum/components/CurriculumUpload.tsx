@@ -4,63 +4,87 @@ import { useState, useEffect, useRef } from 'react';
 import { Upload, FileText, Check, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useR2Storage } from '@/features/hooks/useR2Storage';
+import { useCurriculumApi } from '../hooks/usePostCurriculum';
+import { useUser } from '@/features/context/userContext';
 
 interface CurriculumUploadProps {
   className?: string;
-  onUploadSuccess?: (pdfBase64: string, fileName: string) => void;
+  onUploadSuccess?: (fileKey: string) => void;
 }
 
 const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
   className = '',
   onUploadSuccess,
 }) => {
-  const [cvPdf, setCvPdf] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fileKey, setFileKey] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const { userDetails } = useUser();
+  const { uploadPdfToR2, getPdfFromR2, isUploading, progress } = useR2Storage();
+  const { saveFileAssociation, getEmployeeFile, isLoading } = useCurriculumApi();
+
+  // Load existing CV on component mount
   useEffect(() => {
-    const savedPdf = localStorage.getItem('curriculumPDF');
-    const savedName = localStorage.getItem('curriculumPDFName');
-    if (savedPdf && savedName) {
-      setCvPdf(savedPdf);
-      setFileName(savedName);
-    }
-  }, []);
+    const fetchCv = async () => {
+      if (!userDetails?.id) return;
 
-  const handleUpload = (file: File) => {
-    if (!file) return;
-    setUploadProgress(0);
+      try {
+        // Get file key from API
+        const existingFileKey = await getEmployeeFile(userDetails.id);
 
-    const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
-        const next = prev + Math.floor(Math.random() * 15);
-        return next > 90 ? 90 : next;
-      });
-    }, 100);
+        if (existingFileKey) {
+          setFileKey(existingFileKey);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      localStorage.setItem('curriculumPDF', base64);
-      localStorage.setItem('curriculumPDFName', file.name);
-      setCvPdf(base64);
-      setFileName(file.name);
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-      setTimeout(() => {
-        setUploadProgress(0);
-        toast.success('CV uploaded successfully.');
-      }, 1000);
-      if (onUploadSuccess) onUploadSuccess(base64, file.name);
+          // Get the file from R2
+          const url = await getPdfFromR2(existingFileKey);
+          setPdfUrl(url);
+
+          // Extract filename from fileKey
+          const nameFromKey = existingFileKey.split('/').pop() || 'curriculum.pdf';
+          setFileName(nameFromKey);
+        }
+      } catch (error) {
+        console.error('Error fetching CV:', error);
+        toast.error('Could not load your CV');
+      }
     };
-    reader.readAsDataURL(file);
+
+    fetchCv();
+  }, [userDetails?.id]);
+
+  const handleUpload = async (file: File) => {
+    if (!file || !userDetails?.id) return;
+
+    try {
+      // Upload to R2
+      const newFileKey = await uploadPdfToR2(file, userDetails.id);
+
+      // Save association in database
+      await saveFileAssociation(newFileKey, userDetails.id);
+
+      // Get the file URL for preview
+      const url = await getPdfFromR2(newFileKey);
+
+      setFileKey(newFileKey);
+      setPdfUrl(url);
+      setFileName(file.name);
+
+      toast.success('CV uploaded successfully');
+
+      if (onUploadSuccess) onUploadSuccess(newFileKey);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload CV');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) handleUpload(file);
+    if (file && file.type === 'application/pdf') handleUpload(file);
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -90,13 +114,23 @@ const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
     }
   };
 
-  const removeFile = () => {
-    localStorage.removeItem('curriculumPDF');
-    localStorage.removeItem('curriculumPDFName');
-    setCvPdf(null);
-    setFileName(null);
-    if (inputRef.current) inputRef.current.value = '';
-    toast.info('CV removed successfully.');
+  const removeFile = async () => {
+    if (!userDetails?.id || !fileKey) return;
+
+    try {
+      // Delete association (you would need to add this API endpoint)
+      await saveFileAssociation('', userDetails.id);
+
+      setPdfUrl(null);
+      setFileName(null);
+      setFileKey(null);
+
+      if (inputRef.current) inputRef.current.value = '';
+      toast.info('CV removed successfully');
+    } catch (error) {
+      console.error('Error removing file:', error);
+      toast.error('Failed to remove CV');
+    }
   };
 
   return (
@@ -104,7 +138,7 @@ const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Curriculum PDF</h2>
       </div>
-      {!cvPdf ? (
+      {!pdfUrl ? (
         <div
           className={`w-full border-2 cursor-pointer border-dashed rounded-lg p-8 transition-all duration-200 ${
             isDragging
@@ -157,7 +191,7 @@ const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
 
           <div className="relative">
             <iframe
-              src={cvPdf!}
+              src={pdfUrl || ''}
               title="Curriculum PDF"
               className="w-full h-[600px] bg-gray-100"
             />
@@ -183,16 +217,16 @@ const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
         </div>
       )}
 
-      {uploadProgress > 0 && (
+      {isUploading && (
         <div className="mt-4 w-full">
           <div className="bg-gray-200 rounded-full h-1.5 mb-1">
             <div
               className="bg-purple-600 h-1.5 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${uploadProgress}%` }}
+              style={{ width: `${progress}%` }}
             />
           </div>
           <p className="text-xs text-gray-500">
-            {uploadProgress < 100 ? 'Uploading...' : 'Upload complete'}
+            {progress < 100 ? 'Uploading...' : 'Upload complete'}
           </p>
         </div>
       )}
