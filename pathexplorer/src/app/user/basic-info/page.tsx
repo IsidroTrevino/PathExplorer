@@ -161,8 +161,7 @@ export default function BasicInfoPage() {
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div>
-                <h2 className="text-xl font-medium mb-2">Personal Information</h2>
-                <Separator className="mb-4" />
+                <h2 className="text-xl font-medium mb-2 pt-4">Personal Information</h2>
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
