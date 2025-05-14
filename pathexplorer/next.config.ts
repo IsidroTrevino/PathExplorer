@@ -72,12 +72,45 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
       },
       {
+        source: '/api/skills/update/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/update/:id',
+      },
+      {
+        source: '/api/skills/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/delete/:id',
+      },
+      {
+        source: '/api/goals/update/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/update/:id',
+      },
+      {
+        source: '/api/goals/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/delete/:id',
+      },
+      {
         source: '/api/certifications/expiring',
         destination: 'https://pathexplorer.vercel.app/certifications/expiring',
       },
       {
         source: '/api/certifications/update/:id',
         destination: 'https://pathexplorer.vercel.app/certifications/update/:id',
+      },
+      {
+        source: '/api/r2/upload',
+        destination: '/api/r2/upload',
+      },
+      {
+        source: '/api/r2/download',
+        destination: '/api/r2/download',
+      },
+      {
+        source: '/api/curriculum',
+        destination: 'https://pathexplorer.vercel.app/curriculum',
+        basePath: false,
+      },
+      {
+        source: '/api/r2/delete',
+        destination: '/api/r2/delete',
       },
       {
         source: '/api/project-roles/roles',

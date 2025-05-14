@@ -100,12 +100,14 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
             </Button>
           )}
           <Button
-            size="sm"
             className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
+            onClick={() => {
+              window.location.href = `/user/projects/${project.id}`;
+            }}
           >
-            <Users className="h-4 w-4 mr-1" />
-                        Assign Employees
+            Assign Employees
           </Button>
+
         </div>
       </CardFooter>
     </Card>
