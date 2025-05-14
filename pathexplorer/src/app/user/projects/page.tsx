@@ -149,7 +149,7 @@ export default function ProjectsPage() {
                 key={project.id}
                 project={project}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onRefresh={refetch}
               />
             ))}
           </div>
