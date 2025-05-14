@@ -79,9 +79,30 @@ export const useR2Storage = () => {
     }
   };
 
+  const deletePdfFromR2 = async (fileKey: string) => {
+    console.log('🗑️ Deleting PDF with fileKey:', fileKey);
+    try {
+      const response = await fetch(`/api/r2/delete?fileKey=${fileKey}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        console.error('Delete API error:', response.status);
+        throw new Error(`Delete failed: ${response.statusText}`);
+      }
+
+      console.log('✅ File deleted successfully from R2');
+      return true;
+    } catch (error) {
+      console.error('❌ Delete process failed:', error);
+      throw error;
+    }
+  };
+
   return {
     uploadPdfToR2,
     getPdfFromR2,
+    deletePdfFromR2,
     isUploading,
     progress,
   };

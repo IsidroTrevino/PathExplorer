@@ -106,6 +106,11 @@ const nextConfig: NextConfig = {
       {
         source: '/api/curriculum',
         destination: 'https://pathexplorer.vercel.app/curriculum',
+        basePath: false,
+      },
+      {
+        source: '/api/r2/delete',
+        destination: '/api/r2/delete',
       },
     ];
   },
