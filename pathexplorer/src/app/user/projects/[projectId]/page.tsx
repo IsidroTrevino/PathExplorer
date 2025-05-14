@@ -17,7 +17,6 @@ export default function AvailableEmployeesPage() {
     totalPages,
     loading,
     error,
-    refetch,
   } = useGetEmployees({
     page: currentPage,
     size: pageSize,
