@@ -17,8 +17,8 @@ export interface Project {
   project_name: string;
   client: string;
   description: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   employees_req: number;
   manager_id?: number;
   project_id?: number;
@@ -82,8 +82,8 @@ export function useGetProjects({
         project_name: project.project_name,
         client: project.client,
         description: project.description,
-        startDate: project.startDate,
-        endDate: project.endDate,
+        startDate: project.start_date,
+        endDate: project.end_date,
         employees_req: project.employees_req,
         manager_id: project.manager_id,
         manager: project.manager,
