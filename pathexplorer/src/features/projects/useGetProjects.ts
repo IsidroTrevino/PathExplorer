@@ -17,8 +17,8 @@ export interface Project {
   project_name: string;
   client: string;
   description: string;
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
   employees_req: number;
   manager_id?: number;
   project_id?: number;
