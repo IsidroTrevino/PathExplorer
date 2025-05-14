@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useGetSkills } from './hooks/useGetSkills';
 import { usePostSkill } from './hooks/usePostSkill';
 import { useGetGoals } from './hooks/useGetGoals';
@@ -17,7 +17,6 @@ import CurriculumUpload from './components/CurriculumUpload';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 export default function CurriculumPage() {

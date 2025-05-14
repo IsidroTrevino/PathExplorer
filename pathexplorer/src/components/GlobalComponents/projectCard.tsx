@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, Users, User } from 'lucide-react';
+import { Edit, User } from 'lucide-react';
 import { useUser } from '@/features/context/userContext';
 
 interface ProjectCardProps {
