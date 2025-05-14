@@ -79,6 +79,10 @@ const nextConfig: NextConfig = {
         source: '/api/certifications/update/:id',
         destination: 'https://pathexplorer.vercel.app/certifications/update/:id',
       },
+      {
+        source: '/api/project-roles/roles',
+        destination: 'https://pathexplorer.vercel.app/project-roles/roles',
+      },
     ];
   },
 };
