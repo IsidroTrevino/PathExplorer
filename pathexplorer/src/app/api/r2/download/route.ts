@@ -1,4 +1,3 @@
-// app/api/r2/download/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
@@ -30,7 +29,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
-    // Convert stream to buffer
     const stream = Readable.from(response.Body as any);
     const chunks: Buffer[] = [];
 
@@ -47,7 +45,6 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('R2 download error:', error);
     return NextResponse.json({ error: 'Failed to download file' }, { status: 500 });
   }
 }
