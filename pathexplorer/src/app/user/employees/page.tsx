@@ -17,12 +17,14 @@ export default function EmployeesPage() {
     totalPages,
     loading,
     error,
+    refetch,
   } = useGetEmployees({
     page: currentPage,
     size: pageSize,
     role: roleFilter,
     alphabetical,
     search: searchTerm,
+    assigned: null,
   });
 
   const handlePageChange = (page: number) => {

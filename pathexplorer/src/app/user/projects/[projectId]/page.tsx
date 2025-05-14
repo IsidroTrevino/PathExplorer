@@ -1,14 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
 import { useGetEmployees } from '@/features/user/useGetEmployees';
-import { toast } from 'sonner';
 
-export default function ProjectEmployeesPage() {
-  const { projectId } = useParams();
+export default function AvailableEmployeesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(20);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
@@ -27,12 +24,8 @@ export default function ProjectEmployeesPage() {
     role: roleFilter,
     alphabetical,
     search: searchTerm,
-    assigned: false, // 👈 Filtrar solo empleados NO asignados
+    assigned: false, // Only show unassigned employees
   });
-
-  useEffect(() => {
-    refetch();
-  }, [projectId]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -57,8 +50,8 @@ export default function ProjectEmployeesPage() {
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PageHeader
-          title={`Available Employees for Project ${projectId}`}
-          subtitle="Filter and view available employees for assignment."
+          title="Available Employees"
+          subtitle="View employees who are not currently assigned to any project"
         />
 
         <div className="mt-8">
