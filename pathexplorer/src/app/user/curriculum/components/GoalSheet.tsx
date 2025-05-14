@@ -65,7 +65,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button className="bg-purple-600 text-white">+ Add a goal</Button>
+        <Button className="bg-[#7500C0] hover:bg-[#6200a0] text-white">+ Add a goal</Button>
       </SheetTrigger>
       <SheetContent>
         <div className="space-y-4 p-4">
@@ -142,7 +142,7 @@ export const GoalSheet = ({ onAdd }: { onAdd: (goal: Goal) => void }) => {
           </div>
 
           <Button
-            className="bg-purple-600 text-white w-full"
+            className="bg-[#7500C0] hover:bg-[#6200a0] text-white w-full"
             onClick={handleAdd}
           >
             Confirm
