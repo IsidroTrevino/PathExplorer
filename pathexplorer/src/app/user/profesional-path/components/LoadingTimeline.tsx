@@ -6,7 +6,7 @@ interface LoadingTimelineProps {
   count?: number;
 }
 
-export const LoadingTimeline: React.FC<LoadingTimelineProps> = ({ count = 4 }) => (
+export const LoadingTimeline: React.FC<LoadingTimelineProps> = ({ count = 6 }) => (
   <div className="relative mt-12">
     {/* Línea vertical */}
     <div className="absolute top-0 bottom-0 left-8 w-1 bg-gradient-to-b from-purple-300 to-purple-100 rounded-full z-0" />
@@ -19,6 +19,7 @@ export const LoadingTimeline: React.FC<LoadingTimelineProps> = ({ count = 4 }) =
           <div className="ml-12 space-y-2 w-full">
             <div className="h-4 bg-gray-300 rounded w-1/4 animate-pulse" />
             <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse" />
+            <div className="h-4 bg-gray-300 rounded w-1/7 animate-pulse" />
             <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse" />
           </div>
         </div>

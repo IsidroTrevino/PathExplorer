@@ -26,14 +26,14 @@ export const SkillSheet = ({
   skillOptions,
   title = 'Agregar Skill',
 }: SkillSheetProps) => {
-  const [name, setName] = useState('');
+  const [skill_name, setName] = useState('');
   const [level, setLevel] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; level?: string }>({});
 
   const validate = () => {
     const newErrors: typeof errors = {};
-    if (!name) newErrors.name = 'Skill is required';
+    if (!skill_name) newErrors.name = 'Skill is required';
     const numLevel = Number(level);
     if (!level || isNaN(numLevel) || numLevel < 1 || numLevel > 100) {
       newErrors.level = 'Level must be between 1 and 100';
@@ -44,7 +44,7 @@ export const SkillSheet = ({
 
   const handleAdd = () => {
     if (!validate()) return;
-    onAdd({ name, level: Number(level), type: 'hard' });
+    onAdd({ skill_name, level: Number(level), type: 'hard' });
     setIsOpen(false);
     setName('');
     setLevel('');
@@ -62,7 +62,7 @@ export const SkillSheet = ({
 
           <div className="space-y-1">
             <Select
-              value={name}
+              value={skill_name}
               onValueChange={(value) => {
                 setName(value);
                 setErrors((e) => ({ ...e, name: undefined }));

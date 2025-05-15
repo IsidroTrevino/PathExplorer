@@ -51,7 +51,7 @@ export function EditSkillModal({
 
   const onSave = async () => {
     try {
-      await updateSkill(form.skill_id!, { name: form.name, level: form.level });
+      await updateSkill(form.skill_id!, { type: form.type, skill_name: form.skill_name, level: form.level });
       toast.success('Skill updated successfully.');
       onUpdated();
       onClose();
@@ -85,9 +85,9 @@ export function EditSkillModal({
           <div className="grid gap-2">
             <Label htmlFor="skill-name">Skill</Label>
             <Select
-              defaultValue={form.name}
+              defaultValue={form.skill_name}
               onValueChange={value =>
-                setForm(f => ({ ...f, name: value }))
+                setForm(f => ({ ...f, skill_name: value }))
               }
             >
               <SelectTrigger id="skill-name" className="w-full">

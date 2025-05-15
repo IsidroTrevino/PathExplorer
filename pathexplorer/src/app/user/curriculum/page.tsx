@@ -43,12 +43,12 @@ export default function CurriculumPage() {
   const { addGoal } = usePostGoal();
 
   const handleAddTechnicalSkill = async (skill: Skill) => {
-    await addSkill({ name: skill.name, level: skill.level, type: "hard" });
+    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: "hard" });
     await refetchSkills();
     toast.success("Skill técnica agregada");
   };
   const handleAddSoftSkill = async (skill: Skill) => {
-    await addSkill({ name: skill.name, level: skill.level, type: "soft" });
+    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: "soft" });
     await refetchSkills();
     toast.success("Skill blanda agregada");
   };
