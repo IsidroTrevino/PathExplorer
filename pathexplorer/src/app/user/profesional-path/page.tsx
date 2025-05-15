@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { PageHeader } from "@/components/GlobalComponents/pageHeader";
-import { ExperienceItem, Experience } from "./components/ExperienceItem";
-import { LoadingTimeline } from "./components/LoadingTimeline";
-import { useGetRoles } from "./hooks/useGetRoles";
-import type { RoleLog } from "./types/profesionalPath";
-import { AlertCircleIcon } from "lucide-react";
-import EmptyView from "@/components/GlobalComponents/EmptyView";
+import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { ExperienceItem, Experience } from './components/ExperienceItem';
+import { LoadingTimeline } from './components/LoadingTimeline';
+import { useGetRoles } from './hooks/useGetRoles';
+import type { RoleLog } from './types/profesionalPath';
+import { AlertCircleIcon } from 'lucide-react';
+import EmptyView from '@/components/GlobalComponents/EmptyView';
 
 export default function ProfessionalPathPage() {
   const { data: roles, loading, error } = useGetRoles();
-  const containerClasses = "max-w-6xl mx-auto p-8 space-y-8";
+  const containerClasses = 'max-w-6xl mx-auto p-8 space-y-8';
 
   if (loading) {
     return (
@@ -65,7 +65,7 @@ export default function ProfessionalPathPage() {
             subtitle="Visualize your professional path and the roles you have played in the company."
           />
         </div>
-        
+
         <div className="relative">
           {/* Línea vertical */}
           <div className="absolute top-0 bottom-0 left-8 w-1 bg-gradient-to-b from-purple-300 to-purple-100 rounded-full z-0" />

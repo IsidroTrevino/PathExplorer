@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { useGetSkills } from './hooks/useGetSkills';
@@ -7,20 +7,19 @@ import { useGetGoals } from './hooks/useGetGoals';
 import { usePostGoal } from './hooks/usePostGoal';
 import { Skill, Goal } from './types/curriculum';
 
-import { SkillCard } from "./components/SkillCard";
-import { GoalCard } from "./components/GoalCard";
-import { SkillSheet } from "./components/SkillSheet";
-import { GoalSheet } from "./components/GoalSheet";
-import { EditSkillModal } from "./components/EditSkillModal";
-import { EditGoalModal } from "./components/EditGoalModal";
-import CurriculumUpload from "./components/CurriculumUpload";
-import { PageHeader } from "@/components/GlobalComponents/pageHeader";
-import EmptyView from "@/components/GlobalComponents/EmptyView";
-import { AlertCircleIcon } from "lucide-react";
+import { SkillCard } from './components/SkillCard';
+import { GoalCard } from './components/GoalCard';
+import { SkillSheet } from './components/SkillSheet';
+import { GoalSheet } from './components/GoalSheet';
+import { EditSkillModal } from './components/EditSkillModal';
+import { EditGoalModal } from './components/EditGoalModal';
+import CurriculumUpload from './components/CurriculumUpload';
+import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import EmptyView from '@/components/GlobalComponents/EmptyView';
+import { AlertCircleIcon } from 'lucide-react';
 
-import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
-
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 
 export default function CurriculumPage() {
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
@@ -43,14 +42,14 @@ export default function CurriculumPage() {
   const { addGoal } = usePostGoal();
 
   const handleAddTechnicalSkill = async (skill: Skill) => {
-    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: "hard" });
+    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: 'hard' });
     await refetchSkills();
-    toast.success("Skill técnica agregada");
+    toast.success('Skill técnica agregada');
   };
   const handleAddSoftSkill = async (skill: Skill) => {
-    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: "soft" });
+    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: 'soft' });
     await refetchSkills();
-    toast.success("Skill blanda agregada");
+    toast.success('Skill blanda agregada');
   };
   const handleAddGoal = async (goal: Goal) => {
     await addGoal({
@@ -60,7 +59,7 @@ export default function CurriculumPage() {
       term: goal.term,
     });
     await refetchGoals();
-    toast.success("Meta agregada");
+    toast.success('Meta agregada');
   };
 
   if (errorSkills)
@@ -72,8 +71,8 @@ export default function CurriculumPage() {
       <p className="p-8 text-red-600">Error cargando goals: {errorGoals}</p>
     );
 
-  const tech = skills.filter((s) => s.type === "hard");
-  const soft = skills.filter((s) => s.type === "soft");
+  const tech = skills.filter((s) => s.type === 'hard');
+  const soft = skills.filter((s) => s.type === 'soft');
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -93,14 +92,14 @@ export default function CurriculumPage() {
             <SkillSheet
               onAdd={handleAddTechnicalSkill}
               skillOptions={[
-                "Frontend Developer",
-                "Backend Developer",
-                "Fullstack Developer",
-                "DevOps Engineer",
-                "UI/UX Designer",
-                "Data Scientist",
-                "Mobile Developer",
-                "QA Engineer",
+                'Frontend Developer',
+                'Backend Developer',
+                'Fullstack Developer',
+                'DevOps Engineer',
+                'UI/UX Designer',
+                'Data Scientist',
+                'Mobile Developer',
+                'QA Engineer',
               ]}
               title="Add Technical Skill"
             />
@@ -138,13 +137,13 @@ export default function CurriculumPage() {
             <SkillSheet
               onAdd={handleAddSoftSkill}
               skillOptions={[
-                "Communication",
-                "Teamwork",
-                "Problem Solving",
-                "Adaptability",
-                "Time Management",
-                "Leadership",
-                "Creativity",
+                'Communication',
+                'Teamwork',
+                'Problem Solving',
+                'Adaptability',
+                'Time Management',
+                'Leadership',
+                'Creativity',
               ]}
               title="Add Soft Skill"
             />
@@ -224,21 +223,21 @@ export default function CurriculumPage() {
           isOpen={!!editingSkill}
           skill={editingSkill}
           skillOptions={[
-            "Frontend Developer",
-            "Backend Developer",
-            "Fullstack Developer",
-            "DevOps Engineer",
-            "UI/UX Designer",
-            "Data Scientist",
-            "Mobile Developer",
-            "QA Engineer",
-            "Communication",
-            "Teamwork",
-            "Problem Solving",
-            "Adaptability",
-            "Time Management",
-            "Leadership",
-            "Creativity",
+            'Frontend Developer',
+            'Backend Developer',
+            'Fullstack Developer',
+            'DevOps Engineer',
+            'UI/UX Designer',
+            'Data Scientist',
+            'Mobile Developer',
+            'QA Engineer',
+            'Communication',
+            'Teamwork',
+            'Problem Solving',
+            'Adaptability',
+            'Time Management',
+            'Leadership',
+            'Creativity',
           ]}
           onUpdated={() => {
             setEditingSkill(null);

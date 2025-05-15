@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { FC } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { FC } from 'react';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 
 export interface Experience {
   date: string;
@@ -31,7 +31,7 @@ export const ExperienceItem: FC<ExperienceItemProps> = ({ exp, idx }) => {
       <motion.span
         initial={{ scale: 0 }}
         animate={inView ? { scale: 1 } : {}}
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
         className="absolute left-6 top-1 w-5 h-5 bg-purple-500 rounded-full border-4 border-white shadow-md z-10"
       />
       {/* Contenido */}
