@@ -27,7 +27,6 @@ export const useR2Storage = () => {
       clearInterval(progressInterval);
 
       if (!response.ok) {
-        const errorText = await response.text();
         throw new Error(`Upload failed: ${response.statusText}`);
       }
 

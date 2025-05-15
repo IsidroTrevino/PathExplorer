@@ -29,7 +29,6 @@ export const useCurriculumApi = () => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
         throw new Error('Failed to save file association');
       }
 
@@ -68,7 +67,7 @@ export const useCurriculumApi = () => {
       } else {
         return null;
       }
-    } catch (error) {
+    } catch {
       return null;
     } finally {
       setIsLoading(false);
@@ -93,7 +92,6 @@ export const useCurriculumApi = () => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
         throw new Error('Failed to delete file association');
       }
 

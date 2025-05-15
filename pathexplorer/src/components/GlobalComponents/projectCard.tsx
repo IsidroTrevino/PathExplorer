@@ -3,13 +3,13 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, Users, User } from 'lucide-react';
+import { Edit, User } from 'lucide-react';
 import { useUser } from '@/features/context/userContext';
 
 interface ProjectCardProps {
     project: {
         id: string;
-        projectName: string;
+        project_name: string;
         client: string;
         description: string;
         startDate: string;
@@ -52,7 +52,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
       <CardHeader className="pb-2 border-b">
         <div className="flex flex-col gap-2">
           <CardTitle className="text-3xl font-bold text-[#7500C0]">
-            {project.projectName}
+            {project.project_name}
           </CardTitle>
           <div className="flex items-center justify-between">
             <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">

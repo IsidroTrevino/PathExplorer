@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useGetSkills } from "./hooks/useGetSkills";
-import { usePostSkill } from "./hooks/usePostSkill";
-import { useGetGoals } from "./hooks/useGetGoals";
-import { usePostGoal } from "./hooks/usePostGoal";
-import { Skill, Goal } from "./types/curriculum";
+import React, { useState } from 'react';
+import { useGetSkills } from './hooks/useGetSkills';
+import { usePostSkill } from './hooks/usePostSkill';
+import { useGetGoals } from './hooks/useGetGoals';
+import { usePostGoal } from './hooks/usePostGoal';
+import { Skill, Goal } from './types/curriculum';
 
 import { SkillCard } from "./components/SkillCard";
 import { GoalCard } from "./components/GoalCard";
@@ -20,6 +20,7 @@ import { AlertCircleIcon } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+
 
 export default function CurriculumPage() {
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
