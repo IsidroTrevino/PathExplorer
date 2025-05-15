@@ -1,14 +1,13 @@
-// src/components/ExperienceItem.tsx
-'use client';
+"use client";
 
-import { FC } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import { FC } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 export interface Experience {
-  date:   string;
-  title:  string;
-  company:string;
+  date: string;
+  title: string;
+  company: string;
   description: string;
 }
 
@@ -18,10 +17,7 @@ interface ExperienceItemProps {
 }
 
 export const ExperienceItem: FC<ExperienceItemProps> = ({ exp, idx }) => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.2,
-  });
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
 
   return (
     <motion.div
@@ -35,10 +31,9 @@ export const ExperienceItem: FC<ExperienceItemProps> = ({ exp, idx }) => {
       <motion.span
         initial={{ scale: 0 }}
         animate={inView ? { scale: 1 } : {}}
-        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-        className="absolute left-8 top-1 w-5 h-5 bg-purple-500 rounded-full border-4 border-white shadow-md z-10"
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="absolute left-6 top-1 w-5 h-5 bg-purple-500 rounded-full border-4 border-white shadow-md z-10"
       />
-
       {/* Contenido */}
       <div>
         <div className="text-xs font-bold text-purple-600">{exp.date}</div>
