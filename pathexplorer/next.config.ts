@@ -112,6 +112,10 @@ const nextConfig: NextConfig = {
         source: '/api/r2/delete',
         destination: '/api/r2/delete',
       },
+      {
+        source: '/api/project-roles/roles',
+        destination: 'https://pathexplorer.vercel.app/project-roles/roles',
+      },
     ];
   },
 };
