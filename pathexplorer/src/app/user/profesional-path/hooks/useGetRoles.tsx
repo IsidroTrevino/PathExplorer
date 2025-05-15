@@ -19,7 +19,7 @@ export function useGetRoles(): UseGetRolesResponse {
 
     try {
       if (!token) {
-        return
+        return;
       }
 
       const res = await fetch('/api/project-roles/roles', {
