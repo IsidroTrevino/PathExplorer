@@ -66,7 +66,7 @@ export default function EmployeeRoleComparisonPage() {
     if (!employee || !typedRole.skills) return { ...typedRole, matchPercentage: 0, matchedSkills: [] };
 
     const matchedSkills = employee.skills.filter((empSkill: EmployeeSkill) =>
-      typedRole.skills.some((roleSkill: RoleSkill) =>
+      typedRole.skills?.some((roleSkill: RoleSkill) =>
         (roleSkill.skill_name || '').toLowerCase() === empSkill.skill_name.toLowerCase(),
       ),
     );
