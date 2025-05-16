@@ -10,7 +10,8 @@ import { ProjectFilters } from '@/components/GlobalComponents/projectFilters';
 import { Project, useGetProjects } from '@/features/projects/useGetProjects';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EditProjectModal } from '@/features/projects/editProjectModal';
-import { useDeleteProject } from '@/features/projects/useDeleteProject';
+import { AddRoleSkillModal } from '@/features/projects/AddRoleSkillModal';
+
 import {
   Pagination,
   PaginationContent,
@@ -18,11 +19,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useUser } from '@/features/context/userContext';
 
 export default function ProjectsPage() {
   const { isOpen, onOpen, onClose } = useCreateProjectModal();
   const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { userDetails } = useUser();
+  const [currentProject] = useState<Project | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -30,6 +34,8 @@ export default function ProjectsPage() {
   const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
+
+  const isProjectCreator = userDetails?.employee_id === currentProject?.manager_id;
 
   const {
     data: projects,
@@ -183,6 +189,11 @@ export default function ProjectsPage() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         project={projectToEdit}
+        onSuccess={refetch}
+      />
+
+      <AddRoleSkillModal
+        isProjectCreator={isProjectCreator}
         onSuccess={refetch}
       />
     </div>
