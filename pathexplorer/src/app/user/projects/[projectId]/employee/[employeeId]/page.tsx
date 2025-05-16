@@ -60,23 +60,28 @@ export default function EmployeeRoleComparisonPage() {
     router.back();
   };
 
-  const roleMatches = project?.roles?.map((role: ProjectRole) => {
+  const roleMatches = project?.roles?.map((projectRole: ProjectRole) => {
+    const role: Role = {
+      role_id: projectRole.role_id,
+      name: projectRole.name || projectRole.role_name || '',
+      description: projectRole.description || projectRole.role_description || '',
+      skills: projectRole.skills || [],
+    };
 
-    const typedRole = role;
-    if (!employee || !typedRole.skills) return { ...typedRole, matchPercentage: 0, matchedSkills: [] };
+    if (!employee) return { ...role, matchPercentage: 0, matchedSkills: [] };
 
     const matchedSkills = employee.skills.filter((empSkill: EmployeeSkill) =>
-      typedRole.skills?.some((roleSkill: RoleSkill) =>
+      role.skills.some((roleSkill: RoleSkill) =>
         (roleSkill.skill_name || '').toLowerCase() === empSkill.skill_name.toLowerCase(),
       ),
     );
 
-    const matchPercentage = typedRole.skills.length > 0
-      ? (matchedSkills.length / typedRole.skills.length) * 100
+    const matchPercentage = role.skills.length > 0
+      ? (matchedSkills.length / role.skills.length) * 100
       : 0;
 
     return {
-      ...typedRole,
+      ...role,
       matchPercentage: Math.round(matchPercentage),
       matchedSkills,
     };
