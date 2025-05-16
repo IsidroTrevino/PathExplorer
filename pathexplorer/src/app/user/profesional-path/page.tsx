@@ -7,6 +7,7 @@ import { useGetRoles } from './hooks/useGetRoles';
 import type { RoleLog } from './types/profesionalPath';
 import { AlertCircleIcon } from 'lucide-react';
 import EmptyView from '@/components/GlobalComponents/EmptyView';
+import { AIRecommendationsSection } from './components/AIRecommendationsSection';
 
 export default function ProfessionalPathPage() {
   const { data: roles, loading, error } = useGetRoles();
@@ -77,6 +78,7 @@ export default function ProfessionalPathPage() {
             ))}
           </div>
         </div>
+        <AIRecommendationsSection />
       </div>
     </div>
   );
