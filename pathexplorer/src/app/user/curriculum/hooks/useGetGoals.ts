@@ -31,7 +31,7 @@ export function useGetGoals(): UseGetGoalsResponse {
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       const goals: Goal[] = await res.json();
       setData(goals);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'An unknown error occurred');
       console.error('Error fetching goals:', err);
     } finally {

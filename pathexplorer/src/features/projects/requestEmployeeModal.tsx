@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRequestEmployee } from './useRequestEmployee';
 import { ProjectRole } from './useGetProjectRoles';
+import { Employee } from '@/features/user/useGetEmployees';
 
 import {
   Dialog,
@@ -34,8 +35,6 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Employee } from '@/features/user/useGetEmployees';
-import { useRouter } from 'next/navigation';
 
 const requestSchema = z.object({
   project_role_id: z.string().min(1, 'Please select a role'),
@@ -62,7 +61,6 @@ export function RequestEmployeeModal({
   onClose,
 }: RequestEmployeeModalProps) {
   const { isSubmitting, requestEmployee } = useRequestEmployee();
-  const { refresh } = useRouter();
 
   const form = useForm<RequestFormValues>({
     resolver: zodResolver(requestSchema),
@@ -81,6 +79,42 @@ export function RequestEmployeeModal({
     }
   }, [isOpen, form]);
 
+  useEffect(() => {
+    const resetPointerEvents = () => {
+      document.body.style.pointerEvents = '';
+    };
+
+    if (!isOpen) {
+      resetPointerEvents();
+
+      const timeoutId = setTimeout(resetPointerEvents, 300);
+      return () => clearTimeout(timeoutId);
+    }
+
+    return resetPointerEvents;
+  }, [isOpen]);
+
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'style' && !isOpen) {
+          if (document.body.style.pointerEvents === 'none') {
+            document.body.style.pointerEvents = '';
+          }
+        }
+      });
+    });
+
+    observer.observe(document.body, { attributes: true });
+
+    return () => observer.disconnect();
+  }, [isOpen]);
+
+  const handleClose = () => {
+    document.body.style.pointerEvents = '';
+    onClose();
+  };
+
   const onSubmit = async (data: RequestFormValues) => {
     if (!selectedEmployee || !projectId) return;
 
@@ -95,27 +129,25 @@ export function RequestEmployeeModal({
       toast.success('Employee request submitted', {
         description: `${selectedEmployee.name} ${selectedEmployee.last_name_1} has been requested for this project.`,
       });
-      form.reset();
-      closeSafely();
-      refresh();
+      handleClose();
     }
-  };
-
-  const closeSafely = () => {
-    (document.activeElement as HTMLElement | null)?.blur(); // release focus
-    onClose();
-    refresh();
   };
 
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => !open && closeSafely()}>
+      onOpenChange={(open) => {
+        if (!open) {
+          document.body.style.pointerEvents = '';
+          handleClose();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Request Employee</DialogTitle>
           <DialogDescription>
-            {selectedEmployee && `Request ${selectedEmployee.name} ${selectedEmployee.last_name_1} for your project.`}
+              Request {selectedEmployee?.name} {selectedEmployee?.last_name_1} for your project
           </DialogDescription>
         </DialogHeader>
 
@@ -127,34 +159,33 @@ export function RequestEmployeeModal({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Project Role</FormLabel>
-                  <Select
-                    disabled={projectLoading || isSubmitting}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role for this employee" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {projectLoading ? (
-                        <SelectItem value="loading" disabled>
-                                  Loading roles...
-                        </SelectItem>
-                      ) : projectRoles.length === 0 ? (
-                        <SelectItem value="none" disabled>
-                                  No available roles
-                        </SelectItem>
-                      ) : (
-                        projectRoles.map((role) => (
-                          <SelectItem key={role.role_id} value={role.role_id.toString()}>
-                            {role.name}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    {projectRoles.length > 0 ? (
+                      <Select
+                        disabled={projectLoading || isSubmitting}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {projectRoles.map((role) => (
+                            <SelectItem
+                              key={role.id || role.role_id || `role-${Math.random()}`}
+                              value={(role.id || role.role_id || '').toString()}
+                            >
+                              {role.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <div className="flex items-center justify-center p-4 border rounded-md border-dashed bg-gray-50 text-gray-500">
+                              There are no roles left for assigning
+                      </div>
+                    )}
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -168,8 +199,9 @@ export function RequestEmployeeModal({
                   <FormLabel>Comments (Optional)</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Add any additional information about this request..."
-                      className="resize-none min-h-[100px]"
+                      placeholder="Add any additional comments about this request"
+                      className="resize-none"
+                      rows={3}
                       {...field}
                     />
                   </FormControl>
@@ -179,12 +211,18 @@ export function RequestEmployeeModal({
             />
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={closeSafely}>Cancel</Button>
-
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
+                  Cancel
+              </Button>
               <Button
                 type="submit"
                 className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
-                disabled={isSubmitting || projectLoading || projectRoles.length === 0}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>

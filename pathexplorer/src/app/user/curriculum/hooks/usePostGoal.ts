@@ -29,7 +29,7 @@ export function usePostGoal(): UsePostGoalResponse {
       });
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       return await res.json();
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'An unknown error occurred');
       console.error('Error adding goal:', err);
       throw err;

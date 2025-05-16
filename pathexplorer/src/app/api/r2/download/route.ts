@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
-    const stream = Readable.from(response.Body as any);
+    const stream = Readable.from(response.Body as Readable | ReadableStream | Blob);
     const chunks: Buffer[] = [];
 
     for await (const chunk of stream) {
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         'Content-Disposition': `inline; filename=${fileKey}`,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to download file' }, { status: 500 });
   }
 }
