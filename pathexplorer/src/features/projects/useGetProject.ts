@@ -19,6 +19,12 @@ interface ApiProject {
   }[];
 }
 
+interface ApiProjectRole {
+  role_id: number;
+  role_name: string;
+  role_description: string;
+}
+
 export function useGetProject(projectId: string | number | null) {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,14 +75,13 @@ export function useGetProject(projectId: string | number | null) {
         throw new Error(`Project with ID ${projectId} not found`);
       }
 
-      const mappedRoles = targetProject.roles?.map((role: ApiProject) => ({
+      const mappedRoles = targetProject.roles?.map((role: ApiProjectRole) => ({
         role_id: role.role_id,
         name: role.role_name,
         description: role.role_description,
-        skills: [], // Add empty skills array for compatibility
+        skills: [],
       })) || [];
 
-      // Format project data
       const formattedProject: Project = {
         id: targetProject.project_id?.toString() || '',
         project_name: targetProject.project_name || '',
