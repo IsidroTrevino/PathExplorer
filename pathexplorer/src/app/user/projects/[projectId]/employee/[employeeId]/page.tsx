@@ -21,18 +21,6 @@ interface EmployeeSkill {
   type: string;
 }
 
-interface Role {
-  role_id: number;
-  name: string;
-  description: string;
-  skills: RoleSkill[];
-}
-
-interface RoleMatch extends Role {
-  matchPercentage: number;
-  matchedSkills: EmployeeSkill[];
-}
-
 interface ProjectRole {
   role_id: number;
   name?: string;
@@ -67,6 +55,9 @@ export default function EmployeeRoleComparisonPage() {
       ...role,
       matchPercentage: 0,
       matchedSkills: [],
+      name: role.name || role.role_name || 'Unnamed Role',
+      description: role.description || role.role_description || '',
+      skills: role.skills || [],
     };
 
     if (!employee) return { ...role, matchPercentage: 0, matchedSkills: [] };
@@ -77,15 +68,15 @@ export default function EmployeeRoleComparisonPage() {
       ),
     );
 
-    const matchPercentage = role.skills.length > 0
-      ? (matchedSkills.length / role.skills.length) * 100
+    const matchPercentage = (role.skills?.length || 0) > 0
+      ? (matchedSkills.length / (role.skills?.length || 1)) * 100
       : 0;
 
     return {
       role_id: role.role_id,
-      name: role.name,
-      description: role.description,
-      skills: role.skills,
+      name: role.name || role.role_name || 'Unnamed Role',
+      description: role.description || role.role_description || '',
+      skills: role.skills || [],
       matchPercentage: Math.round(matchPercentage),
       matchedSkills,
     };
@@ -233,7 +224,7 @@ export default function EmployeeRoleComparisonPage() {
           <h2 className="text-xl font-bold mb-4">Project Role Compatibility</h2>
           <div className="space-y-4">
             {roleMatches && roleMatches.length > 0 ? (
-              roleMatches.map((role: RoleMatch) => (
+              roleMatches.map((role) => (
                 <div key={role.role_id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-medium">{role.name}</h3>
