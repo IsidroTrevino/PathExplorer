@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MoreHorizontal, Search, EyeIcon, Trash2Icon, UserPlus } from 'lucide-react';
+import { MoreHorizontal, Search, EyeIcon, Trash2Icon, UserPlus, BarChart2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Pagination,
@@ -36,6 +36,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Employee } from '@/features/user/useGetEmployees';
+import { useRouter } from 'next/navigation';
 
 interface EmployeeTableProps {
   data: Employee[];
@@ -53,6 +54,7 @@ interface EmployeeTableProps {
   currentAlphabetical?: boolean | null;
   variant?: 'default' | 'available';
   onRequestEmployeeOpen?: (employee: Employee) => void;
+  projectId?: string; // Added projectId parameter
 }
 
 export function EmployeeTable({
@@ -67,11 +69,13 @@ export function EmployeeTable({
   onDelete,
   onRequestEmployeeOpen,
   variant = 'default',
+  projectId, // Accept projectId parameter
 }: EmployeeTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [isAlphabetical, setIsAlphabetical] = useState(false);
   const debouncedSearchRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -272,12 +276,22 @@ export function EmployeeTable({
                               </DropdownMenuItem>
                             </>
                           ) : (
-                            <DropdownMenuItem
-                              className="cursor-pointer text-[#7500C0]"
-                              onClick={() => onRequestEmployeeOpen?.(employee)}
-                            >
-                              <UserPlus className="mr-2 h-4 w-4" /> Request for project
-                            </DropdownMenuItem>
+                            <>
+                              <DropdownMenuItem
+                                className="cursor-pointer text-[#7500C0]"
+                                onClick={() => onRequestEmployeeOpen?.(employee)}
+                              >
+                                <UserPlus className="mr-2 h-4 w-4" /> Request for project
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  router.push(`/user/projects/${projectId}/employee/${employee.id}`);
+                                }}
+                              >
+                                <BarChart2 className="mr-2 h-4 w-4" /> Compare with Role
+                              </DropdownMenuItem>
+                            </>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>

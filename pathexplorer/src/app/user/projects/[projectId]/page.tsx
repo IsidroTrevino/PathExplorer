@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
 import { useGetEmployees } from '@/features/user/useGetEmployees';
@@ -9,6 +9,8 @@ import { Employee } from '@/features/user/useGetEmployees';
 import { useRequestEmployeeModal } from '@/features/projects/useRequestEmployeeModal';
 import { useGetProjectRoles } from '@/features/projects/useGetProjectRoles';
 import { RequestEmployeeModal } from '@/features/projects/requestEmployeeModal';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AvailableEmployeesPage() {
   const params = useParams();
@@ -20,6 +22,7 @@ export default function AvailableEmployeesPage() {
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const { onOpen, onClose, isOpen } = useRequestEmployeeModal();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const router = useRouter();
 
   const { roles: projectRoles, loading: projectLoading } = useGetProjectRoles(projectId);
 
@@ -46,6 +49,10 @@ export default function AvailableEmployeesPage() {
     setCurrentPage(page);
   };
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   const handleRoleFilter = (role: string | null) => {
     setRoleFilter(role);
     setCurrentPage(1);
@@ -64,6 +71,13 @@ export default function AvailableEmployeesPage() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Button
+          variant="outline"
+          onClick={handleGoBack}
+          className="mb-4"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
         <PageHeader
           title="Available Employees"
           subtitle="View employees who are not currently assigned to any project"
@@ -88,6 +102,7 @@ export default function AvailableEmployeesPage() {
                 isExternalPagination={true}
                 variant="available"
                 onRequestEmployeeOpen={handleRequestEmployee}
+                projectId={projectId}
               />
             </div>
           )}
