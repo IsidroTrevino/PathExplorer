@@ -1,5 +1,5 @@
 export interface Skill {
-  name: string;
+  skill_name: string;
   type: 'hard' | 'soft';
   level: number;
   skill_id?: number;
