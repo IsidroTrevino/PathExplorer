@@ -110,11 +110,11 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="bg-gray-50 p-3 rounded-md">
               <p className="text-gray-500 text-sm">Start Date</p>
-              <p className="font-medium">{formatDate(project.startDate)}</p>
+              <p className="font-medium">{formatDate(project.start_date)}</p>
             </div>
             <div className="bg-gray-50 p-3 rounded-md">
               <p className="text-gray-500 text-sm">End Date</p>
-              <p className="font-medium">{formatDate(project.endDate)}</p>
+              <p className="font-medium">{formatDate(project.end_date)}</p>
             </div>
             <div className="bg-gray-50 p-3 rounded-md">
               <p className="text-gray-500 text-sm">Required Employees</p>
