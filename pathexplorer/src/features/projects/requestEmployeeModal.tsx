@@ -172,8 +172,8 @@ export function RequestEmployeeModal({
                         <SelectContent>
                           {projectRoles.map((role) => (
                             <SelectItem
-                              key={role.id || role.role_id || `role-${Math.random()}`}
-                              value={(role.id || role.role_id || '').toString()}
+                              key={role.role_id || `role-${Math.random()}`}
+                              value={(role.role_id || '').toString()}
                             >
                               {role.name}
                             </SelectItem>
