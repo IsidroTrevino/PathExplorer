@@ -29,7 +29,7 @@ export function usePostSkill(): UsePostSkillResponse {
       });
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       return await res.json();
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err.message || 'An unknown error occurred');
       console.error('Error adding skill:', err);
       throw err;

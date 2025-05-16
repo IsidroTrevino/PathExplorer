@@ -42,7 +42,7 @@ export function useGetRoles(): UseGetRolesResponse {
       }
 
       setData(payload as RoleLog[]);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('[useGetRoles] fetch error:', err);
       setError(err.message || 'Error desconocido');
     } finally {
