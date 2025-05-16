@@ -6,6 +6,7 @@ import { useGetEmployeeProfile } from '@/features/user/useGetEmployeeProfile';
 import { useGetProject } from '@/features/projects/useGetProject';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader } from 'lucide-react';
+import { useGetRoles } from '@/features/projects/useGetRoles';
 
 interface RoleSkill {
   skill_name: string;
@@ -51,20 +52,21 @@ export default function EmployeeRoleComparisonPage() {
       useGetEmployeeProfile(employeeId);
   const { project, loading: projectLoading, error: projectError } =
       useGetProject(projectId);
+  const { roles, loading: rolesLoading, error: rolesError } =
+      useGetRoles(projectId);
 
-  const isLoading = employeeLoading || projectLoading;
-  const error = employeeError || projectError;
+  const isLoading = employeeLoading || projectLoading || rolesLoading;
+  const error = employeeError || projectError || rolesError;
 
   const handleGoBack = () => {
     router.back();
   };
 
-  const roleMatches = project?.roles?.map((projectRole: ProjectRole) => {
-    const role: Role = {
-      role_id: projectRole.role_id,
-      name: projectRole.name || projectRole.role_name || '',
-      description: projectRole.description || projectRole.role_description || '',
-      skills: projectRole.skills || [],
+  const roleMatches = roles?.map((role: ProjectRole) => {
+    if (!employee) return {
+      ...role,
+      matchPercentage: 0,
+      matchedSkills: [],
     };
 
     if (!employee) return { ...role, matchPercentage: 0, matchedSkills: [] };
@@ -80,7 +82,10 @@ export default function EmployeeRoleComparisonPage() {
       : 0;
 
     return {
-      ...role,
+      role_id: role.role_id,
+      name: role.name,
+      description: role.description,
+      skills: role.skills,
       matchPercentage: Math.round(matchPercentage),
       matchedSkills,
     };

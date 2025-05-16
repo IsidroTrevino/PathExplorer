@@ -25,7 +25,7 @@ export default function ProjectsPage() {
   const { isOpen, onOpen, onClose } = useCreateProjectModal();
   const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { userDetails } = useUser();
+  const { userAuth } = useUser();
   const [currentProject] = useState<Project | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,7 +35,7 @@ export default function ProjectsPage() {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
 
-  const isProjectCreator = userDetails?.employee_id === currentProject?.manager_id;
+  const isProjectCreator = userAuth?.userId === currentProject?.manager_id;
 
   const {
     data: projects,

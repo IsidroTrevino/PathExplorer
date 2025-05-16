@@ -140,6 +140,10 @@ const nextConfig: NextConfig = {
         source: '/api/project-roles/:roleId/skills',
         destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills',
       },
+      {
+        source: '/api/project-roles/:projectId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:projectId',
+      },
     ];
   },
 };
