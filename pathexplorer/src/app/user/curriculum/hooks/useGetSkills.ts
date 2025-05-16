@@ -41,8 +41,8 @@ export function useGetSkills({
 
       const skills: Skill[] = await res.json();
       setData(skills);
-    } catch (err: any) {
-      setError(err.message || 'An unknown error occurred');
+    } catch (err) {
+      setError('An unknown error occurred');
       console.error('Error fetching skills:', err);
     } finally {
       setLoading(false);

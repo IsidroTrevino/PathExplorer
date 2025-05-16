@@ -113,8 +113,24 @@ const nextConfig: NextConfig = {
         destination: '/api/r2/delete',
       },
       {
+        source: '/api/project-roles',
+        destination: 'https://pathexplorer.vercel.app/project-roles/',
+      },
+      {
+        source: '/api/assignments',
+        destination: 'https://pathexplorer.vercel.app/assignments/',
+      },
+      {
+        source: '/api/project-roles/:project_id',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:project_id',
+      },
+      {
         source: '/api/project-roles/roles',
         destination: 'https://pathexplorer.vercel.app/project-roles/roles',
+      },
+      {
+        source: '/api/project-roles/:role_id',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:role_id',
       },
     ];
   },

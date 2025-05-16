@@ -42,9 +42,8 @@ export function useGetRoles(): UseGetRolesResponse {
       }
 
       setData(payload as RoleLog[]);
-    } catch (err: any) {
-      console.error('[useGetRoles] fetch error:', err);
-      setError(err.message || 'Error desconocido');
+    } catch {
+      setError('Unkown error occurred');
     } finally {
       setLoading(false);
     }

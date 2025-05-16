@@ -1,16 +1,32 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
 import { useGetEmployees } from '@/features/user/useGetEmployees';
+import { Employee } from '@/features/user/useGetEmployees';
+import { useRequestEmployeeModal } from '@/features/projects/useRequestEmployeeModal';
+import { useGetProjectRoles } from '@/features/projects/useGetProjectRoles';
+import { RequestEmployeeModal } from '@/features/projects/requestEmployeeModal';
 
 export default function AvailableEmployeesPage() {
+  const params = useParams();
+  const projectId = params.projectId as string;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(20);
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  const { onOpen, onClose, isOpen } = useRequestEmployeeModal();
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+
+  const { roles: projectRoles, loading: projectLoading } = useGetProjectRoles(projectId);
+
+  const handleRequestEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    onOpen();
+  };
 
   const {
     data: employees,
@@ -23,7 +39,7 @@ export default function AvailableEmployeesPage() {
     role: roleFilter,
     alphabetical,
     search: searchTerm,
-    assigned: false, // Only show unassigned employees
+    assigned: false,
   });
 
   const handlePageChange = (page: number) => {
@@ -70,11 +86,22 @@ export default function AvailableEmployeesPage() {
                 onSort={handleSort}
                 onSearch={handleSearch}
                 isExternalPagination={true}
+                variant="available"
+                onRequestEmployeeOpen={handleRequestEmployee}
               />
             </div>
           )}
         </div>
       </div>
+
+      <RequestEmployeeModal
+        projectId={projectId}
+        selectedEmployee={selectedEmployee ?? undefined}
+        isOpen={isOpen}
+        onClose={onClose}
+        projectRoles={projectRoles}
+        projectLoading={projectLoading}
+      />
     </div>
   );
 }

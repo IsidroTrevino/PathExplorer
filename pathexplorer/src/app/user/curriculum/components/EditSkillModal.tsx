@@ -55,9 +55,9 @@ export function EditSkillModal({
       toast.success('Skill updated successfully.');
       onUpdated();
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error updating skill:', err);
-      toast.error(err.message || 'Failed to update skill.');
+      toast.error('Failed to update skill.');
     }
   };
 
@@ -67,9 +67,9 @@ export function EditSkillModal({
       toast.success('Skill deleted.');
       onUpdated();
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error deleting skill:', err);
-      toast.error(err.message || 'Failed to delete skill.');
+      toast.error('Failed to delete skill.');
     }
   };
 

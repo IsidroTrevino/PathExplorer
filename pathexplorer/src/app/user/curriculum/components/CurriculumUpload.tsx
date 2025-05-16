@@ -77,7 +77,7 @@ const CurriculumUpload: React.FC<CurriculumUploadProps> = ({
 
       if (inputRef.current) inputRef.current.value = '';
       toast.success('CV removed successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to remove CV');
     }
   };

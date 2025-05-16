@@ -29,14 +29,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
-    const stream = Readable.from(response.Body as any);
-    const chunks: Buffer[] = [];
+    let buffer: Buffer;
+    if (response.Body instanceof Blob) {
+      buffer = Buffer.from(await response.Body.arrayBuffer());
+    } else {
+      const chunks: Buffer[] = [];
+      const stream = response.Body as unknown as AsyncIterable<Uint8Array>;
 
-    for await (const chunk of stream) {
-      chunks.push(Buffer.from(chunk));
+      for await (const chunk of stream) {
+        chunks.push(Buffer.from(chunk));
+      }
+
+      buffer = Buffer.concat(chunks);
     }
-
-    const buffer = Buffer.concat(chunks);
 
     return new NextResponse(buffer, {
       headers: {
@@ -44,7 +49,7 @@ export async function GET(request: NextRequest) {
         'Content-Disposition': `inline; filename=${fileKey}`,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to download file' }, { status: 500 });
   }
 }

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
 }
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });
   }
 }
@@ -101,7 +101,6 @@ export async function DELETE(request: NextRequest) {
     );
 
     if (!response.ok) {
-      const errorBody = await response.text();
       return NextResponse.json(
         { error: `Failed to delete curriculum data (status: ${response.status})` },
         { status: response.status },
@@ -118,7 +117,7 @@ export async function DELETE(request: NextRequest) {
     try {
       const data = await response.json();
       return NextResponse.json(data);
-    } catch (parseError) {
+    } catch {
       return NextResponse.json({ success: true });
     }
 
