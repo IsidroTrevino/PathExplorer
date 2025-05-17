@@ -140,6 +140,18 @@ const nextConfig: NextConfig = {
         source: '/api/project-roles/:roleId/skills',
         destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills',
       },
+      {
+        source: '/api/assignments/pending-assignments',
+        destination: 'https://pathexplorer.vercel.app/assignments/pending-assignments',
+      },
+      {
+        source: '/api/assignments/:assignment_id/approve',
+        destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/approve',
+      },
+      {
+        source: '/api/assignments/:assignment_id/reject',
+        destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/reject',
+      }
     ];
   },
 };
