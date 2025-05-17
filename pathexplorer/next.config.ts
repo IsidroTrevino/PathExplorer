@@ -148,6 +148,10 @@ const nextConfig: NextConfig = {
         source: '/api/ai/feedback',
         destination: 'https://pathexplorer.vercel.app/ai/feedback',
       },
+      {
+        source: '/api/ai/certifications',
+        destination: 'https://pathexplorer.vercel.app/ai/certifications',
+      }
     ];
   },
 };
