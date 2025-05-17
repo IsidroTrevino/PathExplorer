@@ -27,7 +27,7 @@ export function useRejectAssignment(): UseRejectAssignmentResponse {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${userAuth?.accessToken}`,
             },
-          }
+          },
         );
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       } catch (err: any) {
@@ -37,7 +37,7 @@ export function useRejectAssignment(): UseRejectAssignmentResponse {
         setLoading(false);
       }
     },
-    [userAuth]
+    [userAuth],
   );
 
   return { rejectAssignment, loading, error };

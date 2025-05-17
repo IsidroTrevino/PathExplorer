@@ -32,10 +32,10 @@ export const SideBar = () => {
   const getActiveStateFromPath = (path: string) => {
     if (path.includes('/user/basic-info')) {
       return 'basic';
-    } 
+    }
     else if (path.includes('/user/role-assignment')) {
       return 'request';
-    } 
+    }
     else if (path.includes('/user/dashboard')) {
       return 'dashboard';
     }

@@ -1,9 +1,9 @@
 // src/hooks/useGetPendingAssignments.tsx
-"use client";
+'use client';
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useUser } from "@/features/context/userContext";
-import { Assignment } from "../types/assignment";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useUser } from '@/features/context/userContext';
+import { Assignment } from '../types/assignment';
 
 interface UseGetPendingAssignmentsResponse {
   data: Assignment[];
@@ -23,10 +23,10 @@ export function useGetPendingAssignments(): UseGetPendingAssignmentsResponse {
     setError(null);
 
     try {
-      const res = await fetch("/api/assignments/pending-assignments", {
-        method: "GET",
+      const res = await fetch('/api/assignments/pending-assignments', {
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${userAuth?.accessToken}`,
         },
       });
@@ -39,15 +39,15 @@ export function useGetPendingAssignments(): UseGetPendingAssignmentsResponse {
       } else {
         list = [];
         console.warn(
-          "useGetPendingAssignments: payload no contiene `pending_assignments`:",
-          payload
+          'useGetPendingAssignments: payload no contiene `pending_assignments`:',
+          payload,
         );
       }
       setData(list as Assignment[]);
     } catch (err: any) {
-      console.error("Error fetching pending assignments:", err);
-      setError(err.message || "An unknown error occurred");
-      setData([]); 
+      console.error('Error fetching pending assignments:', err);
+      setError(err.message || 'An unknown error occurred');
+      setData([]);
     } finally {
       setLoading(false);
     }

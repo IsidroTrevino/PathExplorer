@@ -150,15 +150,15 @@ export default function BasicInfoPage() {
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto">
-       <div className="p-8 max-w-6xl mx-auto space-y-8">
+      <div className="p-8 max-w-6xl mx-auto space-y-8">
 
         <div className="space-y--8">
-          <PageHeader 
-            title={`Welcome back, ${userDetails?.name} ${userDetails?.last_name_1} ${userDetails?.last_name_2}!`} 
+          <PageHeader
+            title={`Welcome back, ${userDetails?.name} ${userDetails?.last_name_1} ${userDetails?.last_name_2}!`}
             subtitle={'Fill in and verify your personal information, you can modify it whenever you want.'}
           />
         </div>
-        
+
         {!isFormReady ? (
           <div className="flex justify-center my-10">
             <Loader2 className="h-8 w-8 animate-spin text-[#7500C0]" />

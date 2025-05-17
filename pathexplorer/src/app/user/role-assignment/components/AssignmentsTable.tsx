@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -8,19 +8,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, CheckCircle2, XCircle } from "lucide-react";
-import { Assignment } from "../types/assignment";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal, CheckCircle2, XCircle } from 'lucide-react';
+import { Assignment } from '../types/assignment';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AlertCircle } from 'lucide-react';
 
 interface AssignmentsTableProps {
   data: Assignment[];
@@ -87,7 +87,7 @@ export const AssignmentsTable = ({
                       {a.developer_name}
                     </Badge>
                   </TableCell>
-                  <TableCell>{a.project_name || "N/A"}</TableCell>
+                  <TableCell>{a.project_name || 'N/A'}</TableCell>
                   <TableCell>{a.comments}</TableCell>
                   <TableCell>
                     {new Date(a.request_date).toLocaleDateString()}

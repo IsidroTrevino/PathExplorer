@@ -27,7 +27,7 @@ export function useApproveAssignment(): UseApproveAssignmentResponse {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${userAuth?.accessToken}`,
             },
-          }
+          },
         );
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       } catch (err: any) {
@@ -37,7 +37,7 @@ export function useApproveAssignment(): UseApproveAssignmentResponse {
         setLoading(false);
       }
     },
-    [userAuth]
+    [userAuth],
   );
 
   return { approveAssignment, loading, error };
