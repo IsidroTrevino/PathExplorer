@@ -11,6 +11,7 @@ import { ExpiringCertificationsScroll } from '@/features/certifications/expiring
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUpdateCertificateModal } from '@/features/certifications/useUpdateCertificationModal';
 import { UpdateCertificateModal } from '@/features/certifications/updateCertificateModal';
+import { RecommendedCertifications } from '@/features/certifications/recommendedCertifications';
 
 export default function CertificationsPage() {
   const { isOpen, onOpen, onClose } = useCreateCertificateModal();
@@ -78,6 +79,8 @@ export default function CertificationsPage() {
         </div>
 
         <ExpiringCertificationsScroll />
+
+        <RecommendedCertifications />
 
         <CreateCertificateModal
           isOpen={isOpen}

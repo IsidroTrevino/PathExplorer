@@ -17,3 +17,20 @@ export interface UseGetRolesResponse {
   error: string | null;
   refetch: () => void;
 }
+
+export interface FeedbackItem {
+  action: string;
+  description: string;
+}
+
+export interface AIRecommendation {
+  message: string;
+  feedback: FeedbackItem[];
+}
+
+export interface UseGetAIRecommendationsResponse {
+  data: AIRecommendation | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+}

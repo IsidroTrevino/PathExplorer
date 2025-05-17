@@ -6,6 +6,7 @@ import { useGetEmployeeProfile } from '@/features/user/useGetEmployeeProfile';
 import { useGetProject } from '@/features/projects/useGetProject';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader } from 'lucide-react';
+import { useGetRoles } from '@/features/projects/useGetRoles';
 
 interface RoleSkill {
   skill_name: string;
@@ -18,18 +19,6 @@ interface EmployeeSkill {
   skill_name: string;
   level: number;
   type: string;
-}
-
-interface Role {
-  role_id: number;
-  name: string;
-  description: string;
-  skills: RoleSkill[];
-}
-
-interface RoleMatch extends Role {
-  matchPercentage: number;
-  matchedSkills: EmployeeSkill[];
 }
 
 interface ProjectRole {
@@ -51,36 +40,43 @@ export default function EmployeeRoleComparisonPage() {
       useGetEmployeeProfile(employeeId);
   const { project, loading: projectLoading, error: projectError } =
       useGetProject(projectId);
+  const { roles, loading: rolesLoading, error: rolesError } =
+      useGetRoles(projectId);
 
-  const isLoading = employeeLoading || projectLoading;
-  const error = employeeError || projectError;
+  const isLoading = employeeLoading || projectLoading || rolesLoading;
+  const error = employeeError || projectError || rolesError;
 
   const handleGoBack = () => {
     router.back();
   };
 
-  const roleMatches = project?.roles?.map((projectRole: ProjectRole) => {
-    const role: Role = {
-      role_id: projectRole.role_id,
-      name: projectRole.name || projectRole.role_name || '',
-      description: projectRole.description || projectRole.role_description || '',
-      skills: projectRole.skills || [],
+  const roleMatches = roles?.map((role: ProjectRole) => {
+    if (!employee) return {
+      ...role,
+      matchPercentage: 0,
+      matchedSkills: [],
+      name: role.name || role.role_name || 'Unnamed Role',
+      description: role.description || role.role_description || '',
+      skills: role.skills || [],
     };
 
     if (!employee) return { ...role, matchPercentage: 0, matchedSkills: [] };
 
     const matchedSkills = employee.skills.filter((empSkill: EmployeeSkill) =>
-      role.skills.some((roleSkill: RoleSkill) =>
+      role.skills?.some((roleSkill: RoleSkill) =>
         (roleSkill.skill_name || '').toLowerCase() === empSkill.skill_name.toLowerCase(),
       ),
     );
 
-    const matchPercentage = role.skills.length > 0
-      ? (matchedSkills.length / role.skills.length) * 100
+    const matchPercentage = (role.skills?.length || 0) > 0
+      ? (matchedSkills.length / (role.skills?.length || 1)) * 100
       : 0;
 
     return {
-      ...role,
+      role_id: role.role_id,
+      name: role.name || role.role_name || 'Unnamed Role',
+      description: role.description || role.role_description || '',
+      skills: role.skills || [],
       matchPercentage: Math.round(matchPercentage),
       matchedSkills,
     };
@@ -228,7 +224,7 @@ export default function EmployeeRoleComparisonPage() {
           <h2 className="text-xl font-bold mb-4">Project Role Compatibility</h2>
           <div className="space-y-4">
             {roleMatches && roleMatches.length > 0 ? (
-              roleMatches.map((role: RoleMatch) => (
+              roleMatches.map((role) => (
                 <div key={role.role_id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-medium">{role.name}</h3>

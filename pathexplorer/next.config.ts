@@ -141,6 +141,18 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills',
       },
       {
+        source: '/api/project-roles/:projectId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:projectId',
+      },
+      {
+        source: '/api/ai/feedback',
+        destination: 'https://pathexplorer.vercel.app/ai/feedback',
+      },
+      {
+        source: '/api/ai/certifications',
+        destination: 'https://pathexplorer.vercel.app/ai/certifications',
+      },
+      {
         source: '/api/assignments/pending-assignments',
         destination: 'https://pathexplorer.vercel.app/assignments/pending-assignments',
       },
@@ -151,7 +163,7 @@ const nextConfig: NextConfig = {
       {
         source: '/api/assignments/:assignment_id/reject',
         destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/reject',
-      }
+      },
     ];
   },
 };
