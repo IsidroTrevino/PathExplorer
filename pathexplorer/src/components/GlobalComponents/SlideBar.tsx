@@ -32,8 +32,15 @@ export const SideBar = () => {
   const getActiveStateFromPath = (path: string) => {
     if (path.includes('/user/basic-info')) {
       return 'basic';
-    } else if (path.includes('/user/profesional-path')) {
-      if (path === '/user/profesional-path') {
+    }
+    else if (path.includes('/user/role-assignment')) {
+      return 'request';
+    }
+    else if (path.includes('/user/dashboard')) {
+      return 'dashboard';
+    }
+    else if (path.includes('/user/profesional-path')) {
+      if (path === '/user/dashboard') {
         return 'dashboard';
       } else if (path.includes('curriculum')) {
         return 'curriculum';
@@ -104,7 +111,7 @@ export const SideBar = () => {
         key: 'dashboard',
         label: 'Dashboard',
         icon: <HiOutlineHome />,
-        path: '/user/profesional-path',
+        path: '/user/dashboard',
       },
     ];
 
@@ -119,7 +126,7 @@ export const SideBar = () => {
     else if (role === 'tfs' || role === UserRole.TFS.toLowerCase()) {
       items.push(
         { key: 'basic', label: 'Basic Information', icon: <MdOutlineFingerprint />, path: '/user/basic-info' },
-        { key: 'request', label: 'Request', icon: <FaUsers />, path: '/user/profesional-path' },
+        { key: 'request', label: 'Request', icon: <FaUsers />, path: '/user/role-assignment' },
       );
     }
     else {
