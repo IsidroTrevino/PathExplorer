@@ -10,8 +10,8 @@ import { ProjectFilters } from '@/components/GlobalComponents/projectFilters';
 import { Project, useGetProjects } from '@/features/projects/useGetProjects';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { EditProjectModal } from '@/features/projects/editProjectModal';
-import { useDeleteProject } from '@/features/projects/useDeleteProject';
-import { toast } from 'sonner';
+import { AddRoleSkillModal } from '@/features/projects/AddRoleSkillModal';
+
 import {
   Pagination,
   PaginationContent,
@@ -19,12 +19,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useUser } from '@/features/context/userContext';
 
 export default function ProjectsPage() {
   const { isOpen, onOpen, onClose } = useCreateProjectModal();
-  const { deleteProject } = useDeleteProject();
   const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { userAuth } = useUser();
+  const [currentProject] = useState<Project | null>(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -32,6 +34,8 @@ export default function ProjectsPage() {
   const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
+
+  const isProjectCreator = userAuth?.userId === currentProject?.manager_id;
 
   const {
     data: projects,
@@ -75,23 +79,6 @@ export default function ProjectsPage() {
   const handleEdit = (project: Project) => {
     setProjectToEdit(project);
     setIsEditModalOpen(true);
-  };
-
-  const handleDelete = async (projectId: string) => {
-    if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-      try {
-        const success = await deleteProject(projectId);
-        if (success) {
-          toast.success('Project deleted successfully');
-          await refetch();
-        } else {
-          toast.error('Failed to delete the project. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error deleting project:', error);
-        toast.error('An unexpected error occurred.');
-      }
-    }
   };
 
   const handleClearFilters = () => {
@@ -149,7 +136,7 @@ export default function ProjectsPage() {
                 key={project.id}
                 project={project}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onRefresh={refetch}
               />
             ))}
           </div>
@@ -202,6 +189,11 @@ export default function ProjectsPage() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         project={projectToEdit}
+        onSuccess={refetch}
+      />
+
+      <AddRoleSkillModal
+        isProjectCreator={isProjectCreator}
         onSuccess={refetch}
       />
     </div>

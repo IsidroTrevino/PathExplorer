@@ -23,6 +23,7 @@ export default function EmployeesPage() {
     role: roleFilter,
     alphabetical,
     search: searchTerm,
+    assigned: null,
   });
 
   const handlePageChange = (page: number) => {

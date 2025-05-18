@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MoreHorizontal, Search, EyeIcon, Trash2Icon } from 'lucide-react';
+import { MoreHorizontal, Search, EyeIcon, Trash2Icon, UserPlus, BarChart2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   Pagination,
@@ -36,6 +36,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Employee } from '@/features/user/useGetEmployees';
+import { useRouter } from 'next/navigation';
 
 interface EmployeeTableProps {
   data: Employee[];
@@ -51,6 +52,9 @@ interface EmployeeTableProps {
   currentSearch?: string | null;
   currentRole?: string | null;
   currentAlphabetical?: boolean | null;
+  variant?: 'default' | 'available';
+  onRequestEmployeeOpen?: (employee: Employee) => void;
+  projectId?: string; // Added projectId parameter
 }
 
 export function EmployeeTable({
@@ -63,11 +67,15 @@ export function EmployeeTable({
   onRoleFilter,
   onSort,
   onDelete,
+  onRequestEmployeeOpen,
+  variant = 'default',
+  projectId, // Accept projectId parameter
 }: EmployeeTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [isAlphabetical, setIsAlphabetical] = useState(false);
   const debouncedSearchRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -157,15 +165,19 @@ export function EmployeeTable({
                 <TableHead>
                   <div className="flex items-center">Role</div>
                 </TableHead>
-                <TableHead>
-                  <div className="flex items-center">Project</div>
-                </TableHead>
-                <TableHead>
-                  <div className="flex items-center">Status</div>
-                </TableHead>
-                <TableHead>
-                  <div className="flex items-center">Assignment</div>
-                </TableHead>
+                {variant === 'default' && (
+                  <>
+                    <TableHead>
+                      <div className="flex items-center">Project</div>
+                    </TableHead>
+                    <TableHead>
+                      <div className="flex items-center">Status</div>
+                    </TableHead>
+                    <TableHead>
+                      <div className="flex items-center">Assignment</div>
+                    </TableHead>
+                  </>
+                )}
                 <TableHead className="w-[70px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -185,20 +197,24 @@ export function EmployeeTable({
                     <TableCell>
                       <Skeleton className={`h-5 w-[${70 + (i % 4) * 8}px] bg-gray-200`} />
                     </TableCell>
-                    <TableCell>
-                      <Skeleton className={`h-5 w-[${100 + (i % 3) * 15}px] bg-gray-200`} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-20 rounded-full bg-blue-100" />
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-2">
-                        <Skeleton className="h-2.5 w-full rounded-full bg-gray-200" />
-                        <div className="flex justify-end">
-                          <Skeleton className="h-4 w-8 rounded-sm bg-gray-200" />
-                        </div>
-                      </div>
-                    </TableCell>
+                    {variant === 'default' && (
+                      <>
+                        <TableCell>
+                          <Skeleton className={`h-5 w-[${100 + (i % 3) * 15}px] bg-gray-200`} />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-6 w-20 rounded-full bg-blue-100" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-2">
+                            <Skeleton className="h-2.5 w-full rounded-full bg-gray-200" />
+                            <div className="flex justify-end">
+                              <Skeleton className="h-4 w-8 rounded-sm bg-gray-200" />
+                            </div>
+                          </div>
+                        </TableCell>
+                      </>
+                    )}
                     <TableCell className="flex justify-center">
                       <Skeleton className="h-8 w-8 rounded-md bg-gray-200" />
                     </TableCell>
@@ -206,7 +222,7 @@ export function EmployeeTable({
                 ))
               ) : data.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
+                  <TableCell colSpan={variant === 'default' ? 7 : 4} className="h-24 text-center">
                         No employees found.
                   </TableCell>
                 </TableRow>
@@ -218,23 +234,27 @@ export function EmployeeTable({
                     </TableCell>
                     <TableCell>{employee.position}</TableCell>
                     <TableCell>{employee.role}</TableCell>
-                    <TableCell>{employee.assigned_project}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(employee.status)}>
-                        {employee.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div
-                          className="bg-[#7500C0] h-2.5 rounded-full"
-                          style={{ width: `${employee.assignment_percentage}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        {employee.assignment_percentage}%
-                      </span>
-                    </TableCell>
+                    {variant === 'default' && (
+                      <>
+                        <TableCell>{employee.assigned_project}</TableCell>
+                        <TableCell>
+                          <Badge className={getStatusColor(employee.status)}>
+                            {employee.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div
+                              className="bg-[#7500C0] h-2.5 rounded-full"
+                              style={{ width: `${employee.assignment_percentage}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {employee.assignment_percentage}%
+                          </span>
+                        </TableCell>
+                      </>
+                    )}
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -243,15 +263,36 @@ export function EmployeeTable({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="cursor-pointer">
-                            <EyeIcon className="mr-2 h-4 w-4" /> View details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="cursor-pointer text-red-600"
-                            onClick={() => onDelete && onDelete(employee.id)}
-                          >
-                            <Trash2Icon className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
+                          {variant === 'default' ? (
+                            <>
+                              <DropdownMenuItem className="cursor-pointer">
+                                <EyeIcon className="mr-2 h-4 w-4" /> View details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer text-red-600"
+                                onClick={() => onDelete && onDelete(employee.id)}
+                              >
+                                <Trash2Icon className="mr-2 h-4 w-4" /> Delete
+                              </DropdownMenuItem>
+                            </>
+                          ) : (
+                            <>
+                              <DropdownMenuItem
+                                className="cursor-pointer text-[#7500C0]"
+                                onClick={() => onRequestEmployeeOpen?.(employee)}
+                              >
+                                <UserPlus className="mr-2 h-4 w-4" /> Request for project
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  router.push(`/user/projects/${projectId}/employee/${employee.id}`);
+                                }}
+                              >
+                                <BarChart2 className="mr-2 h-4 w-4" /> Compare with Role
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -277,7 +318,7 @@ export function EmployeeTable({
             </PaginationItem>
             <PaginationItem className="flex items-center">
               <span className="text-sm">
-    Page {currentPage ?? 1} of {totalPages ?? 1}
+                Page {currentPage ?? 1} of {totalPages ?? 1}
               </span>
             </PaginationItem>
             <PaginationItem>
