@@ -37,7 +37,12 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
         return 'Date not specified';
       }
 
-      const date = new Date(dateString);
+      const [year, month, day] = dateString.split('-').map(Number);
+      if (!year || !month || !day) {
+        return 'Invalid date';
+      }
+
+      const date = new Date(year, month - 1, day);
       if (isNaN(date.getTime())) {
         return 'Invalid date';
       }
