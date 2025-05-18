@@ -75,10 +75,10 @@ export function EditProjectModal({ isOpen, onClose, project, onSuccess }: EditPr
   useEffect(() => {
     if (project && isOpen) {
       form.reset({
-        projectName: project.projectName,
+        projectName: project.project_name,
         client: project.client,
-        startDate: new Date(project.startDate),
-        endDate: new Date(project.endDate),
+        startDate: new Date(project.start_date),
+        endDate: new Date(project.end_date),
         employees_req: project.employees_req,
         description: project.description,
       });

@@ -1,25 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 
+export interface Role {
+  role_id: number;
+  role_name: string;
+  role_description: string;
+  role_feedback: string;
+  assignment_id: number | null;
+  assignment_status: string | null;
+  developer_id: number | null;
+  developer_short_name: string | null;
+}
+
 export interface Project {
-    id: string;
-    projectName: string;
-    client: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    employees_req: number;
-    manager_id?: number;
-    project_id?: number;
+  id: string;
+  project_name: string;
+  client: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  employees_req: number;
+  manager_id?: number;
+  project_id?: number;
+  manager?: string;
+  roles?: Role[];
 }
 
 interface GetProjectsParams {
-    page?: number;
-    size?: number;
-    search?: string | null;
-    alphabetical?: boolean | null;
-    start_date?: string | null;
-    end_date?: string | null;
+  page?: number;
+  size?: number;
+  search?: string | null;
+  alphabetical?: boolean | null;
+  start_date?: string | null;
+  end_date?: string | null;
 }
 
 export function useGetProjects({
@@ -66,13 +79,16 @@ export function useGetProjects({
 
       const projects: Project[] = result.items?.map((project: Project) => ({
         id: project.project_id?.toString(),
-        projectName: project.projectName,
+        project_name: project.project_name,
         client: project.client,
         description: project.description,
-        startDate: project.startDate,
-        endDate: project.endDate,
+        start_date: project.start_date,
+        end_date: project.end_date,
         employees_req: project.employees_req,
         manager_id: project.manager_id,
+        manager: project.manager,
+        roles: project.roles || [],
+        project_id: project.project_id,
       })) || [];
 
       setData(projects);

@@ -72,12 +72,97 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/goals/my-goals',
       },
       {
+        source: '/api/skills/update/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/update/:id',
+      },
+      {
+        source: '/api/skills/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/skills/delete/:id',
+      },
+      {
+        source: '/api/goals/update/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/update/:id',
+      },
+      {
+        source: '/api/goals/delete/:id',
+        destination: 'https://pathexplorer.vercel.app/goals/delete/:id',
+      },
+      {
         source: '/api/certifications/expiring',
         destination: 'https://pathexplorer.vercel.app/certifications/expiring',
       },
       {
         source: '/api/certifications/update/:id',
         destination: 'https://pathexplorer.vercel.app/certifications/update/:id',
+      },
+      {
+        source: '/api/r2/upload',
+        destination: '/api/r2/upload',
+      },
+      {
+        source: '/api/r2/download',
+        destination: '/api/r2/download',
+      },
+      {
+        source: '/api/curriculum',
+        destination: 'https://pathexplorer.vercel.app/curriculum',
+        basePath: false,
+      },
+      {
+        source: '/api/r2/delete',
+        destination: '/api/r2/delete',
+      },
+      {
+        source: '/api/project-roles',
+        destination: 'https://pathexplorer.vercel.app/project-roles/',
+      },
+      {
+        source: '/api/assignments',
+        destination: 'https://pathexplorer.vercel.app/assignments/',
+      },
+      {
+        source: '/api/project-roles/:project_id',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:project_id',
+      },
+      {
+        source: '/api/project-roles/roles',
+        destination: 'https://pathexplorer.vercel.app/project-roles/roles',
+      },
+      {
+        source: '/api/project-roles/:role_id',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:role_id',
+      },
+      {
+        source: '/api/users/profile/:id',
+        destination: 'https://pathexplorer.vercel.app/users/profile/:id',
+      },
+      {
+        source: '/api/project-roles/:roleId/skills',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills',
+      },
+      {
+        source: '/api/project-roles/:projectId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:projectId',
+      },
+      {
+        source: '/api/ai/feedback',
+        destination: 'https://pathexplorer.vercel.app/ai/feedback',
+      },
+      {
+        source: '/api/ai/certifications',
+        destination: 'https://pathexplorer.vercel.app/ai/certifications',
+      },
+      {
+        source: '/api/assignments/pending-assignments',
+        destination: 'https://pathexplorer.vercel.app/assignments/pending-assignments',
+      },
+      {
+        source: '/api/assignments/:assignment_id/approve',
+        destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/approve',
+      },
+      {
+        source: '/api/assignments/:assignment_id/reject',
+        destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/reject',
       },
     ];
   },

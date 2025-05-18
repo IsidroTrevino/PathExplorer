@@ -4,55 +4,63 @@ import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 
 interface APIEmployeeResponse {
-    items: APIEmployee[];
-    total: number;
-    page: number;
-    size: number;
-    pages: number;
+  items: APIEmployee[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
 }
 
-export interface APIEmployee {
-    name: string;
-    last_name_1: string;
-    last_name_2: string;
-    phone_number: string;
-    location: string;
-    capability: string;
-    position: string;
-    seniority: number;
-    role: string;
+interface APIEmployee {
+  employee_id: number;
+  name: string;
+  last_name_1: string;
+  last_name_2: string;
+  phone_number: string;
+  location: string;
+  capability: string;
+  position: string;
+  seniority: number;
+  role: string;
+  project: {
+    project_id: number;
+    project_name: string;
+    project_start_date: string;
+    project_end_date: string;
+  } | null;
+  assignment_status: string;
+  days_since_last_project: number;
 }
 
 export interface Employee {
-    id: number;
-    name: string;
-    last_name_1: string;
-    position: string;
-    role: string;
-    assigned_project: string;
-    status: 'Assigned' | 'Staff';
-    assignment_percentage: number;
+  id: number;
+  name: string;
+  last_name_1: string;
+  position: string;
+  role: string;
+  assigned_project: string;
+  status: 'Assigned' | 'Staff';
+  assignment_percentage: number;
 }
 
 interface UseGetEmployeesParams {
-    page?: number;
-    size?: number;
-    role?: string | null;
-    alphabetical?: boolean | null;
-    search?: string | null;
+  page?: number;
+  size?: number;
+  role?: string | null;
+  alphabetical?: boolean | null;
+  search?: string | null;
+  assigned?: boolean | null;
 }
 
 interface EmployeesResponse {
-    data: Employee[];
-    totalPages: number;
-    currentPage: number;
-    totalItems: number;
-    loading: boolean;
-    error: string | null;
-    refetch: () => Promise<void>;
+  data: Employee[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+  loading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
 }
-
-const DUMMY_PROJECTS = ['PathExplorer', 'Client Portal', 'Internal Tools', 'Data Analytics', 'Mobile App', 'None'];
 
 export function useGetEmployees({
   page = 1,
@@ -60,6 +68,7 @@ export function useGetEmployees({
   role = null,
   alphabetical = null,
   search = null,
+  assigned = null,
 }: UseGetEmployeesParams = {}): EmployeesResponse {
   const [data, setData] = useState<Employee[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -67,14 +76,26 @@ export function useGetEmployees({
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { userAuth } = useUser();
+  const { userAuth, isLoading: isAuthLoading } = useUser();
+  const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false);
 
   const fetchEmployees = useCallback(async () => {
+    if (!userAuth?.accessToken) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setHasAttemptedFetch(true);
 
     try {
+      // Base URL
       let url = `/api/users?page=${page}&size=${size}`;
+
+      // Only add assigned param if it's explicitly set
+      if (assigned !== null) {
+        url += `&assigned=${assigned}`;
+      }
 
       if (role) {
         url += `&role=${role}`;
@@ -92,7 +113,7 @@ export function useGetEmployees({
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userAuth?.accessToken}`,
+          'Authorization': `Bearer ${userAuth.accessToken}`,
         },
       });
 
@@ -102,26 +123,16 @@ export function useGetEmployees({
 
       const apiData: APIEmployeeResponse = await response.json();
 
-      const enhancedData: Employee[] = apiData.items.map((emp, index) => {
-        const assignedProject = Math.random() < 0.2
-          ? 'None'
-          : DUMMY_PROJECTS[Math.floor(Math.random() * (DUMMY_PROJECTS.length - 1))];
-
-        const status = assignedProject === 'None' ? 'Staff' : 'Assigned';
-
-        const assignmentPercentage = assignedProject === 'None'
-          ? 0
-          : Math.floor(Math.random() * 51) + 50;
-
+      const enhancedData: Employee[] = apiData.items.map((emp: APIEmployee) => {
         return {
-          id: index + 1,
+          id: emp.employee_id,
           name: emp.name,
           last_name_1: emp.last_name_1,
           position: emp.position,
           role: emp.role,
-          assigned_project: assignedProject,
-          status,
-          assignment_percentage: assignmentPercentage,
+          assigned_project: emp.project ? emp.project.project_name : 'None',
+          status: emp.project ? 'Assigned' : 'Staff',
+          assignment_percentage: 0, // Default to 0%
         };
       });
 
@@ -135,22 +146,33 @@ export function useGetEmployees({
     } finally {
       setLoading(false);
     }
-  }, [page, size, role, alphabetical, search, userAuth]);
+  }, [page, size, role, alphabetical, search, assigned, userAuth]);
 
   useEffect(() => {
-    if (userAuth?.accessToken) {
+    // Reset error when auth is loading
+    if (isAuthLoading) {
+      setError(null);
+    }
+
+    // Only fetch when auth is loaded and we have a token
+    if (!isAuthLoading && userAuth?.accessToken) {
       fetchEmployees().catch(err => {
         console.error('Unhandled promise rejection:', err);
       });
     }
-  }, [fetchEmployees, userAuth]);
+    // Only show auth error if we've tried to fetch and auth is definitely done loading
+    else if (!isAuthLoading && hasAttemptedFetch && !userAuth?.accessToken) {
+      setLoading(false);
+      setError('Authentication required');
+    }
+  }, [fetchEmployees, userAuth, isAuthLoading, hasAttemptedFetch]);
 
   return {
     data,
     totalPages,
     currentPage,
     totalItems,
-    loading,
+    loading: loading || isAuthLoading, // Show loading while auth is loading
     error,
     refetch: fetchEmployees,
   };
