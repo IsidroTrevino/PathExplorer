@@ -3,20 +3,22 @@
 import { Button } from '@/components/ui/button';
 import { useGetAIRecommendations } from '../hooks/useGetAIRecommendations';
 import { RefreshCw, BrainCircuit, Lightbulb, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function AIRecommendationsSection() {
   const [shouldFetch, setShouldFetch] = useState(false);
-  const { data, loading, error, refetch } = useGetAIRecommendations({
-    skip: !shouldFetch,
-  });
+  const { data, loading, error, refetch } = useGetAIRecommendations();
+
+  useEffect(() => {
+    if (!shouldFetch && loading) {
+      refetch();
+    }
+  }, [loading, shouldFetch, refetch]);
 
   const handleGetRecommendations = () => {
     setShouldFetch(true);
-    if (shouldFetch) {
-      refetch();
-    }
+    refetch();
   };
 
   if (!shouldFetch) {
@@ -48,7 +50,7 @@ export function AIRecommendationsSection() {
     );
   }
 
-  if (loading) {
+  if (loading && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -81,7 +83,7 @@ export function AIRecommendationsSection() {
     );
   }
 
-  if (error) {
+  if (error && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -104,7 +106,7 @@ export function AIRecommendationsSection() {
     );
   }
 
-  if (!data || !data.feedback || data.feedback.length === 0) {
+  if ((!data || !data.feedback || data.feedback.length === 0) && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -122,6 +124,45 @@ export function AIRecommendationsSection() {
           >
               Try Again
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (data && data.feedback && data.feedback.length > 0 && shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
+          <Button
+            onClick={handleGetRecommendations}
+            variant="outline"
+            size="sm"
+            className="text-xs"
+          >
+            <RefreshCw className="h-3 w-3 mr-1" />
+              Refresh
+          </Button>
+        </div>
+        <div className="p-5">
+          <div className="rounded-lg border bg-card p-5 mb-5">
+            <p className="text-gray-700">{data.message}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {data.feedback.map((item, index) => (
+              <div
+                key={index}
+                className="rounded-lg border bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-semibold text-[#7500C0] mb-2">{item.action}</h3>
+                <p className="text-sm text-gray-600">{item.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -129,37 +170,27 @@ export function AIRecommendationsSection() {
 
   return (
     <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
             AI Career Recommendations
         </h2>
+      </div>
+      <div className="p-8 flex flex-col items-center justify-center text-center">
+        <div className="bg-[#f9f0ff] p-6 rounded-full mb-4">
+          <Lightbulb className="h-12 w-12 text-[#7500C0]" />
+        </div>
+        <h3 className="text-lg font-medium mb-2">Get Career Guidance</h3>
+        <p className="text-gray-600 mb-6 max-w-md">
+            Receive personalized recommendations to improve your professional growth based on your experience and skills.
+        </p>
         <Button
           onClick={handleGetRecommendations}
-          variant="outline"
-          size="sm"
-          className="text-xs"
+          className="bg-[#7500C0] hover:bg-[#6200a0] text-white px-6"
         >
-          <RefreshCw className="h-3 w-3 mr-1" />
-            Refresh
+          <BrainCircuit className="h-4 w-4 mr-2" />
+            Generate Recommendations
         </Button>
-      </div>
-      <div className="p-5">
-        <div className="rounded-lg border bg-card p-5 mb-5">
-          <p className="text-gray-700">{data.message}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {data.feedback.map((item, index) => (
-            <div
-              key={index}
-              className="rounded-lg border bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <h3 className="font-semibold text-[#7500C0] mb-2">{item.action}</h3>
-              <p className="text-sm text-gray-600">{item.description}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
