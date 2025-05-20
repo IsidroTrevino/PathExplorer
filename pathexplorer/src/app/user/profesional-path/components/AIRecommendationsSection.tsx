@@ -2,82 +2,196 @@
 
 import { Button } from '@/components/ui/button';
 import { useGetAIRecommendations } from '../hooks/useGetAIRecommendations';
-import { Loader2, RefreshCw, BrainCircuit } from 'lucide-react';
+import { RefreshCw, BrainCircuit, Lightbulb, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function AIRecommendationsSection() {
+  const [shouldFetch, setShouldFetch] = useState(false);
   const { data, loading, error, refetch } = useGetAIRecommendations();
-  const [hasInitialFetch, setHasInitialFetch] = useState(false);
 
   useEffect(() => {
-    if (data && !hasInitialFetch) {
-      setHasInitialFetch(true);
+    if (!shouldFetch && loading) {
+      refetch();
     }
-  }, [data, hasInitialFetch]);
+  }, [loading, shouldFetch, refetch]);
 
-  const handleFetchRecommendations = () => {
-    setHasInitialFetch(true);
+  const handleGetRecommendations = () => {
+    setShouldFetch(true);
     refetch();
   };
 
-  const shouldShowData = hasInitialFetch && data;
-
-  return (
-    <div className="mt-12 space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">AI Career Recommendations</h2>
-        <Button
-          onClick={handleFetchRecommendations}
-          variant="outline"
-          disabled={loading}
-          className="flex items-center gap-2"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-                            Loading...
-            </>
-          ) : (
-            <>
-              {shouldShowData ? (
-                <RefreshCw className="h-4 w-4" />
-              ) : (
-                <BrainCircuit className="h-4 w-4" />
-              )}
-              {shouldShowData ? 'Refresh Recommendations' : 'Get AI Recommendations'}
-            </>
-          )}
-        </Button>
-      </div>
-
-      {hasInitialFetch && error && (
-        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
-          {error}
+  if (!shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
         </div>
-      )}
+        <div className="p-8 flex flex-col items-center justify-center text-center">
+          <div className="bg-[#f9f0ff] p-6 rounded-full mb-4">
+            <Lightbulb className="h-12 w-12 text-[#7500C0]" />
+          </div>
+          <h3 className="text-lg font-medium mb-2">Get Career Guidance</h3>
+          <p className="text-gray-600 mb-6 max-w-md">
+              Receive personalized recommendations to improve your professional growth based on your experience and skills.
+          </p>
+          <Button
+            onClick={handleGetRecommendations}
+            className="bg-[#7500C0] hover:bg-[#6200a0] text-white px-6"
+          >
+            <BrainCircuit className="h-4 w-4 mr-2" />
+              Generate Recommendations
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-      {shouldShowData && (
-        <div className="space-y-6">
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-card-foreground">{data.message}</p>
+  if (loading && shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
+        </div>
+        <div className="p-4">
+          <div className="flex items-center justify-center mb-6">
+            <div className="bg-[#f9f0ff] px-4 py-2 rounded-full flex items-center">
+              <RefreshCw className="h-4 w-4 text-[#7500C0] mr-2 animate-spin" />
+              <span className="text-sm text-[#7500C0] font-medium">Generating recommendations...</span>
+            </div>
+          </div>
+          <div>
+            <Skeleton className="h-24 w-full mb-6 rounded-md" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {Array(4).fill(0).map((_, i) => (
+                <div key={`skeleton-${i}`} className="rounded-lg border p-4">
+                  <Skeleton className="h-5 w-3/4 mb-3" />
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
+        </div>
+        <div className="p-8 flex flex-col items-center justify-center text-center">
+          <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+          <p className="text-gray-600 mb-4">No recommendations available for you right now</p>
+          <Button
+            onClick={handleGetRecommendations}
+            className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
+          >
+              Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if ((!data || !data.feedback || data.feedback.length === 0) && shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
+        </div>
+        <div className="p-8 flex flex-col items-center justify-center text-center">
+          <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+          <p className="text-gray-600 mb-4">No recommendations available for you right now</p>
+          <Button
+            onClick={handleGetRecommendations}
+            className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
+          >
+              Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (data && data.feedback && data.feedback.length > 0 && shouldFetch) {
+    return (
+      <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+              AI Career Recommendations
+          </h2>
+          <Button
+            onClick={handleGetRecommendations}
+            variant="outline"
+            size="sm"
+            className="text-xs"
+          >
+            <RefreshCw className="h-3 w-3 mr-1" />
+              Refresh
+          </Button>
+        </div>
+        <div className="p-5">
+          <div className="rounded-lg border bg-card p-5 mb-5">
+            <p className="text-gray-700">{data.message}</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {data.feedback.map((item, index) => (
-              <div key={index} className="rounded-lg border bg-card p-4 shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-lg mb-2 text-[#7500C0]">{item.action}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
+              <div
+                key={index}
+                className="rounded-lg border bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-semibold text-[#7500C0] mb-2">{item.action}</h3>
+                <p className="text-sm text-gray-600">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {!shouldShowData && !loading && (
-        <div className="rounded-lg border bg-card p-6 text-center">
-          <p className="text-muted-foreground">Click the button to get personalized AI recommendations for your career path.</p>
+  return (
+    <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
+      <div className="p-4 border-b border-gray-200">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <BrainCircuit className="h-5 w-5 text-[#7500C0]" />
+            AI Career Recommendations
+        </h2>
+      </div>
+      <div className="p-8 flex flex-col items-center justify-center text-center">
+        <div className="bg-[#f9f0ff] p-6 rounded-full mb-4">
+          <Lightbulb className="h-12 w-12 text-[#7500C0]" />
         </div>
-      )}
+        <h3 className="text-lg font-medium mb-2">Get Career Guidance</h3>
+        <p className="text-gray-600 mb-6 max-w-md">
+            Receive personalized recommendations to improve your professional growth based on your experience and skills.
+        </p>
+        <Button
+          onClick={handleGetRecommendations}
+          className="bg-[#7500C0] hover:bg-[#6200a0] text-white px-6"
+        >
+          <BrainCircuit className="h-4 w-4 mr-2" />
+            Generate Recommendations
+        </Button>
+      </div>
     </div>
   );
 }
