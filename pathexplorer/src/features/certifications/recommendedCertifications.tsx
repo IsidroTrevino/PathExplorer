@@ -2,23 +2,24 @@ import { useGetAICertificationRecommendations } from './useGetAICertificationRec
 import { RecommendedCertificationCard } from './recommendedCertificationCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Lightbulb, RefreshCw, Award } from 'lucide-react';
 
 export function RecommendedCertifications() {
   const [shouldFetch, setShouldFetch] = useState(false);
-  const { data, loading, error, refetch } = useGetAICertificationRecommendations({
-    skip: !shouldFetch,
-  });
+  const { data, loading, error, refetch } = useGetAICertificationRecommendations();
+
+  useEffect(() => {
+    if (!shouldFetch && loading) {
+      refetch();
+    }
+  }, [loading, shouldFetch, refetch]);
 
   const handleGetRecommendations = () => {
     setShouldFetch(true);
-    if (shouldFetch) {
-      refetch();
-    }
+    refetch();
   };
 
-  // Initial state - show button to get recommendations
   if (!shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
@@ -48,8 +49,7 @@ export function RecommendedCertifications() {
     );
   }
 
-  // Loading state
-  if (loading) {
+  if (loading && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -86,8 +86,7 @@ export function RecommendedCertifications() {
     );
   }
 
-  // Error state
-  if (error) {
+  if (error && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -109,8 +108,7 @@ export function RecommendedCertifications() {
     );
   }
 
-  // Empty state
-  if (!data || data.certifications.length === 0) {
+  if ((!data || data.certifications.length === 0) && shouldFetch) {
     return (
       <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-200">
@@ -132,7 +130,6 @@ export function RecommendedCertifications() {
     );
   }
 
-  // Success state with recommendations
   return (
     <div className="mt-8 bg-white rounded-lg border shadow-sm overflow-hidden">
       <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -152,7 +149,7 @@ export function RecommendedCertifications() {
       </div>
       <div className="p-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {data.certifications.map((certification, index) => (
+          {data?.certifications.map((certification, index) => (
             <RecommendedCertificationCard
               key={`${certification.name}-${index}`}
               certification={certification}
