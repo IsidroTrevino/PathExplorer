@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import { useGetEmployeeProfile } from '@/features/user/useGetEmployeeProfile';
@@ -40,60 +41,69 @@ export default function EmployeeRoleComparisonPage() {
       useGetEmployeeProfile(employeeId);
   const { project, loading: projectLoading, error: projectError } =
       useGetProject(projectId);
-  const { roles, loading: rolesLoading, error: rolesError } =
+  const { roles, loading: rolesLoading } =
       useGetRoles(projectId);
 
   const isLoading = employeeLoading || projectLoading || rolesLoading;
-  const error = employeeError || projectError || rolesError;
+  const criticalError = employeeError || projectError;
 
   const handleGoBack = () => {
     router.back();
   };
 
-  const roleMatches = roles?.map((role: ProjectRole) => {
-    if (!employee) return {
-      ...role,
-      matchPercentage: 0,
-      matchedSkills: [],
-      name: role.name || role.role_name || 'Unnamed Role',
-      description: role.description || role.role_description || '',
-      skills: role.skills || [],
-    };
+  const roleMatches = React.useMemo(() => {
+    if (!roles || !Array.isArray(roles) || roles.length === 0) {
+      return [];
+    }
 
-    if (!employee) return { ...role, matchPercentage: 0, matchedSkills: [] };
+    if (!employee) {
+      return roles.map((role: ProjectRole) => ({
+        ...role,
+        role_id: role.role_id,
+        matchPercentage: 0,
+        matchedSkills: [],
+        name: role.name || role.role_name || 'Unnamed Role',
+        description: role.description || role.role_description || '',
+        skills: role.skills || [],
+      }));
+    }
 
-    const matchedSkills = employee.skills.filter((empSkill: EmployeeSkill) =>
-      role.skills?.some((roleSkill: RoleSkill) =>
-        (roleSkill.skill_name || '').toLowerCase() === empSkill.skill_name.toLowerCase(),
-      ),
-    );
+    return roles.map((role: ProjectRole) => {
+      const roleSkills = role.skills || [];
 
-    const matchPercentage = (role.skills?.length || 0) > 0
-      ? (matchedSkills.length / (role.skills?.length || 1)) * 100
-      : 0;
+      const matchedSkills = employee.skills.filter((empSkill: EmployeeSkill) =>
+        roleSkills.some((roleSkill: RoleSkill) =>
+          (roleSkill.skill_name || '').toLowerCase() === empSkill.skill_name.toLowerCase(),
+        ),
+      );
 
-    return {
-      role_id: role.role_id,
-      name: role.name || role.role_name || 'Unnamed Role',
-      description: role.description || role.role_description || '',
-      skills: role.skills || [],
-      matchPercentage: Math.round(matchPercentage),
-      matchedSkills,
-    };
-  })?.sort((a, b) => b.matchPercentage - a.matchPercentage);
+      const matchPercentage = roleSkills.length > 0
+        ? (matchedSkills.length / roleSkills.length) * 100
+        : 0;
+
+      return {
+        role_id: role.role_id,
+        name: role.name || role.role_name || 'Unnamed Role',
+        description: role.description || role.role_description || '',
+        skills: roleSkills,
+        matchPercentage: Math.round(matchPercentage),
+        matchedSkills,
+      };
+    }).sort((a, b) => b.matchPercentage - a.matchPercentage);
+  }, [roles, employee]);
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen w-screen">
+      <div className="flex justify-center items-center h-screen w-full">
         <Loader className="size-5 text-primary animate-spin w-screen" />
       </div>
     );
   }
 
-  if (error) {
+  if (criticalError) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="p-8 text-red-500">{error}</div>
+      <div className="flex justify-center items-center h-screen w-full">
+        <div className="p-8 text-red-500">{criticalError}</div>
       </div>
     );
   }
@@ -223,7 +233,7 @@ export default function EmployeeRoleComparisonPage() {
         <div className="mt-6 bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold mb-4">Project Role Compatibility</h2>
           <div className="space-y-4">
-            {roleMatches && roleMatches.length > 0 ? (
+            {roleMatches.length > 0 ? (
               roleMatches.map((role) => (
                 <div key={role.role_id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-center mb-2">
@@ -257,7 +267,10 @@ export default function EmployeeRoleComparisonPage() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No roles found for this project</p>
+              <div className="text-center p-6 bg-gray-50 rounded-lg">
+                <p className="text-gray-500 text-lg">No roles found for this project</p>
+                <p className="text-gray-400 mt-2">This project doesn't have any defined roles yet.</p>
+              </div>
             )}
           </div>
         </div>
