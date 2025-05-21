@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'jest-puppeteer',
-  testMatch: ['**/tests/e2e/**/*.test.{js,ts,tsx}', '**/src/tests/e2e/**/*.test.{js,ts,tsx}'],
+  testMatch: ['**/tests/e2e/**/*.test.e2e.{js,ts,tsx}', '**/src/tests/e2e/**/*.test.e2e.{js,ts,tsx}'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
