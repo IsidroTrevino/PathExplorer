@@ -9,3 +9,4 @@ fastapi.security
 datetime
 python-multipart
 fastapi-pagination
+openai

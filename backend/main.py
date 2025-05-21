@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
 # Routers
-from routers import auth, users, profile, otp, projects, skills, goals, certifications
+from routers import auth, users, profile, otp, projects, skills, goals, certifications, assigment, projectrole, curriculum, ai
 
 app = FastAPI()
 
@@ -15,5 +15,9 @@ app.include_router(projects.router)
 app.include_router(skills.router)
 app.include_router(goals.router)
 app.include_router(certifications.router)
+app.include_router(assigment.router)
+app.include_router(projectrole.router)
+app.include_router(curriculum.router)
+app.include_router(ai.router)
 
 add_pagination(app)

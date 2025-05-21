@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas import User, UserEdit, EmployeeRegistered
-from models import User as UserModel, Employee
+from datetime import date
+from schemas import User, UserEdit, EmployeeRegistered, RoleDeveloper, ProfileResponse, ProjectInfo, CertificationResponse, SkillResponse
+from models import User as UserModel, Employee, RoleDeveloper, Project, Certification, Skill, Assignment
 from dependencies import get_current_user, get_db
 from utils import hash_password
 
@@ -67,3 +68,4 @@ def edit_user(user_edit: UserEdit, current_user: User = Depends(get_current_user
 
     db.commit()
     return {"message": "User updated successfully"}
+    

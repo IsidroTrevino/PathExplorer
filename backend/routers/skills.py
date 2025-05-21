@@ -12,14 +12,14 @@ def add_skill(skill: SkillCreate, db: Session = Depends(get_db), current_user: U
     employee = db.query(Employee).filter(Employee.user_id == current_user.id).first()
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
-    new_skill = Skill(name=skill.name, level=skill.level, type=skill.type, employee_id=employee.employee_id)
+    new_skill = Skill(skill_name=skill.skill_name, level=skill.level, type=skill.type, employee_id=employee.employee_id)
     db.add(new_skill)
     db.commit()
     db.refresh(new_skill)
-    skill_id = db.query(Skill).filter(Skill.name == skill.name, Skill.employee_id == employee.employee_id).first().skill_id
+    skill_id = db.query(Skill).filter(Skill.skill_name == skill.skill_name, Skill.employee_id == employee.employee_id).first().skill_id
     skill_response = SkillResponse(
         skill_id=skill_id,
-        name=new_skill.name,
+        skill_name=new_skill.skill_name,
         level=new_skill.level,
         type=new_skill.type
     )
@@ -51,7 +51,7 @@ def update_skill(skill_id: int, skill_update: SkillCreate, db: Session = Depends
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
 
-    skill.name = skill_update.name
+    skill.skill_name = skill_update.skill_name
     skill.level = skill_update.level
     skill.type = skill_update.type
     db.commit()

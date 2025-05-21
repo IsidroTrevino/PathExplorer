@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_, func, and_
-from models import User, Employee, Project
+from sqlalchemy import or_, func, and_, case
+from models import User, Employee, Project, ProjectRole, Assignment
 from schemas import User as UserSchema, ProjectCreate, EmployeeRole, ProjectRegistered
 from dependencies import get_current_user, get_db
 from typing import Optional
@@ -10,8 +10,8 @@ from fastapi_pagination import Page, paginate
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
-@router.get("", response_model=Page[ProjectRegistered], status_code=200)
-def get_projects(
+@router.get("", response_model=Page[dict], status_code=200)
+def get_projects_with_roles(
     current_user: UserSchema = Depends(get_current_user),
     db: Session = Depends(get_db),
     alphabetical: bool = False,
@@ -47,19 +47,61 @@ def get_projects(
     if alphabetical:
         query = query.order_by(Project.projectname.asc())
 
-    result = [
-        ProjectRegistered(
-            project_id=p.project_id,
-            projectName=p.projectname,
-            client=p.client,
-            description=p.description,
-            startDate=p.startdate,
-            endDate=p.enddate,
-            employees_req=p.employees_req,
-            manager_id=p.manager_id,
-            manager=e.name + " " + e.last_name_1
-        ) for p, e in query.all()
-    ]
+    projects = query.all()
+
+    # Obtener los roles asociados a cada proyecto
+    result = []
+    for p, e in projects:
+        roles = db.query(
+            ProjectRole.role_id,
+            ProjectRole.name.label("role_name"),
+            ProjectRole.description.label("role_description"),
+            ProjectRole.feedback.label("role_feedback"),
+            Assignment.assignment_id.label("assignment_id"),
+            case(
+                (Assignment.status == "approved", "Assigned"),
+                else_="Unassigned"
+            ).label("assignment_status"),
+            case(
+                (Assignment.status == "approved", Employee.employee_id)
+            ).label("developer_id"),
+            case(
+                (Assignment.status == "approved", Employee.name + " " + Employee.last_name_1)
+            ).label("developer_short_name"),
+        ).join(
+            Assignment, Assignment.project_role_id == ProjectRole.role_id, isouter=True
+        ).join(
+            Employee, Employee.employee_id == Assignment.developer_id, isouter=True
+        ).filter(
+            ProjectRole.project_id == p.project_id
+        ).all()
+
+        roles_result = [
+            {
+                "role_id": role.role_id,
+                "role_name": role.role_name,
+                "role_description": role.role_description,
+                "role_feedback": role.role_feedback,
+                "assignment_id": role.assignment_id,
+                "assignment_status": role.assignment_status,
+                "developer_id": role.developer_id,
+                "developer_short_name": role.developer_short_name,
+            }
+            for role in roles
+        ]
+
+        result.append({
+            "project_id": p.project_id,
+            "project_name": p.projectname,
+            "client": p.client,
+            "description": p.description,
+            "start_date": p.startdate,
+            "end_date": p.enddate,
+            "employees_req": p.employees_req,
+            "manager_id": p.manager_id,
+            "manager": e.name + " " + e.last_name_1,
+            "roles": roles_result
+        })
 
     return paginate(result)
 
@@ -173,3 +215,4 @@ def delete_project(
     db.delete(project)
     db.commit()
     return
+

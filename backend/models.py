@@ -105,7 +105,7 @@ class Skill(Base):
     __tablename__ = "Skill"
 
     skill_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
+    skill_name = Column(String(100), nullable=False)
     level = Column(Integer, nullable=False)
     type = Column(SQLEnum(SkillType), nullable=False)
     employee_id = Column(Integer, ForeignKey("Employee.employee_id", ondelete="CASCADE"), nullable=False)
@@ -131,3 +131,41 @@ class Certification(Base):
     expiration_date = Column(Date, nullable=False)
     status = Column(String(50), nullable=False, default="active")
     employee_id = Column(Integer, ForeignKey("Employee.employee_id", ondelete="CASCADE"), nullable=False)
+    
+class Assignment(Base):
+    __tablename__ = "Assignment"
+
+    assignment_id = Column(Integer, primary_key=True, index=True, nullable=False)
+    request_date = Column(Date, nullable=False)
+    approval_date = Column(Date, nullable=True)
+    status = Column(String(50), nullable=False, default="pending")
+    comments = Column(Text, nullable=True)
+    tfs_id = Column(Integer, ForeignKey("TFS.employee_id", ondelete="SET NULL"), nullable=True)
+    manager_id = Column(Integer, ForeignKey("Manager.employee_id", ondelete="SET NULL"), nullable=True)
+    developer_id = Column(Integer, ForeignKey("Developer.employee_id", ondelete="SET NULL"), nullable=True)
+    project_role_id = Column(Integer, ForeignKey("ProjectRole.role_id", ondelete="SET NULL"), nullable=False)
+    project_id = Column(Integer, ForeignKey("Project.project_id", ondelete="SET NULL"), nullable=False)
+
+    # Relaciones
+    tfs = relationship("TFS", backref="assignments")
+    manager = relationship("Manager", backref="assignments")
+    developer = relationship("Developer", backref="assignments")
+    project_role = relationship("ProjectRole", backref="assignments")
+    project = relationship("Project", backref="assignments")
+    
+class Curriculum(Base):
+    __tablename__ = "Curriculum"
+
+    employee_id = Column(Integer,  ForeignKey("Employee.employee_id", ondelete="SET NULL"), nullable=True, primary_key=True)
+    file_key = Column(Text, nullable=False)
+
+    # Relación con Employee
+    employee = relationship("Employee", backref="curriculum")
+    
+class ProjectRoleSkill(Base):
+    __tablename__ = "ProjectRoleSkills"
+
+    role_id = Column(Integer, ForeignKey("ProjectRole.role_id", ondelete="CASCADE"), primary_key=True)
+    skill_name = Column(String(100), primary_key=True)
+    level = Column(Integer, nullable=False)
+    type = Column(SQLEnum(SkillType), nullable=False)
