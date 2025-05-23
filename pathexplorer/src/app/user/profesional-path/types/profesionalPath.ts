@@ -32,5 +32,6 @@ export interface UseGetAIRecommendationsResponse {
   data: AIRecommendation | null;
   loading: boolean;
   error: string | null;
-  refetch: () => void;
+  refetch: () => Promise<void>;
+  reset: () => void;
 }
