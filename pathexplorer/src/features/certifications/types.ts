@@ -14,4 +14,5 @@ export interface UseGetAICertificationRecommendationsResponse {
   loading: boolean;
   error: string | null;
   refetch: () => void;
+  reset: () => void;
 }
