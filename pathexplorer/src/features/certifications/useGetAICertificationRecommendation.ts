@@ -30,8 +30,13 @@ export function useGetAICertificationRecommendations(): UseGetAICertificationRec
     }
 
     if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
+      try {
+        abortControllerRef.current.abort();
+      } catch (e) {
+        console.error('Error aborting:', e);
+      } finally {
+        abortControllerRef.current = null;
+      }
     }
 
     inCooldown.current = false;
@@ -54,8 +59,13 @@ export function useGetAICertificationRecommendations(): UseGetAICertificationRec
     }
 
     if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
+      try {
+        abortControllerRef.current.abort();
+      } catch (e) {
+        console.error('Error during abort:', e);
+      } finally {
+        abortControllerRef.current = null;
+      }
     }
 
     abortControllerRef.current = new AbortController();
@@ -123,7 +133,11 @@ export function useGetAICertificationRecommendations(): UseGetAICertificationRec
       }
 
       if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+        try {
+          abortControllerRef.current.abort();
+        } catch (e) {
+          console.error('Error during unmount abort:', e);
+        }
         abortControllerRef.current = null;
       }
     };
