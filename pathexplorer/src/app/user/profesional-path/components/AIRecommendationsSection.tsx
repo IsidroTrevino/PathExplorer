@@ -14,7 +14,6 @@ export function AIRecommendationsSection() {
     if (!shouldFetch && loading) {
       refetch();
     }
-
   }, [loading, shouldFetch, refetch]);
 
   const handleGetRecommendations = () => {
