@@ -164,6 +164,18 @@ const nextConfig: NextConfig = {
         source: '/api/assignments/:assignment_id/reject',
         destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/reject',
       },
+      {
+        source: '/api/stats/employee/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/employee/summary',
+      },
+      {
+        source: '/api/stats/manager/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/manager/summary',
+      },
+      {
+        source: '/api/stats/tfs/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/tfs/summary',
+      },
     ];
   },
 };
