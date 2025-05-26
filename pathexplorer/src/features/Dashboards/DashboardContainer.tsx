@@ -2,13 +2,17 @@
 
 import { useUser } from '@/features/context/userContext';
 import { DeveloperDashboard } from '@/features/Dashboards/DeveloperDashboard';
+import { ManagerDashboard } from '@/features/Dashboards/ManagerDashboard';
+import { TFSDashboard } from '@/features/Dashboards/TFSDashboard';
 
 export function DashboardContainer() {
   const { userDetails } = useUser();
 
   const role = userDetails?.role?.toLowerCase();
 
-  const dashboardTitle = `${role?.charAt(0).toUpperCase()! + role?.slice(1)!} Dashboard`;
+  const dashboardTitle = role
+    ? `${role.charAt(0).toUpperCase() + role.slice(1)} Dashboard`
+    : 'Dashboard';
 
   if (role === 'developer') {
     return (
@@ -19,13 +23,28 @@ export function DashboardContainer() {
     );
   }
 
+  if (role === 'manager') {
+    return (
+      <>
+        <h2 className="text-2xl font-bold tracking-tight mb-4">{dashboardTitle}</h2>
+        <ManagerDashboard />
+      </>
+    );
+  }
+
+  if (role === 'tfs') {
+    return (
+      <>
+        <h2 className="text-2xl font-bold tracking-tight mb-4">{dashboardTitle}</h2>
+        <TFSDashboard />
+      </>
+    );
+  }
+
   return (
     <>
-      <h2 className="text-2xl font-bold tracking-tight mb-4">{dashboardTitle}</h2>
-      <div className="text-center p-8 bg-gray-50 rounded-lg border border-gray-200">
-        <p className="text-gray-500">
-                    Dashboard for this role is currently under development.
-        </p>
+      <div>
+
       </div>
     </>
   );
