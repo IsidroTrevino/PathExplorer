@@ -1,3 +1,4 @@
+// src/pages/CurriculumPage.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -17,91 +18,73 @@ import CurriculumUpload from './components/CurriculumUpload';
 import { PageHeader } from '@/components/GlobalComponents/pageHeader';
 import EmptyView from '@/components/GlobalComponents/EmptyView';
 import { AlertCircleIcon } from 'lucide-react';
-
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+
+// Sólo el diccionario de Technical Skills
+import { techSkillDictionary } from './types/techSkillDictionary';
 
 export default function CurriculumPage() {
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
-  const {
-    data: skills,
-    loading: loadingSkills,
-    error: errorSkills,
-    refetch: refetchSkills,
-  } = useGetSkills();
+  const { data: skills = [], loading: loadingSkills, error: errorSkills, refetch: refetchSkills } = useGetSkills();
   const { addSkill } = usePostSkill();
-
-  const {
-    data: goals,
-    loading: loadingGoals,
-    error: errorGoals,
-    refetch: refetchGoals,
-  } = useGetGoals();
+  const { data: goals = [], loading: loadingGoals, error: errorGoals, refetch: refetchGoals } = useGetGoals();
   const { addGoal } = usePostGoal();
 
   const handleAddTechnicalSkill = async (skill: Skill) => {
-    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: 'hard' });
+    await addSkill({ ...skill, type: 'hard' });
     await refetchSkills();
     toast.success('Skill técnica agregada');
   };
+
   const handleAddSoftSkill = async (skill: Skill) => {
-    await addSkill({ skill_name: skill.skill_name, level: skill.level, type: 'soft' });
+    await addSkill({ ...skill, type: 'soft' });
     await refetchSkills();
     toast.success('Skill blanda agregada');
   };
+
   const handleAddGoal = async (goal: Goal) => {
-    await addGoal({
-      title: goal.title,
-      category: goal.category,
-      description: goal.description,
-      term: goal.term,
-    });
+    await addGoal(goal);
     await refetchGoals();
     toast.success('Meta agregada');
   };
 
-  if (errorSkills)
-    return (
-      <p className="p-8 text-red-600">Error cargando skills: {errorSkills}</p>
-    );
-  if (errorGoals)
-    return (
-      <p className="p-8 text-red-600">Error cargando goals: {errorGoals}</p>
-    );
+  if (errorSkills) return <p className="p-8 text-red-600">Error cargando skills: {errorSkills}</p>;
+  if (errorGoals)  return <p className="p-8 text-red-600">Error cargando goals: {errorGoals}</p>;
 
-  const tech = skills.filter((s) => s.type === 'hard');
-  const soft = skills.filter((s) => s.type === 'soft');
+  const tech = skills.filter(s => s.type === 'hard');
+  const soft = skills.filter(s => s.type === 'soft');
+
+  // Lista estática de soft skills
+  const softOptions = [
+    'Communication',
+    'Teamwork',
+    'Problem Solving',
+    'Adaptability',
+    'Time Management',
+    'Leadership',
+    'Creativity',
+  ];
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="p-8 max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="space-y--8">
+         <div className="space-y--8">
           <PageHeader
             title="Curriculum"
             subtitle="Add your curriculum, skills and goals to enhance your profile."
           />
         </div>
-
-        {/* Skills técnicas */}
+        {/* Technical Skills */}
         <section>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Technical skills</h2>
             <SkillSheet
-              onAdd={handleAddTechnicalSkill}
-              skillOptions={[
-                'Frontend Developer',
-                'Backend Developer',
-                'Fullstack Developer',
-                'DevOps Engineer',
-                'UI/UX Designer',
-                'Data Scientist',
-                'Mobile Developer',
-                'QA Engineer',
-              ]}
               title="Add Technical Skill"
+              skillDictionary={techSkillDictionary}
+              onAdd={handleAddTechnicalSkill}
             />
           </div>
           <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] min-h-[120px]">
@@ -130,22 +113,14 @@ export default function CurriculumPage() {
 
         <Separator />
 
-        {/* Skills blandas */}
+        {/* Soft Skills */}
         <section>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Soft skills</h2>
             <SkillSheet
-              onAdd={handleAddSoftSkill}
-              skillOptions={[
-                'Communication',
-                'Teamwork',
-                'Problem Solving',
-                'Adaptability',
-                'Time Management',
-                'Leadership',
-                'Creativity',
-              ]}
               title="Add Soft Skill"
+              skillOptions={softOptions}
+              onAdd={handleAddSoftSkill}
             />
           </div>
           <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(255px,1fr))] min-h-[120px]">
@@ -206,7 +181,7 @@ export default function CurriculumPage() {
 
         <Separator />
 
-        {/* Curriculum */}
+        {/* Curriculum Upload */}
         <section>
           <div className="flex justify-between items-center mb-4">
             <CurriculumUpload />
@@ -217,33 +192,21 @@ export default function CurriculumPage() {
         </section>
       </div>
 
-      {/* Modales */}
+      {/* Modales de edición */}
       {editingSkill && (
         <EditSkillModal
           isOpen={!!editingSkill}
           skill={editingSkill}
-          skillOptions={[
-            'Frontend Developer',
-            'Backend Developer',
-            'Fullstack Developer',
-            'DevOps Engineer',
-            'UI/UX Designer',
-            'Data Scientist',
-            'Mobile Developer',
-            'QA Engineer',
-            'Communication',
-            'Teamwork',
-            'Problem Solving',
-            'Adaptability',
-            'Time Management',
-            'Leadership',
-            'Creativity',
-          ]}
           onUpdated={() => {
             setEditingSkill(null);
             refetchSkills();
           }}
           onClose={() => setEditingSkill(null)}
+          /** si es hard, pasamos el diccionario dinámico */
+          {...(editingSkill.type === "hard"
+            ? { skillDictionary: techSkillDictionary }
+            : /* si es soft, pasamos la lista estática */
+              { skillOptions: softOptions })}
         />
       )}
       {editingGoal && (
