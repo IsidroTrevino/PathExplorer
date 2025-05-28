@@ -71,7 +71,7 @@ export default function CurriculumPage() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="p-8 max-w-6xl mx-auto space-y-8">
-         <div className="space-y--8">
+        <div className="space-y--8">
           <PageHeader
             title="Curriculum"
             subtitle="Add your curriculum, skills and goals to enhance your profile."
@@ -203,10 +203,10 @@ export default function CurriculumPage() {
           }}
           onClose={() => setEditingSkill(null)}
           /** si es hard, pasamos el diccionario dinámico */
-          {...(editingSkill.type === "hard"
+          {...(editingSkill.type === 'hard'
             ? { skillDictionary: techSkillDictionary }
             : /* si es soft, pasamos la lista estática */
-              { skillOptions: softOptions })}
+            { skillOptions: softOptions })}
         />
       )}
       {editingGoal && (

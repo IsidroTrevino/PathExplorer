@@ -57,7 +57,7 @@ export default function ProfessionalPathPage() {
         )}
 
         {/* Timeline de experiencia */}
-        {!isLoading && !hasError && view === "experience" && (
+        {!isLoading && !hasError && view === 'experience' && (
           <>
             <div className="relative space-y-16">
               <div className="absolute top-0 bottom-0 left-8 w-1 bg-gradient-to-b from-purple-300 to-purple-100 rounded-full z-0" />
@@ -74,7 +74,7 @@ export default function ProfessionalPathPage() {
         )}
 
         {/* Timeline de recomendaciones AI */}
-        {!isLoading && !hasError && view === "recommendations" && (
+        {!isLoading && !hasError && view === 'recommendations' && (
           <AIRecommendationsTimeline data={recommendations} />
         )}
       </div>

@@ -13,7 +13,7 @@ export const AIRecommendationsTimeline: FC<AIRecommendationsTimelineProps> = ({ 
   <div className="relative space-y-16">
     {/* Línea vertical */}
     <div className="absolute top-0 bottom-0 left-8 w-1 bg-gradient-to-b from-purple-300 to-purple-100 rounded-full z-0" />
-    
+
     {/* Recomendaciones AI */}
     {data.map((rec, idx) => {
       const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
@@ -31,7 +31,7 @@ export const AIRecommendationsTimeline: FC<AIRecommendationsTimelineProps> = ({ 
           <motion.span
             initial={{ scale: 0 }}
             animate={inView ? { scale: 1 } : {}}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
             className="absolute left-6 top-1 w-5 h-5 bg-purple-500 rounded-full border-4 border-white shadow-md z-10"
           />
 
@@ -47,10 +47,10 @@ export const AIRecommendationsTimeline: FC<AIRecommendationsTimelineProps> = ({ 
             <ul className="mt-2 list-disc list-inside text-sm text-gray-700 space-y-1">
               {rec.role_skills.map((skill: RoleSkill, i: number) => (
                 <li key={i}>
-                  <strong>{skill.skill_name}</strong> –{" "}
-                  {skill.type === "soft"
-                    ? "Habilidad blanda"
-                    : "Habilidad técnica"}{" "}
+                  <strong>{skill.skill_name}</strong> –{' '}
+                  {skill.type === 'soft'
+                    ? 'Habilidad blanda'
+                    : 'Habilidad técnica'}{' '}
                   ({skill.level}%)
                 </li>
               ))}

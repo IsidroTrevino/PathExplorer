@@ -56,10 +56,10 @@ export function EditSkillModal({
 
   const [form, setForm] = useState<Skill>(skill);
   const [category, setCategory] = useState<string>(
-    isDynamic ? detectCategory(skill.skill_name) : ''
+    isDynamic ? detectCategory(skill.skill_name) : '',
   );
   const [dynamicOpts, setDynamicOpts] = useState<string[]>(
-    isDynamic ? dict[category] : []
+    isDynamic ? dict[category] : [],
   );
 
   const { updateSkill, loading: updating } = usePutSkill();

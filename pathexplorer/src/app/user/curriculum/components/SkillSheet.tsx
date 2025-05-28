@@ -33,12 +33,12 @@ type SkillSheetProps = StaticProps | DynamicProps;
 
 export const SkillSheet = (props: SkillSheetProps) => {
   const skillDict: Record<string, string[]> = props.skillDictionary ?? {};
-  const categories = Object.keys(skillDict);     
-  const isDynamic = categories.length > 0;        
+  const categories = Object.keys(skillDict);
+  const isDynamic = categories.length > 0;
 
   const [category, setCategory] = useState<string>(categories[0] || '');
   const [options, setOptions] = useState<string[]>(
-    skillDict[categories[0]] ?? []
+    skillDict[categories[0]] ?? [],
   );
   const [skillName, setSkillName] = useState('');
   const [level, setLevel] = useState('');
@@ -46,7 +46,7 @@ export const SkillSheet = (props: SkillSheetProps) => {
   const [errors, setErrors] = useState<{ name?: string; level?: string }>({});
 
   useEffect(() => {
-    if (!isDynamic) return;  
+    if (!isDynamic) return;
     setOptions(skillDict[category] ?? []);
     setSkillName('');
     setErrors(e => ({ ...e, name: undefined }));
