@@ -1,6 +1,7 @@
+// pathexplorer/src/features/Dashboards/ManagerDashboard.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +15,7 @@ import {
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { useManagerStats } from '@/features/Dashboards/useManagerStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { DownloadReportButton } from './DownloadReportButton';
 
 ChartJS.register(
   CategoryScale,
@@ -28,6 +30,14 @@ ChartJS.register(
 export function ManagerDashboard() {
   const { data, loading, error } = useManagerStats();
   const [chartsReady, setChartsReady] = useState(false);
+
+  const chartRefs = {
+    employeesByRole: useRef<HTMLDivElement>(null),
+    topProjectSkills: useRef<HTMLDivElement>(null),
+    assignmentOverview: useRef<HTMLDivElement>(null),
+    employeesBySeniority: useRef<HTMLDivElement>(null),
+    topProjectsByEmployees: useRef<HTMLDivElement>(null),
+  };
 
   useEffect(() => {
     setChartsReady(true);
@@ -56,6 +66,14 @@ export function ManagerDashboard() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end mb-4">
+        <DownloadReportButton
+          dashboardType="manager"
+          data={data}
+          chartRefs={chartRefs}
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
@@ -73,7 +91,7 @@ export function ManagerDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{data.employees.assigned}</div>
             <p className="text-xs text-muted-foreground">
-              {((data.employees.assigned / data.employees.total) * 100).toFixed(1)}% of total
+              {data.employees.total > 0 ? ((data.employees.assigned / data.employees.total) * 100).toFixed(1) : 0}% of total
             </p>
           </CardContent>
         </Card>
@@ -85,7 +103,7 @@ export function ManagerDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{data.employees.not_assigned}</div>
             <p className="text-xs text-muted-foreground">
-              {((data.employees.not_assigned / data.employees.total) * 100).toFixed(1)}% of total
+              {data.employees.total > 0 ? ((data.employees.not_assigned / data.employees.total) * 100).toFixed(1) : 0}% of total
             </p>
           </CardContent>
         </Card>
@@ -107,7 +125,7 @@ export function ManagerDashboard() {
             <CardDescription>Distribution of employees across different roles</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-80" ref={chartRefs.employeesByRole}>
               <Bar
                 data={{
                   labels: Object.keys(data.employees.by_role),
@@ -146,7 +164,7 @@ export function ManagerDashboard() {
             <CardDescription>Most in-demand skills across projects</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-80" ref={chartRefs.topProjectSkills}>
               <Bar
                 data={{
                   labels: data.skills.top_7_project_skills.map(skill => skill.skill_name),
@@ -187,7 +205,7 @@ export function ManagerDashboard() {
             <CardDescription>Current assignment status of employees</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
+            <div className="h-64" ref={chartRefs.assignmentOverview}>
               <Doughnut
                 data={{
                   labels: ['Assigned', 'Not Assigned'],
@@ -218,7 +236,9 @@ export function ManagerDashboard() {
             </div>
             <div className="mt-4 text-center">
               <p className="text-sm font-medium">Average Assignment</p>
-              <p className="text-2xl font-bold">{(data.assignment.average_assignment_percentage * 100).toFixed(1)}%</p>
+              <p className="text-2xl font-bold">
+                {(data.assignment.average_assignment_percentage * 100).toFixed(1)}%
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -229,7 +249,7 @@ export function ManagerDashboard() {
             <CardDescription>Distribution by years of experience</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-80" ref={chartRefs.employeesBySeniority}>
               <Bar
                 data={{
                   labels: data.employees.by_seniority.map(item =>
@@ -273,7 +293,7 @@ export function ManagerDashboard() {
           <CardDescription>Projects with the most employees assigned</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64">
+          <div className="h-64" ref={chartRefs.topProjectsByEmployees}>
             {data.projects.top_5_by_employees.length > 0 ? (
               <Bar
                 data={{
