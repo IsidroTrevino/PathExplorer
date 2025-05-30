@@ -1,3 +1,4 @@
+// pathexplorer/src/features/Dashboards/ManagerDashboard.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -29,8 +30,7 @@ ChartJS.register(
 export function ManagerDashboard() {
   const { data, loading, error } = useManagerStats();
   const [chartsReady, setChartsReady] = useState(false);
-  
-  // Create refs for charts to capture them for PDF
+
   const chartRefs = {
     employeesByRole: useRef<HTMLDivElement>(null),
     topProjectSkills: useRef<HTMLDivElement>(null),
@@ -67,9 +67,9 @@ export function ManagerDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex justify-end mb-4">
-        <DownloadReportButton 
-          dashboardType="manager" 
-          data={data} 
+        <DownloadReportButton
+          dashboardType="manager"
+          data={data}
           chartRefs={chartRefs}
         />
       </div>
@@ -91,7 +91,7 @@ export function ManagerDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{data.employees.assigned}</div>
             <p className="text-xs text-muted-foreground">
-              {((data.employees.assigned / data.employees.total) * 100).toFixed(1)}% of total
+              {data.employees.total > 0 ? ((data.employees.assigned / data.employees.total) * 100).toFixed(1) : 0}% of total
             </p>
           </CardContent>
         </Card>
@@ -103,7 +103,7 @@ export function ManagerDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{data.employees.not_assigned}</div>
             <p className="text-xs text-muted-foreground">
-              {((data.employees.not_assigned / data.employees.total) * 100).toFixed(1)}% of total
+              {data.employees.total > 0 ? ((data.employees.not_assigned / data.employees.total) * 100).toFixed(1) : 0}% of total
             </p>
           </CardContent>
         </Card>
@@ -236,7 +236,9 @@ export function ManagerDashboard() {
             </div>
             <div className="mt-4 text-center">
               <p className="text-sm font-medium">Average Assignment</p>
-              <p className="text-2xl font-bold">{(data.assignment.average_assignment_percentage * 100).toFixed(1)}%</p>
+              <p className="text-2xl font-bold">
+                {(data.assignment.average_assignment_percentage * 100).toFixed(1)}%
+              </p>
             </div>
           </CardContent>
         </Card>

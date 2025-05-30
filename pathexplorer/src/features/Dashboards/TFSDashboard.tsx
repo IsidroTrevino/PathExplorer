@@ -30,7 +30,7 @@ export function TFSDashboard() {
   const { data, loading, error } = useTfsStats();
   const [chartsReady, setChartsReady] = useState(false);
 
-  // Create refs for charts to capture them for PDF
+  // In TFSDashboard.tsx
   const chartRefs = {
     missingEmployees: useRef<HTMLDivElement>(null),
     topProjectSkills: useRef<HTMLDivElement>(null),
@@ -65,9 +65,9 @@ export function TFSDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex justify-end mb-4">
-        <DownloadReportButton 
-          dashboardType="tfs" 
-          data={data} 
+        <DownloadReportButton
+          dashboardType="tfs"
+          data={data}
           chartRefs={chartRefs}
         />
       </div>
