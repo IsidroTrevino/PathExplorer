@@ -8,7 +8,7 @@ interface UserAuthData {
     tokenType: string;
 }
 
-interface UserDetails {
+export interface UserDetails {
     id: number;
     name: string;
     employee_id: number;
