@@ -42,7 +42,6 @@ export function useGetAIRecommendations(): UseGetAIRecommendationsResponse {
   }, []);
 
   const fetchRecommendations = useCallback(async () => {
-    // Handle cooldown if needed
     if (inCooldown.current) {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);

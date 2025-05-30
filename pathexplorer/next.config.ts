@@ -176,6 +176,10 @@ const nextConfig: NextConfig = {
         source: '/api/stats/tfs/summary',
         destination: 'https://pathexplorer.vercel.app/stats/tfs/summary',
       },
+      {
+        source: '/api/ai/future-roles',
+        destination: 'https://pathexplorer.vercel.app/ai/future-roles',
+      }
     ];
   },
 };
