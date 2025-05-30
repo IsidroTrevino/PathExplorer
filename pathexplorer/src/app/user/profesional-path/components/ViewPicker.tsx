@@ -18,13 +18,13 @@ export const ViewPicker: React.FC<ViewPickerProps> = ({ value, onChange }) => (
       value="experience"
       className="px-4 py-2 rounded-md border border-gray-300 data-[state=on]:bg-purple-600 data-[state=on]:text-white hover:bg-purple-100 transition"
     >
-      Mis Roles
+      My Experience
     </ToggleGroupItem>
     <ToggleGroupItem
       value="recommendations"
       className="px-4 py-2 rounded-md border border-gray-300 data-[state=on]:bg-purple-600 data-[state=on]:text-white hover:bg-purple-100 transition"
     >
-      Próximos Roles
+      AI Recommendations
     </ToggleGroupItem>
   </ToggleGroup>
 );
