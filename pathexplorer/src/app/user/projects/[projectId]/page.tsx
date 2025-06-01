@@ -11,6 +11,8 @@ import { useGetProjectRoles } from '@/features/projects/useGetProjectRoles';
 import { RequestEmployeeModal } from '@/features/projects/requestEmployeeModal';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { EmployeeRecommendations } from '@/features/projects/EmployeeRecommendations';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function AvailableEmployeesPage() {
   const params = useParams();
@@ -74,7 +76,7 @@ export default function AvailableEmployeesPage() {
         <Button
           variant="outline"
           onClick={handleGoBack}
-          className="mb-4"
+          className="mb-4 cursor-pointer"
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
@@ -83,30 +85,43 @@ export default function AvailableEmployeesPage() {
           subtitle="View employees who are not currently assigned to any project"
         />
 
-        <div className="mt-8">
-          {error ? (
-            <div className="rounded-md bg-red-50 p-4 text-red-700">
-              {error}
+        <Tabs defaultValue="employees" className="mt-8">
+          <TabsList className="mb-6">
+            <TabsTrigger value="employees" className="cursor-pointer">Available Employees</TabsTrigger>
+            <TabsTrigger value="recommendations" className="cursor-pointer">Recommendations</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="employees">
+            {error ? (
+              <div className="rounded-md bg-red-50 p-4 text-red-700">
+                {error}
+              </div>
+            ) : (
+              <div className="h-[calc(100vh-320px)] overflow-auto">
+                <EmployeeTable
+                  data={loading ? [] : employees}
+                  loading={loading}
+                  onPageChange={handlePageChange}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onRoleFilter={handleRoleFilter}
+                  onSort={handleSort}
+                  onSearch={handleSearch}
+                  isExternalPagination={true}
+                  variant="available"
+                  onRequestEmployeeOpen={handleRequestEmployee}
+                  projectId={projectId}
+                />
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="recommendations">
+            <div className="h-[calc(100vh-320px)] overflow-auto">
+              <EmployeeRecommendations projectId={projectId} />
             </div>
-          ) : (
-            <div className="h-[calc(100vh-250px)] overflow-auto">
-              <EmployeeTable
-                data={loading ? [] : employees}
-                loading={loading}
-                onPageChange={handlePageChange}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onRoleFilter={handleRoleFilter}
-                onSort={handleSort}
-                onSearch={handleSearch}
-                isExternalPagination={true}
-                variant="available"
-                onRequestEmployeeOpen={handleRequestEmployee}
-                projectId={projectId}
-              />
-            </div>
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <RequestEmployeeModal

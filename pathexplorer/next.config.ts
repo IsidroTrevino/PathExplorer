@@ -188,6 +188,10 @@ const nextConfig: NextConfig = {
         source: '/api/chat/chat',
         destination: 'https://pathexplorer.vercel.app/chat/chat',
       },
+      {
+        source: '/api/projects/recommendations/:projectId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/recommendations/:projectId',
+      },
     ];
   },
 };
