@@ -179,7 +179,15 @@ const nextConfig: NextConfig = {
       {
         source: '/api/ai/future-roles',
         destination: 'https://pathexplorer.vercel.app/ai/future-roles',
-      }
+      },
+      {
+        source: '/api/chat/session',
+        destination: 'https://pathexplorer.vercel.app/chat/sessions',
+      },
+      {
+        source: '/api/chat/chat',
+        destination: 'https://pathexplorer.vercel.app/chat/chat',
+      },
     ];
   },
 };
