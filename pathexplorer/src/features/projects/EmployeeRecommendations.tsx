@@ -30,19 +30,21 @@ export const EmployeeRecommendations: React.FC<EmployeeRecommendationsProps> = (
     <div className="mt-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Employee Recommendations</h2>
-        <Select onValueChange={handleRoleChange} defaultValue="all" className="w-64">
-          <SelectTrigger className="cursor-pointer">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all" className="cursor-pointer">All Roles</SelectItem>
-            {allRoles.map((role) => (
-              <SelectItem key={role.id} value={role.id.toString()} className="cursor-pointer">
-                {role.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="w-64 flex justify-end">
+          <Select onValueChange={handleRoleChange} defaultValue="all">
+            <SelectTrigger className="cursor-pointer w-full">
+              <SelectValue placeholder="Filter by role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="cursor-pointer">All Roles</SelectItem>
+              {allRoles.map((role) => (
+                <SelectItem key={role.id} value={role.id.toString()} className="cursor-pointer">
+                  {role.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {loading ? (
