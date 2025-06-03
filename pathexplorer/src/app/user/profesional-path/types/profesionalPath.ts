@@ -42,8 +42,14 @@ export interface RoleSkill {
   level: number;
 }
 
+export interface RoadmapStep {
+  step: string;
+  description: string;
+}
+
 export interface Recommendation {
   role_name: string;
   role_description: string;
   role_skills: RoleSkill[];
+  roadmap: RoadmapStep[];
 }

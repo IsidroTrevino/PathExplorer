@@ -2,6 +2,7 @@ export interface CertificationItem {
   name: string;
   type: string;
   description: string;
+  url: string;
 }
 
 export interface AICertificationRecommendation {
