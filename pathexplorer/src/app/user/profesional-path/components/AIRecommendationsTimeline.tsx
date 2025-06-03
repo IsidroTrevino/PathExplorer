@@ -3,9 +3,10 @@
 import { FC } from 'react';
 import { motion } from 'framer-motion';
 import { Recommendation, RoleSkill } from '../types/profesionalPath';
+import { CheckCircle } from 'lucide-react';
 
 interface AIRecommendationsTimelineProps {
-  data: Recommendation[];
+    data: Recommendation[];
 }
 
 export const AIRecommendationsTimeline: FC<AIRecommendationsTimelineProps> = ({ data }) => (
@@ -31,24 +32,48 @@ export const AIRecommendationsTimeline: FC<AIRecommendationsTimelineProps> = ({ 
         />
 
         {/* Contenido */}
-        <div>
+        <div className="w-full">
           <div className="text-xs font-bold text-purple-600">
-            Recommendation #{idx + 1}
+                        Recommendation #{idx + 1}
           </div>
           <h3 className="text-lg font-semibold text-gray-800">
             {rec.role_name}
           </h3>
           <p className="text-sm text-gray-600 mt-1">{rec.role_description}</p>
-          <ul className="mt-2 list-disc list-inside text-sm text-gray-700 space-y-1">
-            {rec.role_skills.map((skill: RoleSkill, i: number) => (
-              <li key={i}>
-                <strong>{skill.skill_name}</strong> –{' '}
-                {skill.type === 'soft'
-                  ? 'Soft skill'
-                  : 'Technical skill'}
-              </li>
-            ))}
-          </ul>
+
+          <div className="mt-4">
+            <h4 className="text-md font-medium text-gray-700 mb-2">Required Skills:</h4>
+            <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mb-4">
+              {rec.role_skills.map((skill: RoleSkill, i: number) => (
+                <li key={i}>
+                  <strong>{skill.skill_name}</strong> –{' '}
+                  {skill.type === 'soft'
+                    ? 'Soft skill'
+                    : 'Technical skill'}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Roadmap Section */}
+          {rec.roadmap && rec.roadmap.length > 0 && (
+            <div className="mt-4 bg-purple-50 rounded-md p-4">
+              <h4 className="text-md font-medium text-purple-700 mb-3">Path to {rec.role_name}:</h4>
+              <div className="space-y-3">
+                {rec.roadmap.map((step, i) => (
+                  <div key={i} className="flex items-start">
+                    <div className="mt-0.5 mr-2 text-purple-500">
+                      <CheckCircle size={16} />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-medium text-gray-800">{step.step}</h5>
+                      <p className="text-xs text-gray-600">{step.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </motion.div>
     ))}

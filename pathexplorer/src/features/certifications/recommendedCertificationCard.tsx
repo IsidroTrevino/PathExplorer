@@ -1,7 +1,9 @@
 import { CertificationItem } from '@/features/certifications/types';
+import { ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface RecommendedCertificationCardProps {
-  certification: CertificationItem;
+    certification: CertificationItem;
 }
 
 export function RecommendedCertificationCard({ certification }: RecommendedCertificationCardProps) {
@@ -23,8 +25,20 @@ export function RecommendedCertificationCard({ certification }: RecommendedCerti
       <div className="mt-auto">
         <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mb-2 bg-blue-50 text-blue-700">
           <div className="h-1.5 w-1.5 rounded-full mr-1.5 bg-blue-500" />
-          Recommended
+                    Recommended
         </div>
+
+        {certification.url && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full mt-3 text-blue-600 border-blue-200 hover:bg-blue-50"
+            onClick={() => window.open(certification.url, '_blank', 'noopener,noreferrer')}
+          >
+            <ExternalLink className="h-3 w-3 mr-2" />
+                        View Certification
+          </Button>
+        )}
       </div>
     </div>
   );
