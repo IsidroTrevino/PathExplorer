@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useSendOTP } from '@/features/auth/OTP/useSendOTP';
+import { useSendOTP } from '@/app/auth/forgot-password/hooks/useSendOTP';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 

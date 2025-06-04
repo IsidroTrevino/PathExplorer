@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
-import { useGetEmployeeProfile } from '@/features/user/useGetEmployeeProfile';
-import { useGetProject } from '@/features/projects/useGetProject';
+import { PageHeader } from '@/components/pageHeader';
+import { useGetEmployeeProfile } from '@/app/user/projects/[projectId]/employee/[employeeId]/hooks/useGetEmployeeProfile';
+import { useGetProject } from '@/app/user/projects/hooks/useGetProject';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader } from 'lucide-react';
-import { useGetRoles } from '@/features/projects/useGetRoles';
+import { useGetRoles } from '@/app/user/projects/hooks/useGetRoles';
 
 interface RoleSkill {
   skill_name: string;

@@ -1,17 +1,17 @@
 'use client';
 
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { PageHeader } from '@/components/pageHeader';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { CreateCertificateModal } from '@/features/certifications/createCertificateModal';
-import { useCreateCertificateModal } from '@/features/certifications/useCreateCertificateModal';
-import { useGetCertifications } from '@/features/certifications/useGetCertifications';
-import { CertificationCard } from '@/features/certifications/certificationCard';
-import { ExpiringCertificationsScroll } from '@/features/certifications/expiringCertificationsScroll';
+import { CreateCertificateModal } from '@/app/user/certifications/components/createCertificateModal';
+import { useCreateCertificateModal } from '@/app/user/certifications/hooks/useCreateCertificateModal';
+import { useGetCertifications } from '@/app/user/certifications/hooks/useGetCertifications';
+import { CertificationCard } from '@/app/user/certifications/components/certificationCard';
+import { ExpiringCertificationsScroll } from '@/app/user/certifications/components/expiringCertificationsScroll';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUpdateCertificateModal } from '@/features/certifications/useUpdateCertificationModal';
-import { UpdateCertificateModal } from '@/features/certifications/updateCertificateModal';
-import { RecommendedCertifications } from '@/features/certifications/recommendedCertifications';
+import { useUpdateCertificateModal } from '@/app/user/certifications/hooks/useUpdateCertificationModal';
+import { UpdateCertificateModal } from '@/app/user/certifications/components/updateCertificateModal';
+import { RecommendedCertifications } from '@/app/user/certifications/components/recommendedCertifications';
 
 export default function CertificationsPage() {
   const { isOpen, onOpen, onClose } = useCreateCertificateModal();

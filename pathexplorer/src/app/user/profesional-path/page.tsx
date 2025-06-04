@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { PageHeader } from '@/components/pageHeader';
 import { ExperienceItem, Experience } from './components/ExperienceItem';
 import { LoadingTimeline } from './components/LoadingTimeline';
 import { useGetRoles } from './hooks/useGetRoles';
 import { useGetFutureRoles } from './hooks/useGetFutureRoles';
-import EmptyView from '@/components/GlobalComponents/EmptyView';
+import EmptyView from '@/components/EmptyView';
 import { AlertCircleIcon } from 'lucide-react';
 import { ViewPicker } from './components/ViewPicker';
 import { AIRecommendationsTimeline } from './components/AIRecommendationsTimeline';

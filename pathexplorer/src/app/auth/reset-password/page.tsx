@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useVerifyOTP } from '@/features/auth/OTP/useVerifyOTP';
+import { useVerifyOTP } from '@/app/auth/reset-password/hooks/useVerifyOTP';
 import { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
-import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
-import { useGetEmployees } from '@/features/user/useGetEmployees';
+import { PageHeader } from '@/components/pageHeader';
+import { EmployeeTable } from '@/components/employeeTable';
+import { useGetEmployees } from '@/app/user/employees/hooks/useGetEmployees';
 
 export default function EmployeesPage() {
   const [currentPage, setCurrentPage] = useState(1);

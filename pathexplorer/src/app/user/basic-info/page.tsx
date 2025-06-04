@@ -11,12 +11,12 @@ import { FormControl, FormItem } from '@/components/ui/form';
 import { FormField } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useEditInfo } from '@/features/user/useEditInfo';
+import { useEditInfo } from '@/app/user/basic-info/hooks/useEditInfo';
 import { toast } from 'sonner';
 import { userInfoSchema, UserInfoFormData } from '@/schemas/user/userInfoSchema';
-import { PhoneNumberInput } from '@/components/GlobalComponents/phoneInput';
+import { PhoneNumberInput } from '@/components/phoneInput';
 import { Separator } from '@/components/ui/separator';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { PageHeader } from '@/components/pageHeader';
 
 const positions = [
   'Accenture Leadership (Level 1)',
