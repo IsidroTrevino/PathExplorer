@@ -1,4 +1,3 @@
-// app/auth/SignUp/components/SignUpForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -26,7 +25,6 @@ export default function SignUpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useRegister();
 
-  // Form for steps 1 and 2
   const formOne = useForm<SignUpStepOneData>({
     resolver: zodResolver(signUpStepOneSchema),
     defaultValues: {
@@ -41,7 +39,6 @@ export default function SignUpForm() {
     mode: 'onChange',
   });
 
-  // Form for step 3
   const formTwo = useForm<SignUpStepTwoData>({
     resolver: zodResolver(signUpStepTwoSchema),
     defaultValues: {
@@ -114,7 +111,6 @@ export default function SignUpForm() {
         <p className="text-gray-600 mt-2">Join the Accenture developer community</p>
       </div>
 
-      {/* Progress Steps */}
       <ProgressSteps steps={signUpSteps} currentStep={currentStep} />
 
       <div className="h-12">

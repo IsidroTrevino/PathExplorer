@@ -1,4 +1,3 @@
-// app/auth/SignUp/components/StepPersonalInfo.tsx
 'use client';
 
 import { motion } from 'framer-motion';

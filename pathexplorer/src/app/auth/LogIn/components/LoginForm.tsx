@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import MicrosoftColorLogo from '@/components/microsoftLogo';
+import { LoginResponse } from '@/app/auth/SignUp/types/loginTypes';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -33,20 +34,16 @@ export default function LoginForm() {
   const onSubmit = async (data: LogInFormData) => {
     setError(null);
     try {
-      const response = await login(data);
+      const response: LoginResponse | null = await login(data);
 
       if (
         (response && response.success) ||
           (response && response.token) ||
-          (response && !response.error && typeof response !== 'string')
+          (response && !response.error)
       ) {
         router.replace('/user/basic-info');
       } else {
-        const errorMessage =
-            (typeof response === 'string' ? response : null) ||
-            response?.error ||
-            response?.message ||
-            'Login failed. Please try again.';
+        const errorMessage = 'Login failed. Please try again.';
 
         setError(errorMessage);
       }

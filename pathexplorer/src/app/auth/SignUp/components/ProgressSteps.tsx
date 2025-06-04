@@ -1,4 +1,3 @@
-// app/auth/SignUp/components/ProgressSteps.tsx
 'use client';
 
 import { motion } from 'framer-motion';
@@ -41,7 +40,6 @@ export default function ProgressSteps({ steps, currentStep }: ProgressStepsProps
         ))}
       </div>
 
-      {/* Connecting lines between steps */}
       <div className="absolute top-5 left-0 right-0 mx-auto h-0.5 bg-gray-300" style={{ width: '80%', zIndex: 0 }}>
         <motion.div
           initial={{ width: `${(currentStep - 1) * 50}%` }}

@@ -41,7 +41,7 @@ export const useRegister = (): UseRegisterReturn => {
           location: data.location,
           capability: data.capability,
           position: data.position,
-          seniority: parseInt(data.seniority),
+          seniority: String(data.seniority),
           role: data.role,
         }),
       });
