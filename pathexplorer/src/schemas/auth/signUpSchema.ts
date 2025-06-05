@@ -30,7 +30,7 @@ export const signUpStepOneSchema = signUpStepOneBase.refine(
 export type SignUpStepOneData = z.infer<typeof signUpStepOneSchema>;
 
 export const signUpStepTwoSchema = z.object({
-  seniority: z.string().min(1, 'Seniority is required'),
+  seniority: z.number().min(0, 'Years of experience must be a positive number'),
   position: z.string().min(1, 'Position is required'),
   location: z.string().min(1, 'Location is required'),
   capability: z.string().min(1, 'Capability is required'),

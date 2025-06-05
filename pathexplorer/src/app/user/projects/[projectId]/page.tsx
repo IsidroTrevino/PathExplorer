@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
-import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
-import { useGetEmployees } from '@/features/user/useGetEmployees';
-import { Employee } from '@/features/user/useGetEmployees';
-import { useRequestEmployeeModal } from '@/features/projects/useRequestEmployeeModal';
-import { useGetProjectRoles } from '@/features/projects/useGetProjectRoles';
-import { RequestEmployeeModal } from '@/features/projects/requestEmployeeModal';
+import { PageHeader } from '@/components/pageHeader';
+import { EmployeeTable } from '@/components/employeeTable';
+import { useGetEmployees } from '@/app/user/employees/hooks/useGetEmployees';
+import { Employee } from '@/app/user/employees/hooks/useGetEmployees';
+import { useRequestEmployeeModal } from '@/app/user/projects/hooks/useRequestEmployeeModal';
+import { useGetProjectRoles } from '@/app/user/projects/hooks/useGetProjectRoles';
+import { RequestEmployeeModal } from '@/app/user/projects/components/requestEmployeeModal';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { EmployeeRecommendations } from '@/features/projects/EmployeeRecommendations';
+import { EmployeeRecommendations } from '@/app/user/projects/components/EmployeeRecommendations';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function AvailableEmployeesPage() {

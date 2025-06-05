@@ -1,9 +1,9 @@
 'use client';
 
-import { SideBar } from '@/components/GlobalComponents/SlideBar';
+import { SideBar } from '@/components/SlideBar';
 import React from 'react';
 import { ChatProvider } from '@/features/services/ChatContext';
-import { ChatBot } from '@/components/GlobalComponents/ChatBot';
+import { ChatBot } from '@/components/ChatBot';
 
 interface AppLayoutProps {
   children: React.ReactNode;

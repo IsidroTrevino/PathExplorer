@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { useCreateProjectModal } from '@/features/projects/useCreateProjectModal';
-import { CreateProjectModal } from '@/features/projects/createProjectModal';
-import { ProjectCard } from '@/components/GlobalComponents/projectCard';
-import { ProjectFilters } from '@/components/GlobalComponents/projectFilters';
-import { Project, useGetProjects } from '@/features/projects/useGetProjects';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
-import { EditProjectModal } from '@/features/projects/editProjectModal';
-import { AddRoleSkillModal } from '@/features/projects/AddRoleSkillModal';
+import { useCreateProjectModal } from '@/app/user/projects/hooks/useCreateProjectModal';
+import { CreateProjectModal } from '@/app/user/projects/components/createProjectModal';
+import { ProjectCard } from '@/components/projectCard';
+import { ProjectFilters } from '@/components/projectFilters';
+import { Project, useGetProjects } from '@/app/user/projects/hooks/useGetProjects';
+import { PageHeader } from '@/components/pageHeader';
+import { EditProjectModal } from '@/app/user/projects/components/editProjectModal';
+import { AddRoleSkillModal } from '@/app/user/projects/components/AddRoleSkillModal';
 
 import {
   Pagination,

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { CreateRoleModal } from '@/features/projects/createRoleModal';
-import { useCreateRole } from '@/features/projects/useCreateRole';
+import { CreateRoleModal } from '@/app/user/projects/components/createRoleModal';
+import { useCreateRole } from '@/app/user/projects/hooks/useCreateRole';
 import { toast } from 'sonner';
 
-jest.mock('@/features/projects/useCreateRole');
+jest.mock('@/app/user/projects/hooks/useCreateRole');
 jest.mock('sonner', () => ({
   toast: {
     success: jest.fn(),

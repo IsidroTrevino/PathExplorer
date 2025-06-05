@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { PageHeader } from '@/components/pageHeader';
 import { useGetPendingAssignments } from './hooks/useGetPendingAssignments';
 import { useApproveAssignment } from './hooks/useApproveAssignment';
 import { useRejectAssignment } from './hooks/useRejectAssignment';
 import { AssignmentsTable } from './components/AssignmentsTable';
 import { AlertCircleIcon } from 'lucide-react';
-import EmptyView from '@/components/GlobalComponents/EmptyView';
+import EmptyView from '@/components/EmptyView';
 
 export default function AssignmentsPage() {
   const {
