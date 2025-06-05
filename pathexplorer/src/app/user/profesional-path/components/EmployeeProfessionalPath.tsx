@@ -21,8 +21,14 @@ export function EmployeeProfessionalPath() {
   return (
     <>
       <div className="mt-[20px] mb-8 flex items-center justify-between">
-        <ViewPicker value={view} onChange={(val: 'experience' | 'recommendations') => setView(val)} />
-      </div>
+        <ViewPicker
+          value={view}
+          onChange={(value) => {
+            if (value === 'experience' || value === 'recommendations') {
+              setView(value);
+            }
+          }}
+        />      </div>
 
       {isLoading && <LoadingTimeline count={4} />}
 
