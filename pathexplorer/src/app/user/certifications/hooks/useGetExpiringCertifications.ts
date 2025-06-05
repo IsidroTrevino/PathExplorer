@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-import { Certification } from './useGetCertifications';
+import type { Certification } from '../types/CertificationTypes';
 
 export function useGetExpiringCertifications(fetchOnMount = true) {
   const [expiringCertifications, setExpiringCertifications] = useState<Certification[]>([]);
