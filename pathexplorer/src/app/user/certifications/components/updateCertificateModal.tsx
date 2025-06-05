@@ -56,7 +56,7 @@ export function UpdateCertificateModal({
     e.preventDefault();
     if (!certification) return;
 
-    const success = await updateCertification(certification.certification_id, formData);
+    const success = await updateCertification(Number(certification.certification_id), formData);
     if (success) {
       if (onSuccess) onSuccess();
       onClose();
