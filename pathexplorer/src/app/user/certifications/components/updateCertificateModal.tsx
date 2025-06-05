@@ -8,7 +8,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
-import { Certification } from '../hooks/useGetCertifications';
+import type { Certification } from '../types/CertificationTypes';
 import { cn } from '@/lib/utils';
 import { useUpdateCertification } from '../hooks/useUpdateCertification';
 
