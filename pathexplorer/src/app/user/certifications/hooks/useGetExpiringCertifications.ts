@@ -1,14 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-import { Certification } from './useGetCertifications';
+import type { Certification } from '../types/CertificationTypes';
 
-export function useGetExpiringCertifications() {
+export function useGetExpiringCertifications(fetchOnMount = true) {
   const [expiringCertifications, setExpiringCertifications] = useState<Certification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(fetchOnMount);
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  const fetchExpiringCertifications = async () => {
+  const fetchExpiringCertifications = useCallback(async () => {
+    if (!userAuth?.accessToken) {
+      console.error('No access token available for expiring certifications');
+      setError('Authentication token not available');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -16,7 +23,7 @@ export function useGetExpiringCertifications() {
       const response = await fetch('/api/certifications/expiring', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${userAuth?.accessToken}`,
+          'Authorization': `Bearer ${userAuth.accessToken}`,
         },
       });
 
@@ -31,13 +38,13 @@ export function useGetExpiringCertifications() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userAuth?.accessToken]);
 
   useEffect(() => {
-    if (userAuth?.accessToken) {
+    if (fetchOnMount && userAuth?.accessToken) {
       fetchExpiringCertifications();
     }
-  }, [userAuth?.accessToken]);
+  }, [fetchOnMount, userAuth?.accessToken, fetchExpiringCertifications]);
 
   return {
     expiringCertifications,

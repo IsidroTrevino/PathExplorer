@@ -8,18 +8,23 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
-import { Certification } from '../hooks/useGetCertifications';
+import type { Certification } from '../types/CertificationTypes';
 import { cn } from '@/lib/utils';
 import { useUpdateCertification } from '../hooks/useUpdateCertification';
 
 interface UpdateCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   certification: Certification | null;
 }
 
-export function UpdateCertificateModal({ isOpen, onClose, certification }: UpdateCertificateModalProps) {
-  const { updateCertification, loading, error } = useUpdateCertification();
+export function UpdateCertificateModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  certification,
+}: UpdateCertificateModalProps) {  const { updateCertification, loading, error } = useUpdateCertification();
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -51,8 +56,9 @@ export function UpdateCertificateModal({ isOpen, onClose, certification }: Updat
     e.preventDefault();
     if (!certification) return;
 
-    const success = await updateCertification(certification.certification_id, formData);
+    const success = await updateCertification(Number(certification.certification_id), formData);
     if (success) {
+      if (onSuccess) onSuccess();
       onClose();
     }
   };

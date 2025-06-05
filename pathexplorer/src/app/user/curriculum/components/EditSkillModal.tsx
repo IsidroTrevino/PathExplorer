@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -44,15 +44,21 @@ export function EditSkillModal({
   skillOptions,
 }: EditSkillModalProps) {
   const isDynamic = !!skillDictionary;
-  const dict = skillDictionary ?? {};
-  const staticOpts = skillOptions ?? [];
-  const categories = Object.keys(dict);
 
-  const detectCategory = (name: string) => {
+  // Memoize dict to prevent recreating the empty object on each render
+  const dict = useMemo(() => skillDictionary ?? {}, [skillDictionary]);
+
+  // Memoize other derived values that depend on dict
+  const staticOpts = useMemo(() => skillOptions ?? [], [skillOptions]);
+  const categories = useMemo(() => Object.keys(dict), [dict]);
+
+  const [initialized, setInitialized] = useState(false);
+
+  const detectCategory = useCallback((name: string) => {
     return (
       categories.find(cat => dict[cat].includes(name)) ?? categories[0] ?? ''
     );
-  };
+  }, [categories, dict]);
 
   const [form, setForm] = useState<Skill>(skill);
   const [category, setCategory] = useState<string>(
@@ -66,22 +72,33 @@ export function EditSkillModal({
   const { deleteSkill, loading: deleting } = useDeleteSkill();
 
   useEffect(() => {
-    setForm(skill);
+    setForm({ ...skill });
+
     if (isDynamic) {
       const cat = detectCategory(skill.skill_name);
       setCategory(cat);
       setDynamicOpts(dict[cat] || []);
     }
-  }, [skill]);
+
+    setInitialized(true);
+
+    return () => setInitialized(false);
+  }, [skill, isDynamic, detectCategory, dict]);
 
   useEffect(() => {
-    if (!isDynamic) return;
+    if (!initialized || !isDynamic) return;
+
     setDynamicOpts(dict[category] || []);
-    setForm(f => ({
-      ...f,
-      skill_name: dict[category]?.[0] ?? '',
-    }));
-  }, [category]);
+
+    const currentSkillInNewCategory = (dict[category] || []).includes(form.skill_name);
+
+    if (!currentSkillInNewCategory) {
+      setForm(f => ({
+        ...f,
+        skill_name: dict[category]?.[0] || '',
+      }));
+    }
+  }, [category, initialized, isDynamic, dict, form.skill_name]);
 
   const onSave = async () => {
     try {

@@ -1,5 +1,5 @@
-import { Certification } from '@/app/user/certifications/hooks/useGetCertifications';
 import { format } from 'date-fns';
+import type { Certification } from '../types/CertificationTypes';
 
 interface ExpiringCertificationCardProps {
     certification: Certification;

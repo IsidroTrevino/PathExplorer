@@ -1,30 +1,33 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+'use client';
 
-type ViewOption = 'experience' | 'recommendations';
+import * as Tabs from '@radix-ui/react-tabs';
 
 interface ViewPickerProps {
-  value: ViewOption;
-  onChange: (value: ViewOption) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
-export const ViewPicker: React.FC<ViewPickerProps> = ({ value, onChange }) => (
-  <ToggleGroup
-    type="single"
-    value={value}
-    onValueChange={onChange}
-    className="mb-6 flex gap-x-4 justify-start"
-  >
-    <ToggleGroupItem
-      value="experience"
-      className="px-4 py-2 rounded-md border border-gray-300 data-[state=on]:bg-purple-600 data-[state=on]:text-white hover:bg-purple-100 transition"
+export function ViewPicker({ value, onChange }: ViewPickerProps) {
+  return (
+    <Tabs.Root
+      className="flex flex-col w-full"
+      value={value}
+      onValueChange={onChange}
     >
-      My Experience
-    </ToggleGroupItem>
-    <ToggleGroupItem
-      value="recommendations"
-      className="px-4 py-2 rounded-md border border-gray-300 data-[state=on]:bg-purple-600 data-[state=on]:text-white hover:bg-purple-100 transition"
-    >
-      AI Recommendations
-    </ToggleGroupItem>
-  </ToggleGroup>
-);
+      <Tabs.List className="shrink-0 flex border-b border-gray-200 w-full">
+        <Tabs.Trigger
+          className="px-4 py-2 flex-1 flex items-center justify-center text-sm font-medium text-gray-700 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:border-b-2 data-[state=active]:border-purple-600 outline-none cursor-pointer"
+          value="experience"
+        >
+            Experience
+        </Tabs.Trigger>
+        <Tabs.Trigger
+          className="px-4 py-2 flex-1 flex items-center justify-center text-sm font-medium text-gray-700 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:border-b-2 data-[state=active]:border-purple-600 outline-none cursor-pointer"
+          value="recommendations"
+        >
+            AI Recommendations
+        </Tabs.Trigger>
+      </Tabs.List>
+    </Tabs.Root>
+  );
+}

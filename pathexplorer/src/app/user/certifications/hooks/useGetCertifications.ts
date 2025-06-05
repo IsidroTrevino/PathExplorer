@@ -1,15 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-
-export interface Certification {
-  name: string;
-  type: string;
-  description: string;
-  certification_date: string;
-  expiration_date: string;
-  certification_id: number;
-  status: 'active' | 'expired';
-}
+import type { Certification } from '../types/CertificationTypes';
 
 export function useGetCertifications() {
   const [certifications, setCertifications] = useState<Certification[]>([]);

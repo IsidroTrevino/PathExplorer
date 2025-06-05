@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Certification } from './useGetCertifications';
+import type { Certification } from '../types/CertificationTypes';
 
 export function useUpdateCertificateModal() {
   const [isOpen, setIsOpen] = useState(false);
