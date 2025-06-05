@@ -26,9 +26,10 @@ import { cn } from '@/lib/utils';
 interface CreateCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function CreateCertificateModal({ isOpen, onClose }: CreateCertificateModalProps) {
+export function CreateCertificateModal({ isOpen, onClose, onSuccess }: CreateCertificateModalProps) {
   const [certDateOpen, setCertDateOpen] = useState(false);
   const [expDateOpen, setExpDateOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -59,6 +60,8 @@ export function CreateCertificateModal({ isOpen, onClose }: CreateCertificateMod
     e.preventDefault();
     try {
       await createCertificate(formData);
+      // Call onSuccess to refresh data only on successful creation
+      if (onSuccess) onSuccess();
       onClose();
       setFormData({
         name: '',

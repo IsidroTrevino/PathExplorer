@@ -15,11 +15,16 @@ import { useUpdateCertification } from '../hooks/useUpdateCertification';
 interface UpdateCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   certification: Certification | null;
 }
 
-export function UpdateCertificateModal({ isOpen, onClose, certification }: UpdateCertificateModalProps) {
-  const { updateCertification, loading, error } = useUpdateCertification();
+export function UpdateCertificateModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  certification,
+}: UpdateCertificateModalProps) {  const { updateCertification, loading, error } = useUpdateCertification();
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -53,6 +58,7 @@ export function UpdateCertificateModal({ isOpen, onClose, certification }: Updat
 
     const success = await updateCertification(certification.certification_id, formData);
     if (success) {
+      if (onSuccess) onSuccess();
       onClose();
     }
   };
