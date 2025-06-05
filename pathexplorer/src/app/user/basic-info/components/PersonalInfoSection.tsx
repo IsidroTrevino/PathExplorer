@@ -6,9 +6,16 @@ import { PhoneNumberInput } from '@/components/phoneInput';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UseFormReturn } from 'react-hook-form';
 import { UserInfoFormData } from '@/schemas/user/userInfoSchema';
+import { UserDetails } from '@/features/context/userContext';
 
 interface PersonalInfoSectionProps {
     form: UseFormReturn<UserInfoFormData>;
+    userDetails: UserDetails | null;
+}
+
+interface PersonalInfoSectionProps {
+    form: UseFormReturn<UserInfoFormData>;
+    userDetails: UserDetails | null;
 }
 
 export function PersonalInfoSection({ form }: PersonalInfoSectionProps) {
