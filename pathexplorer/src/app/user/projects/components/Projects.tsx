@@ -1,4 +1,3 @@
-// src/app/user/projects/components/ProjectsClient.tsx
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +10,7 @@ import { ProjectFilters } from '@/app/user/projects/components/projectFilters';
 import { useGetProjects } from '../hooks/useGetProjects';
 import { EditProjectModal } from './editProjectModal';
 import { AddRoleSkillModal } from './AddRoleSkillModal';
-import { Project } from '../types';
+import { Project } from '../types/ProjectTypes';
 import { useUser } from '@/features/context/userContext';
 
 import {
