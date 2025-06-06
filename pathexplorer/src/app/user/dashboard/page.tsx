@@ -1,20 +1,20 @@
-import { PageHeader } from '@/components/GlobalComponents/pageHeader';
+import { PageHeader } from '@/components/pageHeader';
+import { DashboardContainer } from '@/app/user/dashboard/components/DashboardContainer';
 
-export default function DashboardPage () {
-
+export default function DashboardPage() {
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="p-8 max-w-6xl mx-auto space-y-8">
-
-        {/* Header */}
-        <div className="space-y--8">
+      <div className="p-8 max-w-6xl mx-auto">
+        <div>
           <PageHeader
             title="Dashboard"
-            subtitle="Visualice important information about all the employees in the company."
+            subtitle="Visualize important information relevant to your role."
           />
+          <div className="mt-8">
+            <DashboardContainer />
+          </div>
         </div>
       </div>
     </div>
   );
 }
-

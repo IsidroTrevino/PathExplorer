@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { EmployeeTable } from '@/components/GlobalComponents/employeeTable';
+import { EmployeeTable } from '@/components/employeeTable';
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
