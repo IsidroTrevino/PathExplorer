@@ -1,4 +1,3 @@
-// src/app/user/projects/page.tsx
 import { PageHeader } from '@/components/pageHeader';
 import { Projects } from './components/Projects';
 
