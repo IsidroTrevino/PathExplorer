@@ -21,6 +21,7 @@ export const LoadingTimeline: React.FC<LoadingTimelineProps> = ({ count = 6 }) =
             <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse" />
             <div className="h-4 bg-gray-300 rounded w-1/7 animate-pulse" />
             <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse" />
+            <div className="h-4 bg-gray-300 rounded w-1/16 animate-pulse" />
           </div>
         </div>
       ))}

@@ -1,8 +1,6 @@
-// components/EditSkillModal.tsx
-
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -31,7 +29,10 @@ interface EditSkillModalProps {
   onClose: () => void;
   skill: Skill;
   onUpdated: () => void;
-  skillOptions: string[];
+  /** si viene, se renderiza edición dinámica */
+  skillDictionary?: Record<string, string[]>;
+  /** si viene, se renderiza edición estática */
+  skillOptions?: string[];
 }
 
 export function EditSkillModal({
@@ -39,24 +40,78 @@ export function EditSkillModal({
   onClose,
   skill,
   onUpdated,
+  skillDictionary,
   skillOptions,
 }: EditSkillModalProps) {
+  const isDynamic = !!skillDictionary;
+
+  // Memoize dict to prevent recreating the empty object on each render
+  const dict = useMemo(() => skillDictionary ?? {}, [skillDictionary]);
+
+  // Memoize other derived values that depend on dict
+  const staticOpts = useMemo(() => skillOptions ?? [], [skillOptions]);
+  const categories = useMemo(() => Object.keys(dict), [dict]);
+
+  const [initialized, setInitialized] = useState(false);
+
+  const detectCategory = useCallback((name: string) => {
+    return (
+      categories.find(cat => dict[cat].includes(name)) ?? categories[0] ?? ''
+    );
+  }, [categories, dict]);
+
   const [form, setForm] = useState<Skill>(skill);
+  const [category, setCategory] = useState<string>(
+    isDynamic ? detectCategory(skill.skill_name) : '',
+  );
+  const [dynamicOpts, setDynamicOpts] = useState<string[]>(
+    isDynamic ? dict[category] : [],
+  );
+
   const { updateSkill, loading: updating } = usePutSkill();
   const { deleteSkill, loading: deleting } = useDeleteSkill();
 
   useEffect(() => {
-    setForm(skill);
-  }, [skill]);
+    setForm({ ...skill });
+
+    if (isDynamic) {
+      const cat = detectCategory(skill.skill_name);
+      setCategory(cat);
+      setDynamicOpts(dict[cat] || []);
+    }
+
+    setInitialized(true);
+
+    return () => setInitialized(false);
+  }, [skill, isDynamic, detectCategory, dict]);
+
+  useEffect(() => {
+    if (!initialized || !isDynamic) return;
+
+    setDynamicOpts(dict[category] || []);
+
+    const currentSkillInNewCategory = (dict[category] || []).includes(form.skill_name);
+
+    if (!currentSkillInNewCategory) {
+      setForm(f => ({
+        ...f,
+        skill_name: dict[category]?.[0] || '',
+      }));
+    }
+  }, [category, initialized, isDynamic, dict, form.skill_name]);
 
   const onSave = async () => {
     try {
-      await updateSkill(form.skill_id!, { type: form.type, skill_name: form.skill_name, level: form.level });
+      await updateSkill(form.skill_id!, {
+        type: form.type,
+        skill_name: form.skill_name,
+        level: form.level,
+      });
       toast.success('Skill updated successfully.');
       onUpdated();
       onClose();
     } catch (err) {
-      console.error('Error updating skill:', err);
+      console.error(err);
       toast.error('Failed to update skill.');
     }
   };
@@ -68,7 +123,7 @@ export function EditSkillModal({
       onUpdated();
       onClose();
     } catch (err) {
-      console.error('Error deleting skill:', err);
+      console.error(err);
       toast.error('Failed to delete skill.');
     }
   };
@@ -81,20 +136,41 @@ export function EditSkillModal({
             Edit Skill
           </DialogTitle>
         </DialogHeader>
+
         <form className="space-y-4 py-2" onSubmit={e => e.preventDefault()}>
+          {/* para dinámico: select de categoría */}
+          {isDynamic && (
+            <div className="grid gap-2">
+              <Label>Category</Label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* select de skill */}
           <div className="grid gap-2">
             <Label htmlFor="skill-name">Skill</Label>
             <Select
-              defaultValue={form.skill_name}
+              value={form.skill_name}
               onValueChange={value =>
                 setForm(f => ({ ...f, skill_name: value }))
               }
             >
               <SelectTrigger id="skill-name" className="w-full">
-                <SelectValue placeholder="Select a skill" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {skillOptions.map(opt => (
+                {(isDynamic ? dynamicOpts : staticOpts).map(opt => (
                   <SelectItem key={opt} value={opt}>
                     {opt}
                   </SelectItem>
@@ -103,12 +179,13 @@ export function EditSkillModal({
             </Select>
           </div>
 
+          {/* nivel */}
           <div className="grid gap-2">
             <Label htmlFor="level">Level (%)</Label>
             <Input
               id="level"
               type="number"
-              min={0}
+              min={1}
               max={100}
               value={form.level}
               onChange={e =>
@@ -125,14 +202,13 @@ export function EditSkillModal({
             >
               {deleting ? 'Deleting…' : 'Delete'}
             </Button>
-            <div className="space-x-2">
-              <Button
-                className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
-                onClick={onSave}
-                disabled={updating}>
-                {updating ? 'Saving…' : 'Save'}
-              </Button>
-            </div>
+            <Button
+              className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
+              onClick={onSave}
+              disabled={updating}
+            >
+              {updating ? 'Saving…' : 'Save'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

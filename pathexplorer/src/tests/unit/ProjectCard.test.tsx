@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ProjectCard } from '@/components/GlobalComponents/projectCard';
+import { ProjectCard } from '@/app/user/projects/components/projectCard';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 const MockConfirmDialog = () => <div data-testid="confirm-dialog" />;
@@ -17,7 +17,7 @@ jest.mock('@/features/context/userContext', () => ({
 const mockCreateRoleModalOpen = jest.fn();
 const mockCreateRoleModalClose = jest.fn();
 
-jest.mock('@/features/projects/useCreateRoleModal', () => ({
+jest.mock('@/app/user/projects/hooks/useCreateRoleModal', () => ({
   useCreateRoleModal: () => ({
     isOpen: false,
     onOpen: mockCreateRoleModalOpen,
@@ -29,7 +29,7 @@ const mockAddRoleSkillModalOpen = jest.fn();
 const mockDeleteProjectRole = jest.fn().mockResolvedValue(true);
 const mockConfirm = jest.fn().mockResolvedValue(true);
 
-jest.mock('@/features/projects/useAddRoleSkillModal', () => ({
+jest.mock('@/app/user/projects/hooks/useAddRoleSkillModal', () => ({
   useAddRoleSkillModal: () => ({
     onOpen: mockAddRoleSkillModalOpen,
     onClose: jest.fn(),
@@ -39,7 +39,7 @@ jest.mock('@/features/projects/useAddRoleSkillModal', () => ({
   }),
 }));
 
-jest.mock('@/features/projects/useDeleteProjectRole', () => ({
+jest.mock('@/app/user/projects/hooks/useDeleteProjectRole', () => ({
   useDeleteProjectRole: () => ({
     deleteProjectRole: mockDeleteProjectRole,
     loading: false,

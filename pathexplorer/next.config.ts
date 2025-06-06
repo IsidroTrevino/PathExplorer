@@ -164,6 +164,34 @@ const nextConfig: NextConfig = {
         source: '/api/assignments/:assignment_id/reject',
         destination: 'https://pathexplorer.vercel.app/assignments/:assignment_id/reject',
       },
+      {
+        source: '/api/stats/employee/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/employee/summary',
+      },
+      {
+        source: '/api/stats/manager/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/manager/summary',
+      },
+      {
+        source: '/api/stats/tfs/summary',
+        destination: 'https://pathexplorer.vercel.app/stats/tfs/summary',
+      },
+      {
+        source: '/api/ai/future-roles',
+        destination: 'https://pathexplorer.vercel.app/ai/future-roles',
+      },
+      {
+        source: '/api/chat/session',
+        destination: 'https://pathexplorer.vercel.app/chat/sessions',
+      },
+      {
+        source: '/api/chat/chat',
+        destination: 'https://pathexplorer.vercel.app/chat/chat',
+      },
+      {
+        source: '/api/projects/recommendations/:projectId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/recommendations/:projectId',
+      },
     ];
   },
 };

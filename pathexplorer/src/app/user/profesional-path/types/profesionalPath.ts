@@ -35,3 +35,21 @@ export interface UseGetAIRecommendationsResponse {
   refetch: () => Promise<void>;
   reset: () => void;
 }
+
+export interface RoleSkill {
+  skill_name: string;
+  type: 'soft' | 'hard';
+  level: number;
+}
+
+export interface RoadmapStep {
+  step: string;
+  description: string;
+}
+
+export interface Recommendation {
+  role_name: string;
+  role_description: string;
+  role_skills: RoleSkill[];
+  roadmap: RoadmapStep[];
+}

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
 import { UserProvider } from '@/features/context/userContext';
-import { InactivityDetector } from '@/components/GlobalComponents/InactivityDetector';
+import { InactivityDetector } from '@/components/InactivityDetector';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
