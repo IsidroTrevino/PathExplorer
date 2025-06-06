@@ -2,9 +2,9 @@ import { PageNavigation } from './components/PageNavigation';
 import { ProjectEmployeeTabs } from './components/ProjectEmployeeTabs';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     projectId: string;
-  };
+  }>;
 }
 
 export default async function AvailableEmployeesPage({ params }: PageProps) {
