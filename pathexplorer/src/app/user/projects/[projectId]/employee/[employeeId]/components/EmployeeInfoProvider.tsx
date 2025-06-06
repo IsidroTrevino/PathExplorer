@@ -1,4 +1,3 @@
-// src/app/user/projects/[projectId]/employee/[employeeId]/components/EmployeeInfoProvider.tsx
 'use client';
 
 import React from 'react';
@@ -15,17 +14,17 @@ import { PageHeader } from '@/components/pageHeader';
 import { Employee, Project, RoleMatch } from '../types/EmployeeProjectTypes';
 
 interface EmployeeInfoProviderProps {
-    projectId: string;
-    employeeId: string;
+  projectId: string;
+  employeeId: string;
 }
 
 export function EmployeeInfoProvider({ projectId, employeeId }: EmployeeInfoProviderProps) {
   const { data: employee, loading: employeeLoading, error: employeeError } =
-        useGetEmployeeProfile(employeeId);
+      useGetEmployeeProfile(employeeId);
   const { project, loading: projectLoading, error: projectError } =
-        useGetProject(projectId);
+      useGetProject(projectId);
   const { roles, loading: rolesLoading } =
-        useGetRoles(projectId);
+      useGetRoles(projectId);
 
   const isLoading = employeeLoading || projectLoading || rolesLoading;
   const criticalError = employeeError || projectError;
@@ -54,8 +53,8 @@ export function EmployeeInfoProvider({ projectId, employeeId }: EmployeeInfoProv
 
       return {
         role_id: role.role_id,
-        name: role.name || role.role_name || 'Unnamed Role',
-        description: role.description || role.role_description || '',
+        name: role.name || 'Unnamed Role',
+        description: role.description || '',
         skills: roleSkills,
         matchPercentage: Math.round(matchPercentage),
         matchedSkills,
@@ -98,8 +97,8 @@ export function EmployeeInfoProvider({ projectId, employeeId }: EmployeeInfoProv
         />
 
         <ProjectInfo project={project as Project} />
-        <EmployeeProfile employee={employee as Employee} />
-        <EmployeeSkills employee={employee as Employee} />
+        <EmployeeProfile employee={{ ...employee, seniority: String(employee.seniority) } as Employee} />
+        <EmployeeSkills employee={{ ...employee, seniority: String(employee.seniority) } as Employee} />
         <RoleCompatibility roleMatches={roleMatches as RoleMatch[]} />
       </div>
     </div>
