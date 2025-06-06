@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Employee } from '@/app/user/projects/[projectId]/employee/[employeeId]/types/EmployeeProjectTypes';
+import { Employee } from '@/app/user/employees/types/EmployeeTypes';
 import { useRouter } from 'next/navigation';
 
 interface EmployeeTableProps {
@@ -69,7 +69,7 @@ export function EmployeeTable({
   onDelete,
   onRequestEmployeeOpen,
   variant = 'default',
-  projectId, // Accept projectId parameter
+  projectId,
 }: EmployeeTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
