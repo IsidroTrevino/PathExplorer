@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Employee } from '@/app/user/employees/hooks/useGetEmployees';
+import { Employee } from '@/app/user/projects/[projectId]/employee/[employeeId]/types/EmployeeProjectTypes';
 import { useRouter } from 'next/navigation';
 
 interface EmployeeTableProps {
