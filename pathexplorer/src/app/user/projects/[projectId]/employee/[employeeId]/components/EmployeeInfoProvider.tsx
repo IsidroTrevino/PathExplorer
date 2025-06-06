@@ -97,8 +97,17 @@ export function EmployeeInfoProvider({ projectId, employeeId }: EmployeeInfoProv
         />
 
         <ProjectInfo project={project as Project} />
-        <EmployeeProfile employee={{ ...employee, seniority: String(employee.seniority) } as Employee} />
-        <EmployeeSkills employee={{ ...employee, seniority: String(employee.seniority) } as Employee} />
+        <EmployeeProfile employee={{
+          ...employee,
+          id: employee.employee_id,
+          seniority: String(employee.seniority),
+        } as Employee} />
+
+        <EmployeeSkills employee={{
+          ...employee,
+          id: employee.employee_id,
+          seniority: String(employee.seniority),
+        } as Employee} />
         <RoleCompatibility roleMatches={roleMatches as RoleMatch[]} />
       </div>
     </div>
