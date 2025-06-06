@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/pageHeader';
 import { EmployeeTable } from '@/components/employeeTable';
 import { useGetEmployees } from '@/app/user/employees/hooks/useGetEmployees';
-import { Employee } from '@/app/user/projects/types/ProjectTypes';
+import { Employee } from '@/app/user/projects/[projectId]/employee/[employeeId]/types/EmployeeProjectTypes';
 import { useRequestEmployeeModal } from '@/app/user/projects/hooks/useRequestEmployeeModal';
 import { useGetProjectRoles } from '@/app/user/projects/hooks/useGetProjectRoles';
 import { RequestEmployeeModal } from '@/app/user/projects/components/requestEmployeeModal';
