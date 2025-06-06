@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { ProjectCard } from '@/components/projectCard';
+import { ProjectCard } from '@/app/user/projects/components/projectCard';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 const MockConfirmDialog = () => <div data-testid="confirm-dialog" />;
