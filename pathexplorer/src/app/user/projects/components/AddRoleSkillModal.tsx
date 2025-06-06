@@ -8,6 +8,7 @@ import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
 import { useCreateRoleSkill } from '../hooks/useCreateRoleSkill';
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
+import { techSkillDictionary, softOptions } from '@/constants/constants';
 
 export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
   isProjectCreator: boolean;
@@ -15,6 +16,7 @@ export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
 }) {
   const { isOpen, onClose, roleId } = useAddRoleSkillModal();
   const { createRoleSkill, loading, error } = useCreateRoleSkill();
+  const [skillCategory, setSkillCategory] = useState('');
   const [skillName, setSkillName] = useState('');
   const [level, setLevel] = useState(50);
   const [type, setType] = useState<'hard' | 'soft'>('hard');
@@ -33,6 +35,7 @@ export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
 
     if (result) {
       toast.success('Skill added successfully!');
+      setSkillCategory('');
       setSkillName('');
       setLevel(50);
       setType('hard');
@@ -42,9 +45,23 @@ export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
 
   const handleClose = () => {
     onClose();
+    setSkillCategory('');
     setSkillName('');
     setLevel(50);
     setType('hard');
+  };
+
+  // When type changes, reset skill selections
+  const handleTypeChange = (value: 'hard' | 'soft') => {
+    setType(value);
+    setSkillCategory('');
+    setSkillName('');
+  };
+
+  // When category changes, reset skill name
+  const handleCategoryChange = (category: string) => {
+    setSkillCategory(category);
+    setSkillName('');
   };
 
   return (
@@ -69,15 +86,74 @@ export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="skill-name">Skill Name</Label>
-              <Input
-                id="skill-name"
-                value={skillName}
-                onChange={(e) => setSkillName(e.target.value)}
-                placeholder="Enter skill name"
-                required
-              />
+              <Label htmlFor="skill-type">Skill Type</Label>
+              <Select value={type} onValueChange={handleTypeChange}>
+                <SelectTrigger id="skill-type">
+                  <SelectValue placeholder="Select skill type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hard">Hard Skill</SelectItem>
+                  <SelectItem value="soft">Soft Skill</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+
+            {type === 'hard' ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="skill-category">Skill Category</Label>
+                  <Select value={skillCategory} onValueChange={handleCategoryChange} required>
+                    <SelectTrigger id="skill-category">
+                      <SelectValue placeholder="Select a skill category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.keys(techSkillDictionary).map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="skill-name">Specific Skill</Label>
+                  <Select
+                    value={skillName}
+                    onValueChange={setSkillName}
+                    disabled={!skillCategory}
+                    required
+                  >
+                    <SelectTrigger id="skill-name">
+                      <SelectValue placeholder={skillCategory ? 'Select a specific skill' : 'First select a category'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {skillCategory && techSkillDictionary[skillCategory].map((skill, index) => (
+                        <SelectItem key={index} value={skill}>
+                          {skill}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="soft-skill-name">Soft Skill</Label>
+                <Select value={skillName} onValueChange={setSkillName} required>
+                  <SelectTrigger id="soft-skill-name">
+                    <SelectValue placeholder="Select a soft skill" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {softOptions.map((skill, index) => (
+                      <SelectItem key={index} value={skill}>
+                        {skill}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="skill-level">Skill Level (%)</Label>
@@ -92,26 +168,13 @@ export function AddRoleSkillModal({ isProjectCreator, onSuccess }: {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="skill-type">Skill Type</Label>
-              <Select value={type} onValueChange={(value: 'hard' | 'soft') => setType(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select skill type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hard">Hard Skill</SelectItem>
-                  <SelectItem value="soft">Soft Skill</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={handleClose}>
                     Cancel
               </Button>
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !skillName}
                 className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
               >
                 {loading ? <Loader className="h-4 w-4 mr-2 animate-spin" /> : null}

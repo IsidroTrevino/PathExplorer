@@ -2,65 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-
-interface APIEmployeeResponse {
-  items: APIEmployee[];
-  total: number;
-  page: number;
-  size: number;
-  pages: number;
-}
-
-interface APIEmployee {
-  employee_id: number;
-  name: string;
-  last_name_1: string;
-  last_name_2: string;
-  phone_number: string;
-  location: string;
-  capability: string;
-  position: string;
-  seniority: number;
-  role: string;
-  project: {
-    project_id: number;
-    project_name: string;
-    project_start_date: string;
-    project_end_date: string;
-  } | null;
-  assignment_status: string;
-  days_since_last_project: number;
-}
-
-export interface Employee {
-  id: number;
-  name: string;
-  last_name_1: string;
-  position: string;
-  role: string;
-  assigned_project: string;
-  status: 'Assigned' | 'Staff';
-  assignment_percentage: number;
-}
-
-interface UseGetEmployeesParams {
-  page?: number;
-  size?: number;
-  role?: string | null;
-  alphabetical?: boolean | null;
-  search?: string | null;
-  assigned?: boolean | null;
-}
-
-interface EmployeesResponse {
-  data: Employee[];
-  totalPages: number;
-  currentPage: number;
-  totalItems: number;
-  loading: boolean;
-  error: string | null;
-  refetch: () => Promise<void>;
-}
+import {
+  APIEmployeeResponse,
+  APIEmployee,
+  Employee,
+  UseGetEmployeesParams,
+  EmployeesResponse,
+} from '../types/EmployeeTypes';
 
 export function useGetEmployees({
   page = 1,
@@ -89,10 +37,8 @@ export function useGetEmployees({
     setHasAttemptedFetch(true);
 
     try {
-      // Base URL
       let url = `/api/users?page=${page}&size=${size}`;
 
-      // Only add assigned param if it's explicitly set
       if (assigned !== null) {
         url += `&assigned=${assigned}`;
       }
@@ -132,7 +78,7 @@ export function useGetEmployees({
           role: emp.role,
           assigned_project: emp.project ? emp.project.project_name : 'None',
           status: emp.project ? 'Assigned' : 'Staff',
-          assignment_percentage: 0, // Default to 0%
+          assignment_percentage: 0,
         };
       });
 
@@ -149,18 +95,15 @@ export function useGetEmployees({
   }, [page, size, role, alphabetical, search, assigned, userAuth]);
 
   useEffect(() => {
-    // Reset error when auth is loading
     if (isAuthLoading) {
       setError(null);
     }
 
-    // Only fetch when auth is loaded and we have a token
     if (!isAuthLoading && userAuth?.accessToken) {
       fetchEmployees().catch(err => {
         console.error('Unhandled promise rejection:', err);
       });
     }
-    // Only show auth error if we've tried to fetch and auth is definitely done loading
     else if (!isAuthLoading && hasAttemptedFetch && !userAuth?.accessToken) {
       setLoading(false);
       setError('Authentication required');
@@ -172,7 +115,7 @@ export function useGetEmployees({
     totalPages,
     currentPage,
     totalItems,
-    loading: loading || isAuthLoading, // Show loading while auth is loading
+    loading: loading || isAuthLoading,
     error,
     refetch: fetchEmployees,
   };

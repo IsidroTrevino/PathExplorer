@@ -1,39 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-
-export interface Role {
-  role_id: number;
-  role_name: string;
-  role_description: string;
-  role_feedback: string;
-  assignment_id: number | null;
-  assignment_status: string | null;
-  developer_id: number | null;
-  developer_short_name: string | null;
-}
-
-export interface Project {
-  id: string;
-  project_name: string;
-  client: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  employees_req: number;
-  manager_id?: number;
-  project_id?: number;
-  manager?: string;
-  roles?: Role[];
-}
-
-interface GetProjectsParams {
-  page?: number;
-  size?: number;
-  search?: string | null;
-  alphabetical?: boolean | null;
-  start_date?: string | null;
-  end_date?: string | null;
-}
+import { Project, GetProjectsParams, APIProject } from '../types/ProjectTypes';
 
 export function useGetProjects({
   page = 1,
@@ -77,7 +44,7 @@ export function useGetProjects({
 
       const result = await response.json();
 
-      const projects: Project[] = result.items?.map((project: Project) => ({
+      const projects: Project[] = result.items?.map((project: APIProject) => ({
         id: project.project_id?.toString(),
         project_name: project.project_name,
         client: project.client,

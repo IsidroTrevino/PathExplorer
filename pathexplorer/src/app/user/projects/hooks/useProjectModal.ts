@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Project } from './useGetProjects';
+import { Project } from '../types/ProjectTypes';
 
 export function useProjectModal() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);

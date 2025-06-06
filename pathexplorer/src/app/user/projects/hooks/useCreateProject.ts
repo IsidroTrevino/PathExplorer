@@ -1,24 +1,6 @@
 import { useState } from 'react';
 import { useUser } from '@/features/context/userContext';
-
-interface CreateProjectParams {
-  projectName: string;
-  client: string;
-  startDate: Date;
-  endDate: Date;
-  employees_req: number;
-  description: string;
-}
-
-interface CreateProjectResponse {
-    id: string;
-    projectName: string;
-    client: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    employees_req: number;
-}
+import { CreateProjectParams, CreateProjectResponse } from '../types/ProjectTypes';
 
 export function useCreateProject() {
   const [isLoading, setIsLoading] = useState(false);

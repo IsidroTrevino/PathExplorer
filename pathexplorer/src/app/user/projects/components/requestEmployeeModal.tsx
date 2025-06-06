@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRequestEmployee } from '../hooks/useRequestEmployee';
 import { ProjectRole } from '../hooks/useGetProjectRoles';
-import { Employee } from '@/app/user/employees/hooks/useGetEmployees';
+import { Employee } from '@/app/user/projects/[projectId]/employee/[employeeId]/types/EmployeeProjectTypes';
 
 import {
   Dialog,

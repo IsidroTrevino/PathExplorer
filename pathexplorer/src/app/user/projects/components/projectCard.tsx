@@ -5,14 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, Users, User, Plus, X } from 'lucide-react';
 import { useUser } from '@/features/context/userContext';
-import { Project } from '@/app/user/projects/hooks/useGetProjects';
+import { Project, Role } from '../types/ProjectTypes';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { useCreateRoleModal } from '@/app/user/projects/hooks/useCreateRoleModal';
-import { CreateRoleModal } from '@/app/user/projects/components/createRoleModal';
-import { useDeleteProjectRole } from '@/app/user/projects/hooks/useDeleteProjectRole';
+import { useCreateRoleModal } from '../hooks/useCreateRoleModal';
+import { CreateRoleModal } from './createRoleModal';
+import { useDeleteProjectRole } from '../hooks/useDeleteProjectRole';
 import { toast } from 'sonner';
 import { useConfirm } from '@/features/hooks/useConfirm';
-import { useAddRoleSkillModal } from '@/app/user/projects/hooks/useAddRoleSkillModal';
+import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
 
 interface ProjectCardProps {
   project: Project;
@@ -98,6 +98,16 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
     }
   };
 
+  // Determine role badge style based on assignment status
+  const getRoleBadgeStyle = (role: Role) => {
+    if (role.assignment_status && role.assignment_status.trim() !== 'Unassigned') {
+      // Assigned role - using vibrant purple with white text
+      return 'bg-[#7500C0] text-white hover:bg-[#6200a0]';
+    }
+    // Unassigned role - using light gray
+    return 'bg-gray-200 text-gray-700 hover:bg-gray-300';
+  };
+
   return (
     <>
       <Card className="w-full mb-6">
@@ -144,16 +154,17 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        onClick={() => onOpen()}
-                        className="h-8 w-8 p-0"
+                        className="h-8 px-2 text-[#7500C0] border-[#7500C0]"
+                        onClick={onOpen}
                       >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-4 w-4 mr-1" />
+                          Add Role
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                          Add a new role
+                    <TooltipContent className="bg-black text-white border-gray-800" sideOffset={5}>
+                      <p>Add a new role</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -164,22 +175,49 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
               {project.roles && project.roles.length > 0 ? (
                 project.roles.map((role) => (
                   <div key={role.role_id} className="flex items-center">
-                    <Badge
-                      variant="secondary"
-                      className={isCreator ? 'cursor-pointer hover:bg-gray-200' : ''}
-                      onClick={isCreator ? () => handleRoleClick(role.role_id) : undefined}
-                    >
-                      {role.role_name}
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge
+                            className={`cursor-pointer ${getRoleBadgeStyle(role)}`}
+                            onClick={() => handleRoleClick(role.role_id)}
+                          >
+                            {role.role_name}
+                            {role.assignment_status && role.assignment_status.trim() !== '' && (
+                              <span className="ml-1 inline-block w-2 h-2 rounded-full bg-white"></span>
+                            )}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          className="bg-black text-white border border-gray-700 shadow-lg rounded-md p-0 overflow-hidden"
+                          sideOffset={5}
+                          style={{ '--tooltip-arrow-color': 'white' } as React.CSSProperties}
+                        >
+                          <div className="p-3">
+                            <h4 className="font-semibold text-white">{role.role_name}</h4>
+                            <p className="text-gray-300 text-sm mb-2">{role.role_description}</p>
+                          </div>
+                          {role.assignment_status && role.assignment_status.trim() !== 'Unassigned' ? (
+                            <div className="p-3 border-t border-gray-700 bg-gray-900">
+                              <p className="font-medium text-purple-300">Assigned to:</p>
+                              <p className="text-white">{role.developer_short_name || 'Unknown'}</p>
+                              <p className="text-gray-300 text-sm mt-1">Status: {role.assignment_status}</p>
+                            </div>
+                          ) : (
+                            <div className="p-3 border-t border-gray-700 bg-gray-900">
+                              <p className="text-gray-300 italic">This role is currently unassigned</p>
+                            </div>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
                     {isCreator && (
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0 ml-1 text-gray-500 hover:text-red-500"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteRole(role.role_id);
-                        }}
+                        size="icon"
+                        className="h-6 w-6 ml-1 text-gray-400 hover:text-red-500"
+                        onClick={() => handleDeleteRole(role.role_id)}
                       >
                         <X className="h-3 w-3" />
                       </Button>
@@ -202,11 +240,10 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
                 {onEdit && (
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={handleEditProject}
                   >
                     <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                          Edit Project
                   </Button>
                 )}
               </>
