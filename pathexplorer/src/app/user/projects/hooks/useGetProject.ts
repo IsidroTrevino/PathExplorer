@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
-import { Project } from './useGetProjects';
+import { Project } from '../types/ProjectTypes';
 
 interface ApiProject {
   project_id: number;
