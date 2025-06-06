@@ -21,6 +21,7 @@ export interface ProjectRole {
 }
 
 export interface Employee {
+    id: string | number;
     name: string;
     last_name_1: string;
     last_name_2?: string;
