@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
-import { Project } from '../hooks/useGetProjects';
+import { Project } from '../types/ProjectTypes';
 import { useEditProject } from '../hooks/useEditProject';
 import { useDeleteProject } from '../hooks/useDeleteProject';
 import { toast } from 'sonner';
