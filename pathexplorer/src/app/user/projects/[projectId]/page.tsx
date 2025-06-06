@@ -109,7 +109,7 @@ export default function AvailableEmployeesPage() {
                   onSearch={handleSearch}
                   isExternalPagination={true}
                   variant="available"
-                  onRequestEmployeeOpen={handleRequestEmployee}
+                  onRequestEmployeeOpen={(employee) => handleRequestEmployee(employee as unknown as Employee)}
                   projectId={projectId}
                 />
               </div>
