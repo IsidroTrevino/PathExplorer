@@ -4,22 +4,19 @@ describe('Developer Dashboard', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
+    await page.waitForSelector('input[type="email"]');
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
+    const loginButton = await page.waitForSelector('button[type="submit"]');
     await loginButton.click();
 
-    await Promise.race([
-      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
-      waitForTimeout(5000),
-    ]);
+    await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
     await navigateToPage('/user/dashboard');
 
-    await waitForTimeout(5000);
-  }, 120000);
+    await waitForTimeout(3000);
+  });
 
   test('should display developer dashboard with charts and stats', async () => {
     await page.waitForFunction(
@@ -27,10 +24,10 @@ describe('Developer Dashboard', () => {
         const spinner = document.querySelector('.animate-spin');
         return !spinner;
       },
-      { timeout: 30000 },
+      { timeout: 15000 },
     );
 
-    await waitForTimeout(3000);
+    await waitForTimeout(2000);
 
     const pageTitle = await page.title();
 
@@ -84,5 +81,5 @@ describe('Developer Dashboard', () => {
       const canvases = document.querySelectorAll('canvas');
       return canvases.length > 0;
     });
-  }, 120000);
+  });
 });

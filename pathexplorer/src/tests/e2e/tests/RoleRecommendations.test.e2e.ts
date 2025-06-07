@@ -4,27 +4,24 @@ describe('AI Recommendations Feature', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
+    await page.waitForSelector('input[type="email"]');
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
+    const loginButton = await page.waitForSelector('button[type="submit"]');
     if (!loginButton) throw new Error('Login button not found');
     await loginButton.click();
 
-    await Promise.race([
-      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
-      waitForTimeout(5000),
-    ]);
+    await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
     await navigateToPage('/user/profesional-path');
 
-    await waitForTimeout(8000);
-  }, 120000);
+    await waitForTimeout(5000);
+  });
 
   test('should load and display certification recommendations when button is clicked', async () => {
     const aiRecommendationsTab = await page.waitForSelector('button:has-text("AI Recommendations")', {
-      timeout: 30000,
+      timeout: 10000,
     }).catch(async () => {
       return await page.$('button[class*="flex-1"]:nth-of-type(2)');
     });
@@ -38,7 +35,7 @@ describe('AI Recommendations Feature', () => {
 
     await aiRecommendationsTab.click();
 
-    await waitForTimeout(5000);
+    await waitForTimeout(3000);
 
     const hasLoadingSpinner = await page.evaluate(() =>
       Boolean(document.querySelector('.animate-spin')),
@@ -47,11 +44,11 @@ describe('AI Recommendations Feature', () => {
     if (hasLoadingSpinner) {
       await page.waitForFunction(
         () => !document.querySelector('.animate-spin'),
-        { timeout: 60000 },
+        { timeout: 30000 },
       );
     }
 
-    await waitForTimeout(5000);
+    await waitForTimeout(3000);
 
     const hasRecommendations = await page.evaluate(() => {
       const hasTimelineContainer = document.querySelectorAll('.space-y-16').length > 0;
@@ -71,5 +68,5 @@ describe('AI Recommendations Feature', () => {
     });
 
     expect(hasRoleInfo).toBeTruthy();
-  }, 180000);
+  });
 });
