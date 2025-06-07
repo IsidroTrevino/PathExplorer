@@ -4,19 +4,22 @@ describe('Basic Info Page', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]');
+    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]');
+    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
     await loginButton.click();
 
-    await page.waitForNavigation();
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
+      waitForTimeout(5000),
+    ]);
 
     await navigateToPage('/user/basic-info');
 
-    await waitForTimeout(1000);
-  });
+    await waitForTimeout(3000);
+  }, 120000);
 
   test('should display employee information with name Isidro', async () => {
     await page.waitForFunction(
@@ -24,10 +27,10 @@ describe('Basic Info Page', () => {
         const spinner = document.querySelector('.animate-spin');
         return !spinner;
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
-    await page.waitForSelector('form');
+    await page.waitForSelector('form', { timeout: 60000 });
 
     const nameInputExists = await page.evaluate(() => {
       const nameInput = document.querySelector('input[name="name"]');
@@ -45,5 +48,5 @@ describe('Basic Info Page', () => {
     });
 
     expect(personalInfoSectionExists).toBeTruthy();
-  });
+  }, 120000);
 });

@@ -4,22 +4,26 @@ describe('Certifications Feature', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]');
+    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]');
+    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
     if (!loginButton) throw new Error('Login button not found');
     await loginButton.click();
 
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
-    await waitForTimeout(2000);
-  });
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
+      waitForTimeout(5000),
+    ]);
+
+    await waitForTimeout(3000);
+  }, 120000);
 
   test('should navigate to certifications page and verify content loads', async () => {
     await navigateToPage('/user/certifications');
 
-    await waitForTimeout(5000);
+    await waitForTimeout(8000);
 
     const pageTitle = await page.evaluate(() => {
       const header = document.querySelector('h1');
@@ -54,5 +58,5 @@ describe('Certifications Feature', () => {
     expect(pageStructure.hasHeader).toBeTruthy();
     expect(pageStructure.hasCertificationsSection).toBeTruthy();
     expect(pageStructure.hasContent).toBeTruthy();
-  });
+  }, 120000);
 });

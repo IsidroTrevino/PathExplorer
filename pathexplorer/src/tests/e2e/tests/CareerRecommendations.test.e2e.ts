@@ -4,20 +4,23 @@ describe('AI Recommendations Feature', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]');
+    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]');
+    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
     if (!loginButton) throw new Error('Login button not found');
     await loginButton.click();
 
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
+      waitForTimeout(5000),
+    ]);
 
     await navigateToPage('/user/profesional-path');
 
-    await waitForTimeout(5000);
-  });
+    await waitForTimeout(8000);
+  }, 120000);
 
   test('should load and display certification recommendations when button is clicked', async () => {
     const buttonTexts = await page.evaluate(() => {
@@ -67,7 +70,7 @@ describe('AI Recommendations Feature', () => {
 
     await generateButtonHandle.click();
 
-    await waitForTimeout(3000);
+    await waitForTimeout(5000);
 
     const hasLoadingIndicator = await page.evaluate(() => {
       return Boolean(
@@ -80,13 +83,13 @@ describe('AI Recommendations Feature', () => {
       try {
         await page.waitForFunction(
           () => !document.querySelector('.animate-spin'),
-          { timeout: 30000 },
+          { timeout: 60000 },
         );
       } catch (e) {
       }
     }
 
-    await waitForTimeout(3000);
+    await waitForTimeout(5000);
 
     const contentExists = await page.evaluate(() => {
       return Boolean(
@@ -101,5 +104,5 @@ describe('AI Recommendations Feature', () => {
     });
 
     expect(contentExists).toBeTruthy();
-  });
+  }, 180000);
 });

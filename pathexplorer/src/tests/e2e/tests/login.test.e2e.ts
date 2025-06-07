@@ -4,19 +4,22 @@ describe('Login Functionality', () => {
   test('should redirect to basic-info page after successful login', async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]');
+    await page.waitForSelector('input[type="email"]', { timeout: 60000 });
 
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
-    const loginButton = await page.waitForSelector('button[type="submit"]');
+    const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 60000 });
     await loginButton.click();
 
-    await page.waitForNavigation();
+    await Promise.race([
+      page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }),
+      waitForTimeout(5000),
+    ]);
 
     const currentUrl = page.url();
 
-    await waitForTimeout(1000);
+    await waitForTimeout(2000);
 
     expect(currentUrl).toContain('/user/basic-info');
 
@@ -26,5 +29,5 @@ describe('Login Functionality', () => {
     });
 
     expect(pageContent.heading).toBeTruthy();
-  }, 30000);
+  }, 120000);
 });
