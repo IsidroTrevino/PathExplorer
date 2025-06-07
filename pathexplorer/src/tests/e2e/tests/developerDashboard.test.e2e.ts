@@ -1,10 +1,13 @@
-import { navigateToPage, waitForTimeout } from '../utils/helpers';
+import { navigateToPage, waitForTimeout, waitForSelector } from '../utils/helpers';
 
 describe('Developer Dashboard', () => {
   beforeAll(async () => {
     await navigateToPage('/auth/LogIn');
 
-    await page.waitForSelector('input[type="email"]');
+    await waitForSelector('input[type="email"]');
+    await page.waitForFunction(() => {
+      return document.readyState === 'complete' && !document.querySelector('.loading-indicator');
+    }, { timeout: 90000 });
     await page.type('input[type="email"]', 'alejandro96.mia@gmail.com');
     await page.type('input[type="password"]', '$$0906alex$$');
 
