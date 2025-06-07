@@ -1,4 +1,3 @@
-// src/app/user/role-assignment/components/AssignmentsContainer.tsx
 'use client';
 
 import React from 'react';
