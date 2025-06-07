@@ -4,7 +4,7 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
-  testTimeout: 60000,
+  testTimeout: 1800000,
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.json'

@@ -172,10 +172,8 @@ export function Projects() {
 
       <CreateProjectModal
         isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          refetch();
-        }}
+        onClose={onClose}
+        onSuccess={refetch}
       />
 
       <EditProjectModal
