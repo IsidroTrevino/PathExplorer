@@ -9,5 +9,6 @@ module.exports = {
     'ts-jest': {
       tsconfig: 'tsconfig.json'
     }
-  }
+  },
+  maxWorkers: 1
 };
