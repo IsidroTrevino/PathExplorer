@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "cross-env NODE_ENV=test jest -c jest.e2e.config.js",
+    "test:e2e": "cross-env NODE_ENV=test jest -c jest.e2e.config.js --runInBand",
     "test:e2e:visible": "cross-env HEADLESS=false NODE_ENV=test jest -c jest.e2e.config.js"
   },
   "dependencies": {
