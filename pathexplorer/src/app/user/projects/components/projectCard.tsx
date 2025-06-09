@@ -13,6 +13,8 @@ import { useDeleteProjectRole } from '../hooks/useDeleteProjectRole';
 import { toast } from 'sonner';
 import { useConfirm } from '@/features/hooks/useConfirm';
 import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
+import { encryptId } from '@/lib/utils/idEncryption';
+import { useRouter } from 'next/navigation';
 
 interface ProjectCardProps {
   project: Project;
@@ -30,6 +32,7 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
     'Delete Role',
     'Are you sure you want to delete this role? This action cannot be undone.',
   );
+  const router = useRouter();
 
   const formatDate = (dateString: string) => {
     try {
@@ -58,7 +61,13 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
   };
 
   const handleViewProject = () => {
-    window.location.href = `/user/projects/${project.id}`;
+    const projectId = project.id !== undefined ? project.id : project.id;
+    if (projectId !== undefined) {
+      const encryptedId = encryptId(Number(projectId));
+      router.push(`/user/projects/${encryptedId}`);
+    } else {
+      console.error('No valid project ID found:', project);
+    }
   };
 
   const handleEditProject = () => {
