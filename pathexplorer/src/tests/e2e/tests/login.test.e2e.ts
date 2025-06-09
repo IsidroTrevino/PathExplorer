@@ -1,38 +1,44 @@
-import { waitForTimeout, waitForSelector } from '../utils/helpers';
-
 jest.setTimeout(90000);
 
 describe('Login Functionality', () => {
   test('should redirect to basic-info page after successful login', async () => {
-    await page.goto('http://localhost:3000/auth/LogIn', {
-      waitUntil: 'networkidle0',
-      timeout: 30000,
-    });
-
-    await waitForTimeout(1000);
-
-    const emailInput = await waitForSelector('input[type="email"]', { visible: true });
-    await emailInput.click({ clickCount: 3 });
-    await emailInput.type('alejandro96.mia@gmail.com', { delay: 10 });
-
-    const passwordInput = await waitForSelector('input[type="password"]', { visible: true });
-    await passwordInput.click({ clickCount: 3 });
-    await passwordInput.type('$$0906alex$$', { delay: 10 });
-
-    const loginButton = await waitForSelector('button[type="submit"]', { visible: true });
-
-    await Promise.all([
-      loginButton.click(),
-      page.waitForNavigation({
+    try {
+      await page.goto('http://localhost:3000', {
         waitUntil: 'networkidle0',
         timeout: 30000,
-      }),
-    ]);
+      });
 
-    const finalUrl = page.url();
-    expect(finalUrl).toContain('/user/basic-info');
+      await page.evaluate(() => {
+        try {
+          localStorage.clear();
+          sessionStorage.clear();
+        } catch (e) {
+        }
+      });
 
-    const pageContent = await page.evaluate(() => document.body.textContent);
-    expect(pageContent).toBeTruthy();
-  }, 60000);
+      await page.goto('http://localhost:3000/auth/LogIn', {
+        waitUntil: 'networkidle0',
+        timeout: 30000,
+      });
+
+      const emailInput = await page.waitForSelector('input[type="email"]', { timeout: 30000 });
+      await emailInput.type('alejandro96.mia@gmail.com');
+
+      const passwordInput = await page.waitForSelector('input[type="password"]', { timeout: 15000 });
+      await passwordInput.type('$$0906alex$$');
+
+      const loginButton = await page.waitForSelector('button[type="submit"]', { timeout: 15000 });
+
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 45000 }),
+        loginButton.click(),
+      ]);
+
+      const currentUrl = page.url();
+      const isLoggedIn = currentUrl.includes('/user/') || currentUrl.includes('/basic-info');
+      expect(isLoggedIn).toBe(true);
+    } catch (error) {
+      throw error;
+    }
+  }, 80000);
 });

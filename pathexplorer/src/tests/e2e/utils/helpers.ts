@@ -14,10 +14,7 @@ export const waitForSelector = async (selector: string, options = {}) => {
   try {
     return await page.waitForSelector(selector, mergedOptions);
   } catch (error) {
-    console.error(`Failed to find selector: ${selector}`);
-    const bodyContent = await page.evaluate(() => document.body.innerHTML);
-    console.error(`Current page content: ${bodyContent.substring(0, 500)}...`);
-    throw error;
+    throw new Error(`Failed to find selector: ${selector}`);
   }
 };
 
