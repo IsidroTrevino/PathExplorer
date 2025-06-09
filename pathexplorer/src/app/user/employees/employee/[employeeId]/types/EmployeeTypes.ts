@@ -1,4 +1,4 @@
-// src/app/user/employees/employee/types/index.ts
+// src/app/user/employees/employee/[employeeId]/types/EmployeeTypes.ts
 export interface EmployeeSkill {
     skill_name: string;
     type: 'hard' | 'soft';
@@ -9,8 +9,13 @@ export interface EmployeeSkill {
 export interface EmployeeProject {
     project_id: number;
     project_name: string;
-    project_start_date: string;
-    project_end_date: string;
+    client: string;
+    start_date: string;
+    end_date: string;
+    role_id: number;
+    role_name: string;
+    role_description: string;
+    feedback: string;
 }
 
 export interface EmployeeCertification {
@@ -21,6 +26,14 @@ export interface EmployeeCertification {
     expiration_date: string;
     certification_id: number;
     status: 'active' | 'expired';
+}
+
+export interface EmployeeGoal {
+    title: string;
+    category: string;
+    description: string;
+    term: 'Short' | 'Medium' | 'Large';
+    goal_id: number;
 }
 
 export interface Employee {
@@ -35,9 +48,13 @@ export interface Employee {
     seniority: number;
     email: string;
     role: string;
-    project: EmployeeProject;
-    curriculum: string;
+    staff_days: number;
+    speciality_area: string | null;
+    current_project: EmployeeProject | null;
+    project_history: EmployeeProject[];
     assignment_status: string;
+    curriculum_url: string;
     certifications: EmployeeCertification[];
     skills: EmployeeSkill[];
+    goals: EmployeeGoal[];
 }

@@ -193,12 +193,16 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/project-roles/recommendations/:projectId',
       },
       {
-        source: '/api/users/profile/:employeeId',
-        destination: 'https://pathexplorer.vercel.app/users/profile/:employeeId',
+        source: '/api/all/:employeeId/full-profile',
+        destination: 'https://pathexplorer.vercel.app/all/:employeeId/full-profile',
       },
       {
         source: '/api/delete/auth/employee/:employeeId',
         destination: 'https://pathexplorer.vercel.app/auth/employee/:employeeId',
+      },
+      {
+        source: '/api/update/project-roles/:roleId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId',
       },
     ];
   },

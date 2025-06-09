@@ -1,9 +1,9 @@
-// src/app/employees/employee/components/EmployeeSkills.tsx
 import { SkillCard } from '@/app/user/curriculum/components/SkillCard';
+import { Skill } from '@/app/user/curriculum/types/curriculum';
 
-export function EmployeeSkills({ skills }) {
-  const hardSkills = skills.filter(skill => skill.type === 'hard');
-  const softSkills = skills.filter(skill => skill.type === 'soft');
+export function EmployeeSkills({ skills }: { skills: Skill[] }) {
+  const hardSkills = skills.filter((skill: Skill) => skill.type === 'hard');
+  const softSkills = skills.filter((skill: Skill) => skill.type === 'soft');
 
   return (
     <div className="bg-white rounded-lg border p-6 shadow-sm">
@@ -18,6 +18,7 @@ export function EmployeeSkills({ skills }) {
                 key={skill.skill_id}
                 skill_name={skill.skill_name}
                 level={skill.level}
+                type={skill.type}
                 iconType="hard"
               />
             ))}
@@ -32,6 +33,7 @@ export function EmployeeSkills({ skills }) {
                 key={skill.skill_id}
                 skill_name={skill.skill_name}
                 level={skill.level}
+                type={skill.type}
                 iconType="soft"
               />
             ))}

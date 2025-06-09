@@ -33,6 +33,7 @@ export function AvailableEmployeesTab({ projectId }: AvailableEmployeesTabProps)
     totalPages,
     loading,
     error,
+    refetch,
   } = useGetEmployees({
     page: currentPage,
     size: pageSize,
@@ -93,6 +94,7 @@ export function AvailableEmployeesTab({ projectId }: AvailableEmployeesTabProps)
         onClose={onClose}
         projectRoles={projectRoles}
         projectLoading={projectLoading}
+        refetch={refetch}
       />
     </>
   );

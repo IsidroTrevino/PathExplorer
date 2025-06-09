@@ -17,7 +17,7 @@ export function useEmployeeProfile(employeeId: string | number) {
       setError(null);
 
       try {
-        const response = await fetch(`/api/users/profile/${employeeId}`, {
+        const response = await fetch(`/api/all/${employeeId}/full-profile`, {
           headers: {
             'Authorization': `Bearer ${userAuth.accessToken}`,
             'Content-Type': 'application/json',

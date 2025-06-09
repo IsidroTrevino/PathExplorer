@@ -1,7 +1,9 @@
 import { EmployeePersonalInfo } from './EmployeePersonalInfo';
+import { EmployeeProjectHistory } from './EmployeeProjectHistory';
+import { EmployeeGoals } from './EmployeeGoals';
 import { EmployeeCertifications } from './EmployeeCertifications';
-import { EmployeeSkills } from './EmployeeSkills';
 import { EmployeeCurriculum } from './EmployeeCurriculum';
+import { EmployeeSkills } from './EmployeeSkills';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
@@ -47,11 +49,13 @@ export function EmployeeProfileContainer({ employeeData }: EmployeeProfileContai
 
       <div className="space-y-6 w-full">
         <EmployeePersonalInfo employee={employeeData} />
+        <EmployeeProjectHistory projects={employeeData.project_history} />
+        <EmployeeGoals goals={employeeData.goals} />
         <EmployeeSkills skills={employeeData.skills} />
         <EmployeeCertifications certifications={employeeData.certifications} />
-        {employeeData.curriculum && (
+        {employeeData.curriculum_url && (
           <EmployeeCurriculum
-            curriculumKey={employeeData.curriculum}
+            curriculumKey={employeeData.curriculum_url}
             employeeName={fullName}
           />
         )}
