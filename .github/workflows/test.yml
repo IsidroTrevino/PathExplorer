@@ -63,8 +63,12 @@ jobs:
       - name: Wait for Next.js to be ready
         run: |
           echo "Waiting for Next.js to start..."
-          timeout 60 bash -c 'until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do printf "."; sleep 2; done'
+          timeout 120 bash -c 'until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do printf "."; sleep 3; done'
           echo "Next.js is up!"
+          sleep 30
+
+          echo "Debug: Checking app status"
+          curl -s http://localhost:3000 | head -n 20
 
       - name: Run E2E tests
         run: npm run test:e2e

@@ -41,9 +41,10 @@ type ProjectFormValues = z.infer<typeof projectSchema>;
 interface CreateProjectModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
+export function CreateProjectModal({ isOpen, onClose, onSuccess }: CreateProjectModalProps) {
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const { createProject, isLoading } = useCreateProject();
@@ -69,6 +70,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
       if (result) {
         form.reset();
         onClose();
+        if (onSuccess) onSuccess();
       }
     } catch (error) {
       console.error('Error creating project:', error);
