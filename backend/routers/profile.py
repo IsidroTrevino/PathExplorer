@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import date
-from schemas import User, UserEdit, EmployeeRegistered, RoleDeveloper, ProfileResponse, ProjectInfo, CertificationResponse, SkillResponse
-from models import User as UserModel, Employee, RoleDeveloper, Project, Certification, Skill, Assignment
+from typing import List, Optional
+from schemas import User, UserEdit, EmployeeRegistered, RoleDeveloper, ProfileResponse, ProjectInfo, CertificationResponse, SkillResponse, ProjectRoleCreate, FeedbackResponse
+from models import User as UserModel, Employee, RoleDeveloper, Project, Certification, Skill, Assignment, ProjectRole
 from dependencies import get_current_user, get_db
 from utils import hash_password
 
@@ -68,4 +69,41 @@ def edit_user(user_edit: UserEdit, current_user: User = Depends(get_current_user
 
     db.commit()
     return {"message": "User updated successfully"}
+
+@router.get("/my-feedback", response_model=List[FeedbackResponse])
+def get_my_feedback(id: Optional[int] = None, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not id:
+        user = db.query(UserModel).filter(UserModel.id == current_user.id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        employee = db.query(Employee).filter(Employee.user_id == user.id).first()
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        assignments = db.query(Assignment).filter(Assignment.developer_id== employee.employee_id).all()
+    else:
+        emp_req = db.query(Employee).filter(Employee.user_id == current_user.id).first()
+        if not emp_req or not emp_req.manager:
+            raise HTTPException(status_code=400, detail="Not manager or user found")
+        employee = db.query(Employee).filter(Employee.employee_id == id).first()
+        if not employee:
+            raise HTTPException(status_code=404, detail="Employee not found")  
+        assignments = db.query(Assignment).filter(Assignment.developer_id== employee.employee_id).all()
+    feedback_list = []
+    
+    for assignment in assignments:
+        projectrole = db.query(ProjectRole).filter(ProjectRole.project_id == assignment.project_id).first()
+        if projectrole.feedback:
+            project = db.query(Project).filter(Project.project_id == projectrole.project_id).first()
+            feedback_list.append(FeedbackResponse(
+                feedback=projectrole.feedback,
+                project_name=project.projectname if project else "Unknown Project",
+                project_id=project.project_id if project else None,
+                project_role=projectrole.description if projectrole else "Unknown Role", 
+                date=project.enddate
+                
+            ))
+    if not feedback_list:
+        raise HTTPException(status_code=404, detail="No feedback found for this user")
+    return feedback_list
+
     

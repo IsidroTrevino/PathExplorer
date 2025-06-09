@@ -8,6 +8,10 @@ from sqlalchemy import (
     ForeignKey,
     Enum as SQLEnum,
 )
+from sqlalchemy import (
+    Column, Integer, String, Text, Boolean, ForeignKey,
+    JSON, TIMESTAMP, CheckConstraint, func
+)
 from sqlalchemy.orm import relationship
 from schemas import EmployeeRole, SkillType
 
@@ -169,3 +173,27 @@ class ProjectRoleSkill(Base):
     skill_name = Column(String(100), primary_key=True)
     level = Column(Integer, nullable=False)
     type = Column(SQLEnum(SkillType), nullable=False)
+    
+class Session(Base):
+    __tablename__ = 'sessions'
+
+    session_id = Column(Integer, primary_key=True, autoincrement=True)
+    employee_id = Column(Integer, ForeignKey('Employee.employee_id', ondelete='CASCADE'))
+    user_context = Column(Text)
+    user_info = Column(JSON, default=dict)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
+    is_active = Column(Boolean, default=True)
+
+    messages = relationship('Message', back_populates='session', cascade="all, delete-orphan")
+
+class Message(Base):
+    __tablename__ = 'messages'
+
+    message_id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(Integer, ForeignKey('sessions.session_id', ondelete='CASCADE'))
+    role = Column(String(20), nullable=False)
+    content = Column(Text, nullable=False)
+    timestamp = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    session = relationship('Session', back_populates='messages')

@@ -10,3 +10,4 @@ datetime
 python-multipart
 fastapi-pagination
 openai
+google-genai

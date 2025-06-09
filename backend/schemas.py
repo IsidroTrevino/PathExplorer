@@ -263,3 +263,56 @@ class ProfileResponse(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class FeedbackResponse(BaseModel):
+    project_id: int
+    project_name: str
+    project_role: str
+    feedback: str
+    date: date
+
+    class Config:
+        orm_mode = True
+        
+class EmployeeProjectHistory(BaseModel):
+    project_id: int
+    project_name: str
+    client: str
+    start_date: date
+    end_date: Optional[date]
+    role_name: str
+    role_description: Optional[str]
+    feedback: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+class EmployeeFullProfile(BaseModel):
+    # Información personal
+    employee_id: int
+    name: str
+    last_name_1: str
+    last_name_2: Optional[str]
+    phone_number: str
+    location: str
+    capability: str
+    position: str
+    seniority: int
+    email: str
+    role: EmployeeRole
+    staff_days: Optional[int]
+    speciality_area: Optional[str]  # Para TFS
+
+    # Información actual
+    current_project: Optional[ProjectInfo]
+    assignment_status: str
+    curriculum_url: Optional[str]
+
+    # Historiales
+    project_history: List[EmployeeProjectHistory]
+    skills: List[SkillResponse]
+    certifications: List[CertificationResponse]
+    goals: List[GoalResponse]
+
+    class Config:
+        orm_mode = True

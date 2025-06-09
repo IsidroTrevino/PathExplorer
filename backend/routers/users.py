@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import case, func
 from sqlalchemy.orm import aliased
-from sqlalchemy.sql import over
+from sqlalchemy.sql import over, literal
 from fastapi_pagination import Page, create_page
 from fastapi_pagination import paginate
 from schemas import EmployeeRole, EmployeeList, EmployeeRegistered
@@ -36,67 +36,64 @@ def get_users(
         raise HTTPException(status_code=403, detail="Not enough permissions")
 
     
-    assignment_ranked = (
+    active_assignments = (
+    db.query(
+        Assignment.developer_id,
+        Assignment.project_id,
+        func.row_number().over(
+            partition_by=Assignment.developer_id,
+            order_by=[
+                case(
+                    (Project.enddate.is_(None), 1),
+                    else_=2
+                ),
+                Project.enddate.desc().nulls_first()
+            ]
+        ).label("rank")
+    )
+    .join(Project, Assignment.project_id == Project.project_id)
+    .filter(
+        or_(
+            Project.enddate.is_(None),
+            Project.enddate >= func.current_date()
+        ),
+        # Agregar filtro para el estado del assignment
+        Assignment.status != 'rejected' , Assignment.status != 'pending'
+    )).subquery()
+
+    current_assignment = (
         db.query(
-            Assignment.developer_id,
-            Assignment.project_id,
-            func.row_number().over(
-                partition_by=Assignment.developer_id,
-                order_by=[
-                    # Changed from list to individual case elements
-                    case(
-                        (Project.enddate == None, 1),
-                        (Project.enddate >= func.current_date(), 1),
-                        else_=2
-                    ),  # prioriza proyectos vigentes
-                    Project.enddate.desc()  # si no hay vigentes, toma el más reciente
-                ]
-            ).label("rank")
+            active_assignments.c.developer_id,
+            active_assignments.c.project_id
         )
-        .join(Project, Assignment.project_id == Project.project_id)
+        .filter(active_assignments.c.rank == 1)
     ).subquery()
 
-    best_assignment = (
-        db.query(
-            assignment_ranked.c.developer_id,
-            assignment_ranked.c.project_id
-        )
-        .filter(assignment_ranked.c.rank == 1)
-    ).subquery()
-
-    # Base query
     query = db.query(
-    Employee.employee_id,
-    Employee.name,
-    Employee.last_name_1,
-    Employee.last_name_2,
-    Employee.phone_number,
-    Employee.location,
-    Employee.capability,
-    Employee.position,
-    Employee.seniority,
-    Employee.role,
-    Project.project_id,
-    Project.projectname.label("project_name"),
-    Project.startdate.label("project_start_date"),
-    Project.enddate.label("project_end_date"),
-    # Changed from list to individual case elements
-    case(
-        (Project.enddate == None, "Staff"),
-        (Project.enddate >= func.current_date(), "Asignado"),
-        else_="Staff"
-    ).label("assignment_status"),
-    # Changed from list to individual case elements
-    case(
-        (Project.enddate == None, 0),
-        (Project.enddate >= func.current_date(), 0),
-        else_=(func.current_date() - Project.enddate)
-    ).label("days_since_last_project")
-).outerjoin(
-    best_assignment, best_assignment.c.developer_id == Employee.employee_id
-).outerjoin(
-    Project, Project.project_id == best_assignment.c.project_id
-)
+        Employee.employee_id,
+        Employee.name,
+        Employee.last_name_1,
+        Employee.last_name_2,
+        Employee.phone_number,
+        Employee.location,
+        Employee.capability,
+        Employee.position,
+        Employee.seniority,
+        Employee.role,
+        Project.project_id,
+        Project.projectname.label("project_name"),
+        Project.startdate.label("project_start_date"),
+        Project.enddate.label("project_end_date"),
+        case(
+            (current_assignment.c.project_id.is_(None), "Staff"),
+            else_="Asignado"
+        ).label("assignment_status"),
+        literal(0).label("days_since_last_project")  # Siempre 0 para estado actual
+    ).outerjoin(
+        current_assignment, current_assignment.c.developer_id == Employee.employee_id
+    ).outerjoin(
+        Project, Project.project_id == current_assignment.c.project_id
+    )
 
     # Filtro por rol
     if role:

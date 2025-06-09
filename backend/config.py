@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     smtp_user: str
     smtp_password: str
     OPENAI_API_KEY: str
+    GENAI_API_KEY: str
+    DEV_INSTR:str
     class Config:
         env_file = ".env"
 
