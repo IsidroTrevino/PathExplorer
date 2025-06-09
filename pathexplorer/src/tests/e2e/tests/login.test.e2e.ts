@@ -1,4 +1,4 @@
-import { waitForSelector, waitForTimeout } from '../utils/helpers';
+import { navigateToPage, waitForSelector, waitForTimeout } from '../utils/helpers';
 
 jest.setTimeout(120000);
 
@@ -22,36 +22,19 @@ describe('Login Functionality', () => {
       timeout: 60000,
     });
 
-    await waitForTimeout(5000);
-
-    await page.waitForFunction(() => document.readyState === 'complete', {
-      timeout: 30000,
-    });
-
-    const emailInput = await page.waitForSelector('input[type="email"]', {
-      visible: true,
-      timeout: 45000,
-    });
-    await emailInput.type('alejandro96.mia@gmail.com', { delay: 100 });
-
-    const passwordInput = await page.waitForSelector('input[type="password"]', {
-      visible: true,
-      timeout: 30000,
-    });
-    await passwordInput.type('$$0906alex$$', { delay: 100 });
-
-    const loginButton = await page.waitForSelector('button[type="submit"]', {
-      visible: true,
-      timeout: 30000,
-    });
+    await navigateToPage('/auth/LogIn');
+    const emailInput = await waitForSelector('input[type="email"]');
+    await emailInput.type('alejandro96.mia@gmail.com');
+    const passwordInput = await waitForSelector('input[type="password"]');
+    await passwordInput.type('$$0906alex$$');
+    const loginButton = await waitForSelector('button[type="submit"]');
 
     await Promise.all([
-      page.waitForNavigation({
-        waitUntil: 'networkidle0',
-        timeout: 60000,
-      }),
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
       loginButton.click(),
     ]);
+
+    await navigateToPage('/user/basic-info');
 
     const finalUrl = page.url();
     const isLoggedIn = finalUrl.includes('/user/') || finalUrl.includes('/basic-info');
