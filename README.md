@@ -30,7 +30,7 @@ A live demo is deployed on Vercel here: **[pathexplorer-kohl.vercel.app](https:/
 |------------------|------------------------------------------------------|-------------------------------------------------------|
 | **Frontend**     | **Next.js 13** (React 18), **TypeScript**            | Hybrid SSR/SPA, fast dev experience, type safety      |
 | **Styling / UI** | Tailwind CSS / CSS-in-JS, Shadcn / Radix components  | Consistent design, accessibility, rapid theming       |
-| **Backend**      | **FastApi** + **Python** (TypeScript)            | Minimal, modular REST API with shared types           |
+| **Backend**      | **FastApi** + **Python** (SQL Alchemy)            | Minimal, modular REST API with shared types           |
 | **Database**     | SQL (PostgreSQL) | Flexible, easy schema evolution                       |
 | **Auth**         | JWT / session cookies                                | Secure user sessions                                  |
 | **Testing**      | Jest, React Testing Library, Puppeteer          | Unit & integration reliability                        |
@@ -64,7 +64,7 @@ A live demo is deployed on Vercel here: **[pathexplorer-kohl.vercel.app](https:/
 ```bash
 # Backend
 cd backend
-npm install
+pip install requirements.txt
 
 # Frontend
 cd ../pathexplorer
@@ -76,6 +76,10 @@ npm install --legacy-peer-deps
 
 4. **Start the servers**
 ```bash
+# Backend
+cd backend
+uvicorn main:app --reload
+
 # Frontend
 cd ../pathexplorer
 npm run dev
@@ -104,7 +108,7 @@ Using Figma ensured visual fidelity and consistency across breakpoints, and acce
 # Project Structure
 ```bash
 PathExplorer/
-├── backend/            # FastApi API (TypeScript)
+├── backend/            # FastApi API (Python)
 │   ├── routers/
 │   └── vercel.json
 ├── pathexplorer/       # Next.js client (TypeScript)
