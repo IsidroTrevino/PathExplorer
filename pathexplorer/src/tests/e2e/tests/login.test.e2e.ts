@@ -22,6 +22,8 @@ describe('Login Functionality', () => {
       timeout: 60000,
     });
 
+    expect(true).toBe(true);
+
     await navigateToPage('/auth/LogIn');
     const emailInput = await waitForSelector('input[type="email"]');
     await emailInput.type('alejandro96.mia@gmail.com');
