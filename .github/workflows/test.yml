@@ -76,23 +76,23 @@ jobs:
         env:
           HEADLESS: true
 
-    lint:
-      runs-on: ubuntu-latest
+  lint:
+    runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: Use Node.js
-          uses: actions/setup-node@v3
-          with:
-            node-version: '18'
-            cache: 'npm'
-            cache-dependency-path: pathexplorer/package-lock.json
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: pathexplorer/package-lock.json
 
-        - name: Install dependencies
-          run: npm ci --legacy-peer-deps
-          working-directory: ./pathexplorer
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+        working-directory: ./pathexplorer
 
-        - name: Run linter
-          run: npm run lint -- --fix
-          working-directory: ./pathexplorer
+      - name: Run linter
+        run: npm run lint -- --fix
+        working-directory: ./pathexplorer
