@@ -1,4 +1,3 @@
-// src/app/user/projects/[projectId]/page.tsx
 import { PageNavigation } from './components/PageNavigation';
 import { ProjectEmployeeTabs } from './components/ProjectEmployeeTabs';
 import { decryptId } from '@/lib/utils/idEncryption';
