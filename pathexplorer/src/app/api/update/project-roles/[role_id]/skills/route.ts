@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse, type RouteHandlerContext } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
   request: NextRequest,
-  context: RouteHandlerContext<{ role_id: string }>,
+  context: { params: { role_id: string } },
 ) {
   try {
     const roleId = context.params.role_id;

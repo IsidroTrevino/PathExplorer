@@ -65,6 +65,10 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
     }
   };
 
+  const handleAddClick = (roleId: number) => {
+    addRoleSkillModal.onOpen(roleId);
+  };
+
   const handleViewProject = () => {
     const projectId = project.id !== undefined ? project.id : project.id;
     if (projectId !== undefined) {
@@ -235,7 +239,7 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
                             variant="outline"
                             size="sm"
                             className="h-7 px-2 text-xs text-[#7500C0] border-[#7500C0]"
-                            onClick={() => addRoleSkillModal.onOpen(expandedRoleId)}
+                            onClick={() => handleAddClick(expandedRoleId)}
                           >
                             <Plus className="h-3 w-3 mr-1" />
                                   Add Skill
@@ -284,24 +288,19 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
             </Button>
           </div>
         </CardFooter>
-
-        <AddRoleSkillModal
-          isProjectCreator={isCreator}
-          onSuccess={onRefresh}
-        />
-
-        <CreateRoleModal
-          isOpen={isOpen}
-          onClose={handleModalClose}
-          projectId={project.project_id || parseInt(project.id)}
-          onSuccess={handleRoleCreated}
-        />
-
-        <UpdateRoleSkillModal
-          isProjectCreator={isCreator}
-          onSuccess={onRefresh}
-        />
       </Card>
+
+      <CreateRoleModal
+        isOpen={isOpen}
+        onClose={handleModalClose}
+        projectId={project.project_id || parseInt(project.id)}
+        onSuccess={handleRoleCreated}
+      />
+
+      <UpdateRoleSkillModal
+        isProjectCreator={isCreator}
+        onSuccess={onRefresh}
+      />
 
       <ConfirmDialog />
     </>
