@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-type RouteContext = {
-  params: {
-    role_id: string;
-  };
-};
-
 export async function PUT(
   request: NextRequest,
-  context: RouteContext,
+  { params }: { params: { role_id: string } },
 ) {
   try {
-    const roleId = context.params.role_id;
+    const roleId = params.role_id;
     const url = request.nextUrl;
     const skillName = url.searchParams.get('skill_name');
     if (!skillName) {
