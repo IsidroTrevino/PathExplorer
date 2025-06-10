@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { EmployeeTable } from '@/components/employeeTable';
 import { useGetEmployees } from '../hooks/useGetEmployees';
+import { useDeleteEmployee } from '../hooks/useDeleteEmployee';
+import { useConfirm } from '@/features/hooks/useConfirm';
 
 export function Employees() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,12 +12,18 @@ export function Employees() {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [alphabetical, setAlphabetical] = useState<boolean | null>(null);
   const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  const { deleteEmployee } = useDeleteEmployee();
+  const [ConfirmDialog, confirm] = useConfirm(
+    'Delete Employee',
+    'Are you sure you want to delete this employee? This action cannot be undone.',
+  );
 
   const {
     data: employees,
     totalPages,
     loading,
     error,
+    refetch,
   } = useGetEmployees({
     page: currentPage,
     size: pageSize,
@@ -44,6 +52,17 @@ export function Employees() {
     setCurrentPage(1);
   };
 
+  const handleDeleteEmployee = async (employeeId: number) => {
+    const confirmed = await confirm();
+
+    if (confirmed) {
+      const success = await deleteEmployee(employeeId);
+      if (success) {
+        refetch();
+      }
+    }
+  };
+
   return (
     <>
       {error ? (
@@ -62,7 +81,9 @@ export function Employees() {
             onSort={handleSort}
             onSearch={handleSearch}
             isExternalPagination={true}
+            onDelete={handleDeleteEmployee}
           />
+          <ConfirmDialog />
         </div>
       )}
     </>
