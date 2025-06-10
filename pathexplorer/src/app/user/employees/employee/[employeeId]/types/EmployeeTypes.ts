@@ -1,4 +1,3 @@
-// src/app/user/employees/employee/[employeeId]/types/EmployeeTypes.ts
 export interface EmployeeSkill {
     skill_name: string;
     type: 'hard' | 'soft';

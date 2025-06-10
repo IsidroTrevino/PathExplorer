@@ -15,7 +15,7 @@ export function UpdateRoleSkillModal({ isProjectCreator, onSuccess }: {
   onSuccess?: () => void;
 }) {
   const { isOpen, onClose, roleId, skillToEdit } = useUpdateRoleSkillModal();
-  const { updateRoleSkill, loading, error } = useUpdateRoleSkill();
+  const { updateRoleSkill, isLoading, error } = useUpdateRoleSkill();
 
   const [skillCategory, setSkillCategory] = useState('');
   const [skillName, setSkillName] = useState('');
@@ -206,10 +206,10 @@ export function UpdateRoleSkillModal({ isProjectCreator, onSuccess }: {
               </Button>
               <Button
                 type="submit"
-                disabled={loading || !skillName}
+                disabled={isLoading || !skillName}
                 className="bg-[#7500C0] hover:bg-[#6200a0] text-white"
               >
-                {loading ? <Loader className="h-4 w-4 mr-2 animate-spin" /> : null}
+                {isLoading ? <Loader className="h-4 w-4 mr-2 animate-spin" /> : null}
                     Update Skill
               </Button>
             </div>

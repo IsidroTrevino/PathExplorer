@@ -1,7 +1,7 @@
-// src/app/employees/employee/components/EmployeeHeader.tsx
 import { Badge } from '@/components/ui/badge';
+import { Employee } from '../types/EmployeeTypes';
 
-export function EmployeeHeader({ employee }) {
+export function EmployeeHeader({ employee }: { employee: Employee }) {
   return (
     <div className="bg-white rounded-lg border p-6 shadow-sm">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center">

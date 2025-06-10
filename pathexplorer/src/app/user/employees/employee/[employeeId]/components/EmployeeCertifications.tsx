@@ -1,9 +1,15 @@
-// src/app/employees/employee/components/EmployeeCertifications.tsx
 import { CertificationCard } from '@/app/user/certifications/components/certificationCard';
+import { EmployeeCertification } from '../types/EmployeeTypes';
+import { Certification } from '@/app/user/certifications/types/CertificationTypes';
 
-export function EmployeeCertifications({ certifications }) {
+export function EmployeeCertifications({ certifications }: { certifications: EmployeeCertification[] }) {
   const activeCertifications = certifications.filter(cert => cert.status === 'active');
   const expiredCertifications = certifications.filter(cert => cert.status === 'expired');
+
+  const convertCertification = (cert: EmployeeCertification): Certification => ({
+    ...cert,
+    certification_id: String(cert.certification_id),
+  });
 
   return (
     <div className="bg-white rounded-lg border shadow-sm">
@@ -21,7 +27,7 @@ export function EmployeeCertifications({ certifications }) {
             {activeCertifications.map(certification => (
               <CertificationCard
                 key={certification.certification_id}
-                certification={certification}
+                certification={convertCertification(certification)}
                 onClick={() => {}} // Read-only mode
               />
             ))}
@@ -35,7 +41,7 @@ export function EmployeeCertifications({ certifications }) {
                 {expiredCertifications.map(certification => (
                   <CertificationCard
                     key={certification.certification_id}
-                    certification={certification}
+                    certification={convertCertification(certification)}
                     onClick={() => {}} // Read-only mode
                   />
                 ))}
