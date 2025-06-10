@@ -1,67 +1,47 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, type RouteHandlerContext } from 'next/server';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { role_id: string } },
+  context: RouteHandlerContext<{ role_id: string }>,
 ) {
   try {
-    const roleId = params.role_id;
-    const searchParams = request.nextUrl.searchParams;
-    const skillName = searchParams.get('skill_name');
-
+    const roleId = context.params.role_id;
+    const url = request.nextUrl;
+    const skillName = url.searchParams.get('skill_name');
     if (!skillName) {
-      return NextResponse.json(
-        { error: 'Missing skill_name parameter' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Missing skill_name parameter' }, { status: 400 });
     }
 
-    const requestBody = await request.json();
-
-    const formattedPayload = {
-      skill_name: requestBody.skill_name ? requestBody.skill_name.trim() : '',
-      level: typeof requestBody.level === 'number' ? requestBody.level : Number(requestBody.level),
-      type: requestBody.type,
+    const body = await request.json();
+    const payload = {
+      skill_name: body.skill_name?.trim() ?? '',
+      level: typeof body.level === 'number' ? body.level : Number(body.level),
+      type: body.type,
     };
 
-    console.log('Formatted payload:', formattedPayload);
+    const auth = request.headers.get('Authorization') ?? '';
+    const apiUrl =
+        `https://pathexplorer.vercel.app/project-roles/${roleId}/skills/` +
+        `?skill_name=${encodeURIComponent(skillName)}`;
 
-    const authHeader = request.headers.get('Authorization');
-
-    const apiUrl = `https://pathexplorer.vercel.app/project-roles/${roleId}/skills/?skill_name=${encodeURIComponent(skillName)}`;
-    console.log('Forwarding request to:', apiUrl);
-
-    const response = await fetch(apiUrl, {
+    const res = await fetch(apiUrl, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': authHeader || '',
-      },
-      body: JSON.stringify(formattedPayload),
+      headers: { 'Content-Type': 'application/json', Authorization: auth },
+      body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Backend API error:', response.status, errorText);
-
+    const text = await res.text();
+    if (!res.ok) {
       try {
-        const errorData = JSON.parse(errorText);
-        return NextResponse.json(errorData, { status: response.status });
-      } catch (e) {
-        return NextResponse.json(
-          { error: errorText || `Error: ${response.status}` },
-          { status: response.status },
-        );
+        return NextResponse.json(JSON.parse(text), { status: res.status });
+      } catch {
+        return NextResponse.json({ error: text || `Error: ${res.status}` }, { status: res.status });
       }
     }
 
-    const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
-  } catch (error) {
-    console.error('Route handler error:', error);
-    return NextResponse.json(
-      { error: 'Failed to process the request' },
-      { status: 500 },
-    );
+    return NextResponse.json(JSON.parse(text), { status: res.status });
+  } catch (err) {
+    console.error('Route handler error:', err);
+    return NextResponse.json({ error: 'Failed to process the request' }, { status: 500 });
   }
 }

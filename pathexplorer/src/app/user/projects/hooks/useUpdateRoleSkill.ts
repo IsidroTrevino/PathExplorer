@@ -25,7 +25,7 @@ export function useUpdateRoleSkill() {
         type: data.type,
       };
 
-      const response = await fetch(`/api/project-roles/${data.roleId}/skills/?skill_name=${encodeURIComponent(data.originalSkillName)}`, {
+      const response = await fetch(`/api/update/project-roles/${data.roleId}/skills/?skill_name=${encodeURIComponent(data.originalSkillName)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

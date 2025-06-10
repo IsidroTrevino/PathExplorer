@@ -106,10 +106,8 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
   };
 
   const handleRoleClick = (roleId: number) => {
-    // Prevent default if this is an event handler
     if (event) event.preventDefault();
 
-    // Toggle the expanded role
     setExpandedRoleId(expandedRoleId === roleId ? null : roleId);
   };
 

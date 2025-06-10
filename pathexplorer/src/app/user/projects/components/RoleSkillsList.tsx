@@ -8,6 +8,7 @@ import { useConfirm } from '@/features/hooks/useConfirm';
 import { toast } from 'sonner';
 import { useUpdateRoleSkillModal } from '../hooks/useUpdateRoleSkillModal';
 import { useDeleteRoleSkill } from '@/app/user/projects/hooks/useDeleteRoleSkill';
+import { useDeleteRoleAssignment } from '@/app/user/projects/hooks/useDeleteRoleAssignment';
 
 interface RoleSkillsListProps {
   roleId: number;
@@ -26,9 +27,14 @@ export function RoleSkillsList({
 }: RoleSkillsListProps) {
   const { skills, loading, error } = useGetRoleSkills(roleId);
   const { deleteRoleSKill } = useDeleteRoleSkill();
-  const [ConfirmDialog, confirm] = useConfirm(
+  const { deleteRoleAssignment } = useDeleteRoleAssignment();
+  const [ConfirmDeleteSkillDialog, confirmDeleteSkill] = useConfirm(
     'Delete Skill',
     'Are you sure you want to delete this skill? This action cannot be undone.',
+  );
+  const [ConfirmDeleteRoleAssignmentDialog, confirmDeleteRoleAssignment] = useConfirm(
+    'Remove Assignment',
+    'Are you sure you want to remove this assignment? The developer will no longer be associated with this role.',
   );
   const updateRoleSkillModal = useUpdateRoleSkillModal();
 
@@ -37,13 +43,26 @@ export function RoleSkillsList({
   };
 
   const handleDeleteSkill = async (skillName: string) => {
-    const confirmed = await confirm();
+    const confirmed = await confirmDeleteSkill();
     if (confirmed) {
       const success = await deleteRoleSKill(roleId, skillName);
       if (!success) {
         toast.error(`Failed to delete skill "${skillName}"`);
       } else {
         toast.success(`Skill "${skillName}" deleted successfully`);
+        if (onRefresh) onRefresh();
+      }
+    }
+  };
+
+  const handleDeleteRoleAssignment = async (roleId: number) => {
+    const confirmed = await confirmDeleteRoleAssignment();
+    if (confirmed) {
+      const success = await deleteRoleAssignment(roleId);
+      if (!success) {
+        toast.error(`Failed to remove assignment for role ID ${roleId}`);
+      } else {
+        toast.success('Role assignment removed successfully');
         if (onRefresh) onRefresh();
       }
     }
@@ -89,9 +108,7 @@ export function RoleSkillsList({
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-gray-500 hover:text-red-500"
-              onClick={() => {
-                toast.info('Assignment removal functionality will be added later');
-              }}
+              onClick={() => handleDeleteRoleAssignment(roleId)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -135,7 +152,8 @@ export function RoleSkillsList({
           </div>
         ))
       )}
-      <ConfirmDialog />
+      <ConfirmDeleteSkillDialog />
+      <ConfirmDeleteRoleAssignmentDialog/>
     </div>
   );
 }
