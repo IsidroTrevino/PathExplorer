@@ -37,6 +37,7 @@ import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Employee } from '@/app/user/employees/types/EmployeeTypes';
 import { useRouter } from 'next/navigation';
+import { encryptId } from '@/lib/utils/idEncryption';
 
 interface EmployeeTableProps {
   data: Employee[];
@@ -74,6 +75,7 @@ export function EmployeeTable({
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [isAlphabetical, setIsAlphabetical] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const debouncedSearchRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
@@ -256,7 +258,12 @@ export function EmployeeTable({
                       </>
                     )}
                     <TableCell>
-                      <DropdownMenu>
+                      <DropdownMenu
+                        open={openDropdownId === employee.id}
+                        onOpenChange={(open) => {
+                          setOpenDropdownId(open ? employee.id : null);
+                        }}
+                      >
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-8 w-8 p-0">
                             <MoreHorizontal className="h-4 w-4" />
@@ -265,12 +272,26 @@ export function EmployeeTable({
                         <DropdownMenuContent align="end">
                           {variant === 'default' ? (
                             <>
-                              <DropdownMenuItem className="cursor-pointer">
+                              <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  const employeeId = employee.id !== undefined ? employee.id : employee.id;
+                                  if (employeeId !== undefined) {
+                                    const encryptedId = encryptId(employeeId);
+                                    router.push(`/user/employees/employee/${encryptedId}`);
+                                  } else {
+                                    console.error('No valid employee ID found:', employee);
+                                  }
+                                }}
+                              >
                                 <EyeIcon className="mr-2 h-4 w-4" /> View details
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="cursor-pointer text-red-600"
-                                onClick={() => onDelete && onDelete(employee.id)}
+                                onClick={() => {
+                                  setOpenDropdownId(null);
+                                  onDelete && onDelete(employee.id);
+                                }}
                               >
                                 <Trash2Icon className="mr-2 h-4 w-4" /> Delete
                               </DropdownMenuItem>
@@ -286,7 +307,14 @@ export function EmployeeTable({
                               <DropdownMenuItem
                                 className="cursor-pointer"
                                 onClick={() => {
-                                  router.push(`/user/projects/${projectId}/employee/${employee.id}`);
+                                  const employeeId = employee.id !== undefined ? employee.id : employee.id;
+                                  if (employeeId !== undefined || projectId !== undefined) {
+                                    const encryptedEmployeeId = encryptId(employeeId);
+                                    const encryptedProjectId = encryptId(Number(projectId));
+                                    router.push(`/user/projects/${encryptedProjectId}/employee/${encryptedEmployeeId}`);
+                                  } else {
+                                    console.error('No valid employee ID found:', employee);
+                                  }
                                 }}
                               >
                                 <BarChart2 className="mr-2 h-4 w-4" /> Compare with Role

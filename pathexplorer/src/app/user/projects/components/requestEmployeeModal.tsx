@@ -50,6 +50,7 @@ interface RequestEmployeeModalProps {
   selectedEmployee?: Employee;
   isOpen: boolean;
   onClose: () => void;
+  refetch: () => void;
 }
 
 export function RequestEmployeeModal({
@@ -59,6 +60,7 @@ export function RequestEmployeeModal({
   selectedEmployee,
   isOpen,
   onClose,
+  refetch,
 }: RequestEmployeeModalProps) {
   const { isSubmitting, requestEmployee } = useRequestEmployee();
 
@@ -130,6 +132,7 @@ export function RequestEmployeeModal({
         description: `${selectedEmployee.name} ${selectedEmployee.last_name_1} has been requested for this project.`,
       });
       handleClose();
+      refetch();
     }
   };
 
