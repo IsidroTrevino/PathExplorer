@@ -189,8 +189,36 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/chat/chat',
       },
       {
+        source: '/api/update/project-roles/:roleId/skills/',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/',
+      },
+      {
         source: '/api/projects/recommendations/:projectId',
         destination: 'https://pathexplorer.vercel.app/project-roles/recommendations/:projectId',
+      },
+      {
+        source: '/api/all/:employeeId/full-profile',
+        destination: 'https://pathexplorer.vercel.app/all/:employeeId/full-profile',
+      },
+      {
+        source: '/api/delete/auth/employee/:employeeId',
+        destination: 'https://pathexplorer.vercel.app/auth/employee/:employeeId',
+      },
+      {
+        source: '/api/update/project-roles/:roleId/skills/:skillName',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/:skillName',
+      },
+      {
+        source: '/api/project-roles/:roleId/skills/:skill_name',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/:skill_name',
+      },
+      {
+        source: '/api/project-roles/employee/:roleId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/employee/:roleId',
+      },
+      {
+        source: '/api/project-roles/employee/:roleId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/employee/:roleId',
       },
     ];
   },

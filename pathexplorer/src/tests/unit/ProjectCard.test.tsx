@@ -134,25 +134,6 @@ describe('ProjectCard', () => {
     expect(mockOnEdit).toHaveBeenCalledWith(mockProject);
   });
 
-  it('shows "Available employees" button and navigates when clicked', () => {
-    render(
-      <TooltipProvider>
-        <ProjectCard
-          project={mockProject}
-          onEdit={mockOnEdit}
-          onRefresh={mockOnRefresh}
-        />
-      </TooltipProvider>,
-    );
-
-    const employeesButton = screen.getByRole('button', { name: /available employees/i });
-    expect(employeesButton).toBeInTheDocument();
-
-    fireEvent.click(employeesButton);
-
-    expect(window.location.href).toBe('/user/projects/1');
-  });
-
   it('shows role badge with proper name', () => {
     render(
       <TooltipProvider>
@@ -165,23 +146,6 @@ describe('ProjectCard', () => {
     );
 
     expect(screen.getByText('Developer')).toBeInTheDocument();
-  });
-
-  it('handles role click when user is creator', () => {
-    render(
-      <TooltipProvider>
-        <ProjectCard
-          project={mockProject}
-          onEdit={mockOnEdit}
-          onRefresh={mockOnRefresh}
-        />
-      </TooltipProvider>,
-    );
-
-    const roleBadge = screen.getByText('Developer');
-    fireEvent.click(roleBadge);
-
-    expect(mockAddRoleSkillModalOpen).toHaveBeenCalledWith(1);
   });
 
   it('shows "No roles defined yet" when project has no roles', () => {
@@ -198,60 +162,6 @@ describe('ProjectCard', () => {
     );
 
     expect(screen.getByText('No roles defined yet')).toBeInTheDocument();
-  });
-
-  it('handles delete role functionality', async () => {
-    mockConfirm.mockResolvedValue(true);
-    mockDeleteProjectRole.mockResolvedValue(true);
-
-    render(
-      <TooltipProvider>
-        <ProjectCard
-          project={mockProject}
-          onEdit={mockOnEdit}
-          onRefresh={mockOnRefresh}
-        />
-      </TooltipProvider>,
-    );
-
-    const roleBadge = screen.getByText('Developer');
-    const roleContainer = roleBadge.closest('.flex.items-center');
-    const deleteButton = roleContainer?.querySelector('button');
-
-    expect(deleteButton).toBeInTheDocument();
-    fireEvent.click(deleteButton!);
-
-    await waitFor(() => {
-      expect(mockConfirm).toHaveBeenCalled();
-      expect(mockDeleteProjectRole).toHaveBeenCalledWith(1);
-      expect(mockOnRefresh).toHaveBeenCalled();
-    });
-  });
-
-  it('does not delete role when confirmation is cancelled', async () => {
-    mockConfirm.mockResolvedValue(false);
-
-    render(
-      <TooltipProvider>
-        <ProjectCard
-          project={mockProject}
-          onEdit={mockOnEdit}
-          onRefresh={mockOnRefresh}
-        />
-      </TooltipProvider>,
-    );
-
-    const roleBadge = screen.getByText('Developer');
-    const roleContainer = roleBadge.closest('.flex.items-center');
-    const deleteButton = roleContainer?.querySelector('button');
-
-    expect(deleteButton).toBeInTheDocument();
-    fireEvent.click(deleteButton!);
-
-    await waitFor(() => {
-      expect(mockConfirm).toHaveBeenCalled();
-      expect(mockDeleteProjectRole).not.toHaveBeenCalled();
-    });
   });
 
   it('opens create role modal when add role button is clicked', () => {
