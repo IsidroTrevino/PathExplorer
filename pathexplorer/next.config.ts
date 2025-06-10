@@ -208,6 +208,10 @@ const nextConfig: NextConfig = {
         source: '/api/update/project-roles/:roleId/skills/:skillName',
         destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/:skillName',
       },
+      {
+        source: '/api/project-roles/:roleId/skills/:skill_name',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/:skill_name',
+      },
     ];
   },
 };

@@ -245,11 +245,12 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
                         )}
                       </div>
 
-                      {/* Use our updated RoleSkillsList component */}
                       <RoleSkillsList
                         roleId={expandedRoleId}
                         isProjectCreator={isCreator}
                         onRefresh={onRefresh}
+                        assignmentStatus={project.roles.find(role => role.role_id === expandedRoleId)?.assignment_status ?? undefined}
+                        assignedDeveloper={project.roles.find(role => role.role_id === expandedRoleId)?.developer_short_name ?? undefined}
                       />
                     </div>
                   </>
