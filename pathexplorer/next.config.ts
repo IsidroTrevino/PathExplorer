@@ -189,6 +189,10 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/chat/chat',
       },
       {
+        source: '/api/update/project-roles/:roleId/skills/',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/',
+      },
+      {
         source: '/api/projects/recommendations/:projectId',
         destination: 'https://pathexplorer.vercel.app/project-roles/recommendations/:projectId',
       },
@@ -201,8 +205,8 @@ const nextConfig: NextConfig = {
         destination: 'https://pathexplorer.vercel.app/auth/employee/:employeeId',
       },
       {
-        source: '/api/update/project-roles/:roleId',
-        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId',
+        source: '/api/update/project-roles/:roleId/skills/:skillName',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId/skills/:skillName',
       },
     ];
   },

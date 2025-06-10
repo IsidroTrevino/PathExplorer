@@ -12,9 +12,13 @@ import { CreateRoleModal } from './createRoleModal';
 import { useDeleteProjectRole } from '../hooks/useDeleteProjectRole';
 import { toast } from 'sonner';
 import { useConfirm } from '@/features/hooks/useConfirm';
-import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
+import { RoleSkillsList } from './RoleSkillsList';
+import { AddRoleSkillModal } from './AddRoleSkillModal';
 import { encryptId } from '@/lib/utils/idEncryption';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { UpdateRoleSkillModal } from '../components/UpdateRoleSkillModal';
+import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
 
 interface ProjectCardProps {
   project: Project;
@@ -33,6 +37,7 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
     'Are you sure you want to delete this role? This action cannot be undone.',
   );
   const router = useRouter();
+  const [expandedRoleId, setExpandedRoleId] = useState<number | null>(null);
 
   const formatDate = (dateString: string) => {
     try {
@@ -100,11 +105,12 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
     }
   };
 
-  // Handler for role badge clicks
   const handleRoleClick = (roleId: number) => {
-    if (isCreator) {
-      addRoleSkillModal.onOpen(roleId);
-    }
+    // Prevent default if this is an event handler
+    if (event) event.preventDefault();
+
+    // Toggle the expanded role
+    setExpandedRoleId(expandedRoleId === roleId ? null : roleId);
   };
 
   // Determine role badge style based on assignment status
@@ -180,63 +186,76 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
               )}
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="mb-4">
               {project.roles && project.roles.length > 0 ? (
-                project.roles.map((role) => (
-                  <div key={role.role_id} className="flex items-center">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge
-                            className={`cursor-pointer ${getRoleBadgeStyle(role)}`}
-                            onClick={() => handleRoleClick(role.role_id)}
-                          >
-                            {role.role_name}
-                            {role.assignment_status && role.assignment_status.trim() !== '' && (
-                              <span className="ml-1 inline-block w-2 h-2 rounded-full bg-white"></span>
-                            )}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent
-                          className="bg-black text-white border border-gray-700 shadow-lg rounded-md p-0 overflow-hidden"
-                          sideOffset={5}
-                          style={{ '--tooltip-arrow-color': 'white' } as React.CSSProperties}
-                        >
-                          <div className="p-3">
-                            <h4 className="font-semibold text-white">{role.role_name}</h4>
-                            <p className="text-gray-300 text-sm mb-2">{role.role_description}</p>
-                          </div>
-                          {role.assignment_status && role.assignment_status.trim() !== 'Unassigned' ? (
-                            <div className="p-3 border-t border-gray-700 bg-gray-900">
-                              <p className="font-medium text-purple-300">Assigned to:</p>
-                              <p className="text-white">{role.developer_short_name || 'Unknown'}</p>
-                              <p className="text-gray-300 text-sm mt-1">Status: {role.assignment_status}</p>
-                            </div>
-                          ) : (
-                            <div className="p-3 border-t border-gray-700 bg-gray-900">
-                              <p className="text-gray-300 italic">This role is currently unassigned</p>
-                            </div>
-                          )}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    {isCreator && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 ml-1 text-gray-400 hover:text-red-500"
-                        onClick={() => handleDeleteRole(role.role_id)}
+                <div className="flex flex-wrap gap-2">
+                  {project.roles.map((role) => (
+                    <div key={role.role_id} className="inline-flex items-center mb-2">
+                      <Badge
+                        className={`cursor-pointer ${getRoleBadgeStyle(role)}`}
+                        onClick={() => handleRoleClick(role.role_id)}
                       >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    )}
-                  </div>
-                ))
+                        {role.role_name}
+                        {role.assignment_status && role.assignment_status.trim() !== 'Unassigned' && (
+                          <span className="ml-1 inline-block w-2 h-2 rounded-full bg-white"></span>
+                        )}
+                      </Badge>
+
+                      {isCreator && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 ml-1 text-gray-400 hover:text-red-500"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteRole(role.role_id);
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <p className="text-sm text-gray-500 italic">No roles defined yet</p>
               )}
             </div>
+            {expandedRoleId && (
+              <div className="mt-2 pl-4 border-l-2 border-purple-200">
+                {project.roles && project.roles.find(role => role.role_id === expandedRoleId) && (
+                  <>
+                    <p className="text-sm text-gray-600 mb-2">
+                      {project.roles.find(role => role.role_id === expandedRoleId)?.role_description}
+                    </p>
+
+                    <div className="mt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-medium text-gray-700">Skills</h4>
+                        {isCreator && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 px-2 text-xs text-[#7500C0] border-[#7500C0]"
+                            onClick={() => addRoleSkillModal.onOpen(expandedRoleId)}
+                          >
+                            <Plus className="h-3 w-3 mr-1" />
+                                  Add Skill
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Use our updated RoleSkillsList component */}
+                      <RoleSkillsList
+                        roleId={expandedRoleId}
+                        isProjectCreator={isCreator}
+                        onRefresh={onRefresh}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between pt-2 border-t">
@@ -267,11 +286,21 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
           </div>
         </CardFooter>
 
+        <AddRoleSkillModal
+          isProjectCreator={isCreator}
+          onSuccess={onRefresh}
+        />
+
         <CreateRoleModal
           isOpen={isOpen}
           onClose={handleModalClose}
           projectId={project.project_id || parseInt(project.id)}
           onSuccess={handleRoleCreated}
+        />
+
+        <UpdateRoleSkillModal
+          isProjectCreator={isCreator}
+          onSuccess={onRefresh}
         />
       </Card>
 
