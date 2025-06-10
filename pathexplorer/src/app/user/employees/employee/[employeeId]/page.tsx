@@ -2,10 +2,14 @@ import { notFound } from 'next/navigation';
 import { EmployeeProfileWrapper } from './components/EmployeeProfileWrapper';
 import { decryptId } from '@/lib/utils/idEncryption';
 
-export default async function EmployeeProfilePage({ params }: { params: { employeeId: string } }) {
+export default async function EmployeeProfilePage({
+  params,
+}: {
+  params: Promise<{ employeeId: string }>
+}) {
   try {
-    const resolvedParams = await Promise.resolve(params);
-    const decodedId = decryptId(resolvedParams.employeeId);
+    const { employeeId } = await params;
+    const decodedId = decryptId(employeeId);
     return <EmployeeProfileWrapper employeeId={decodedId} />;
   } catch (error) {
     console.error('Error decrypting employee ID:', error);
