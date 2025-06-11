@@ -12,9 +12,10 @@ import type { Employee } from '../types/EmployeeTypes';
 
 interface EmployeeProfileContainerProps {
     employeeData: Employee;
+    refetchEmployeeData: () => void;
 }
 
-export function EmployeeProfileContainer({ employeeData }: EmployeeProfileContainerProps) {
+export function EmployeeProfileContainer({ employeeData, refetchEmployeeData }: EmployeeProfileContainerProps) {
   const router = useRouter();
   const initials = `${employeeData.name?.[0] || ''}${employeeData.last_name_1?.[0] || ''}`;
   const fullName = `${employeeData.name} ${employeeData.last_name_1} ${employeeData.last_name_2 || ''}`;
@@ -49,7 +50,10 @@ export function EmployeeProfileContainer({ employeeData }: EmployeeProfileContai
 
       <div className="space-y-6 w-full">
         <EmployeePersonalInfo employee={employeeData} />
-        <EmployeeProjectHistory projects={employeeData.project_history} />
+        <EmployeeProjectHistory
+          projects={employeeData.project_history}
+          onFeedbackUpdated={refetchEmployeeData}
+        />
         <EmployeeGoals goals={employeeData.goals} />
         <EmployeeSkills skills={employeeData.skills} />
         <EmployeeCertifications certifications={employeeData.certifications} />
