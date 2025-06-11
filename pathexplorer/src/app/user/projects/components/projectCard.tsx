@@ -13,11 +13,9 @@ import { useDeleteProjectRole } from '../hooks/useDeleteProjectRole';
 import { toast } from 'sonner';
 import { useConfirm } from '@/features/hooks/useConfirm';
 import { RoleSkillsList } from './RoleSkillsList';
-import { AddRoleSkillModal } from './AddRoleSkillModal';
 import { encryptId } from '@/lib/utils/idEncryption';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { UpdateRoleSkillModal } from '../components/UpdateRoleSkillModal';
 import { useAddRoleSkillModal } from '../hooks/useAddRoleSkillModal';
 
 interface ProjectCardProps {
@@ -295,11 +293,6 @@ export function ProjectCard({ project, onEdit, onRefresh }: ProjectCardProps) {
         onClose={handleModalClose}
         projectId={project.project_id || parseInt(project.id)}
         onSuccess={handleRoleCreated}
-      />
-
-      <UpdateRoleSkillModal
-        isProjectCreator={isCreator}
-        onSuccess={onRefresh}
       />
 
       <ConfirmDialog />

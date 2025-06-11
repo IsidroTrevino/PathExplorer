@@ -1,4 +1,3 @@
-// src/app/user/projects/components/RoleSkillsList.tsx
 import { Edit, Trash2, Loader, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +8,7 @@ import { toast } from 'sonner';
 import { useUpdateRoleSkillModal } from '../hooks/useUpdateRoleSkillModal';
 import { useDeleteRoleSkill } from '@/app/user/projects/hooks/useDeleteRoleSkill';
 import { useDeleteRoleAssignment } from '@/app/user/projects/hooks/useDeleteRoleAssignment';
+import { UpdateRoleSkillModal } from './UpdateRoleSkillModal';
 
 interface RoleSkillsListProps {
   roleId: number;
@@ -39,7 +39,7 @@ export function RoleSkillsList({
   const updateRoleSkillModal = useUpdateRoleSkillModal();
 
   const handleEditSkill = (skill: RoleSkill) => {
-    updateRoleSkillModal.onOpen(roleId, skill);
+    updateRoleSkillModal.onOpen(roleId, skill, isProjectCreator);
   };
 
   const handleDeleteSkill = async (skillName: string) => {
@@ -154,6 +154,7 @@ export function RoleSkillsList({
       )}
       <ConfirmDeleteSkillDialog />
       <ConfirmDeleteRoleAssignmentDialog/>
+      <UpdateRoleSkillModal />
     </div>
   );
 }
