@@ -235,7 +235,7 @@ export function ManagerDashboard() {
               />
             </div>
             <div className="mt-4 text-center">
-              <p className="text-sm font-medium">Average Assignment</p>
+              <p className="text-sm font-medium">Average Assignment Percentage</p>
               <p className="text-2xl font-bold">
                 {(data.assignment.average_assignment_percentage * 100).toFixed(1)}%
               </p>
