@@ -176,7 +176,7 @@ export function EmployeeTable({
                       <div className="flex items-center">Status</div>
                     </TableHead>
                     <TableHead>
-                      <div className="flex items-center">Assignment</div>
+                      <div className="flex items-center">Assignment %</div>
                     </TableHead>
                   </>
                 )}

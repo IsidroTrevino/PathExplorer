@@ -21,6 +21,7 @@ export interface UserDetails {
     position: string;
     seniority: number;
     role: string;
+    assignment_percentage: number;
 }
 
 interface UserContextType {
@@ -76,10 +77,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         position: data.position || '',
         seniority: typeof data.seniority === 'number' ? data.seniority : 0,
         role: data.role || '',
+        assignment_percentage: parseFloat((data.assignment_percentage * 100).toFixed(1)),
       };
-
-      console.log('User details received:', data);
-      console.log('Processed user details:', processedData);
 
       setUserDetails(processedData);
       Cookies.set('userRole', processedData.role, { expires: 1 });

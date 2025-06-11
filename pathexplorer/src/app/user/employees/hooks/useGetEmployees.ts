@@ -78,7 +78,7 @@ export function useGetEmployees({
           role: emp.role,
           assigned_project: emp.project ? emp.project.project_name : 'None',
           status: emp.project ? 'Assigned' : 'Staff',
-          assignment_percentage: 0,
+          assignment_percentage: Math.round(emp.assignment_percentage * 100),
         };
       });
 

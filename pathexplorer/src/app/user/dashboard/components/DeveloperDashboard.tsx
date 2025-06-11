@@ -72,10 +72,10 @@ export function DeveloperDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
+            <CardTitle className="text-sm font-medium">Assignment percentage</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.general.total_employees}</div>
+            <div className="text-2xl font-bold">{(data.general.total_employees).toFixed(1)}%</div>
           </CardContent>
         </Card>
 
