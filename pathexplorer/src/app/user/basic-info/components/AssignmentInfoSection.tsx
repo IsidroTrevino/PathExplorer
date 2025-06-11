@@ -1,8 +1,12 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useUser } from '@/features/context/userContext';
 
 export function AssignmentInfoSection() {
+  const { userDetails } = useUser();
+  const assignmentPercentage = userDetails?.assignment_percentage || 0;
+
   return (
     <Card className="shadow-sm bg-white">
       <CardHeader className="bg-white border-b pb-4">
@@ -16,9 +20,9 @@ export function AssignmentInfoSection() {
           <div className="w-full sm:w-2/3 bg-gray-200 rounded-full h-4 overflow-hidden">
             <div
               className="bg-gradient-to-r from-[#7500C0] to-[#A055F5] h-full text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
-              style={{ width: '38%' }}
+              style={{ width: `${assignmentPercentage}%` }}
             >
-                            38%
+              {assignmentPercentage}%
             </div>
           </div>
         </div>

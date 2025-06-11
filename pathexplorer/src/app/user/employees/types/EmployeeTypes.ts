@@ -24,6 +24,7 @@ export interface APIEmployee {
         project_end_date: string;
     } | null;
     assignment_status: string;
+    assignment_percentage: number;
     days_since_last_project: number;
 }
 

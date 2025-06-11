@@ -41,7 +41,7 @@ export default function LoginForm() {
           (response && response.token) ||
           (response && !response.error)
       ) {
-        router.replace('/user/basic-info');
+        router.replace('/user/dashboard');
       } else {
         const errorMessage = 'Login failed. Please try again.';
 
