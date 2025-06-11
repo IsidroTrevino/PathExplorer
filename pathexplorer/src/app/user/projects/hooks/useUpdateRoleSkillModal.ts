@@ -5,7 +5,8 @@ interface UpdateRoleSkillModalStore {
     isOpen: boolean;
     roleId: number | null;
     skillToEdit: RoleSkill | null;
-    onOpen: (roleId: number, skill: RoleSkill) => void;
+    isProjectCreator: boolean;
+    onOpen: (roleId: number, skill: RoleSkill, isProjectCreator: boolean) => void; // Add third parameter
     onClose: () => void;
 }
 
@@ -13,6 +14,12 @@ export const useUpdateRoleSkillModal = create<UpdateRoleSkillModalStore>((set) =
   isOpen: false,
   roleId: null,
   skillToEdit: null,
-  onOpen: (roleId, skill) => set({ isOpen: true, roleId, skillToEdit: skill }),
+  isProjectCreator: false,
+  onOpen: (roleId, skill, isProjectCreator) => set({
+    isOpen: true,
+    roleId,
+    skillToEdit: skill,
+    isProjectCreator,
+  }),
   onClose: () => set({ isOpen: false, roleId: null, skillToEdit: null }),
 }));

@@ -10,11 +10,8 @@ import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import { techSkillDictionary, softOptions } from '@/constants/constants';
 
-export function UpdateRoleSkillModal({ isProjectCreator, onSuccess }: {
-  isProjectCreator: boolean;
-  onSuccess?: () => void;
-}) {
-  const { isOpen, onClose, roleId, skillToEdit } = useUpdateRoleSkillModal();
+export function UpdateRoleSkillModal({ onSuccess }: { onSuccess?: () => void }) {
+  const { isOpen, onClose, roleId, skillToEdit, isProjectCreator } = useUpdateRoleSkillModal();
   const { updateRoleSkill, isLoading, error } = useUpdateRoleSkill();
 
   const [skillCategory, setSkillCategory] = useState('');
