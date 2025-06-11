@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/features/context/userContext';
 
 export function useEmployeeProfile(employeeId: string | number) {
@@ -9,38 +9,38 @@ export function useEmployeeProfile(employeeId: string | number) {
   const [error, setError] = useState<string | null>(null);
   const { userAuth } = useUser();
 
-  useEffect(() => {
-    async function fetchEmployeeProfile() {
-      if (!userAuth?.accessToken) return;
+  const fetchEmployeeProfile = useCallback(async () => {
+    if (!userAuth?.accessToken) return;
 
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const response = await fetch(`/api/all/${employeeId}/full-profile`, {
-          headers: {
-            'Authorization': `Bearer ${userAuth.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        });
+    try {
+      const response = await fetch(`/api/all/${employeeId}/full-profile`, {
+        headers: {
+          'Authorization': `Bearer ${userAuth.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+      });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch employee profile: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setEmployeeData(data);
-      } catch (err) {
-        console.error('Error fetching employee profile:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load employee data');
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch employee profile: ${response.status}`);
       }
-    }
 
-    fetchEmployeeProfile();
+      const data = await response.json();
+      setEmployeeData(data);
+    } catch (err) {
+      console.error('Error fetching employee profile:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load employee data');
+    } finally {
+      setIsLoading(false);
+    }
   }, [employeeId, userAuth?.accessToken]);
 
-  return { employeeData, isLoading, error };
+  useEffect(() => {
+    fetchEmployeeProfile();
+  }, [fetchEmployeeProfile]);
+
+  return { employeeData, isLoading, error, refetch: fetchEmployeeProfile };
 }

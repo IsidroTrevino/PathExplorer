@@ -220,6 +220,10 @@ const nextConfig: NextConfig = {
         source: '/api/project-roles/employee/:roleId',
         destination: 'https://pathexplorer.vercel.app/project-roles/employee/:roleId',
       },
+      {
+        source: '/api/update/project-roles/:roleId',
+        destination: 'https://pathexplorer.vercel.app/project-roles/:roleId',
+      },
     ];
   },
 };

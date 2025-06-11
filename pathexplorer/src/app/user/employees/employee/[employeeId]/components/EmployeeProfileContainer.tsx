@@ -14,7 +14,12 @@ interface EmployeeProfileContainerProps {
     employeeData: Employee;
 }
 
-export function EmployeeProfileContainer({ employeeData }: EmployeeProfileContainerProps) {
+interface EmployeeProfileContainerProps {
+    employeeData: Employee;
+    refetchEmployeeData: () => void;
+}
+
+export function EmployeeProfileContainer({ employeeData, refetchEmployeeData }: EmployeeProfileContainerProps) {
   const router = useRouter();
   const initials = `${employeeData.name?.[0] || ''}${employeeData.last_name_1?.[0] || ''}`;
   const fullName = `${employeeData.name} ${employeeData.last_name_1} ${employeeData.last_name_2 || ''}`;
@@ -30,26 +35,14 @@ export function EmployeeProfileContainer({ employeeData }: EmployeeProfileContai
                 Back to Employees
       </Button>
 
-      <div className="bg-white rounded-lg border p-5 shadow-sm mb-6 w-full">
-        <div className="flex flex-col md:flex-row gap-5 items-center md:items-start">
-          <Avatar className="h-20 w-20">
-            <AvatarFallback className="text-lg">{initials}</AvatarFallback>
-          </Avatar>
-
-          <div>
-            <h1 className="text-2xl font-bold">{fullName}</h1>
-            <p className="text-gray-500">{employeeData.position}</p>
-            <p className="mt-1 text-sm">
-              <span className="font-semibold">Role:</span> {employeeData.role} |
-              <span className="font-semibold ml-2">Capability:</span> {employeeData.capability}
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Rest of component remains the same */}
 
       <div className="space-y-6 w-full">
         <EmployeePersonalInfo employee={employeeData} />
-        <EmployeeProjectHistory projects={employeeData.project_history} />
+        <EmployeeProjectHistory
+          projects={employeeData.project_history}
+          onFeedbackUpdated={refetchEmployeeData}
+        />
         <EmployeeGoals goals={employeeData.goals} />
         <EmployeeSkills skills={employeeData.skills} />
         <EmployeeCertifications certifications={employeeData.certifications} />

@@ -25,7 +25,7 @@ export function useAddFeedback() {
     setError(null);
 
     try {
-      const response = await fetch(`/api/update/project-roles/${roleId}`, {
+      const response = await fetch(`/api/project-roles/${roleId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

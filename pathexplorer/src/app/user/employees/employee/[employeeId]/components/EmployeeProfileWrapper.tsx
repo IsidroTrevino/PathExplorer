@@ -5,7 +5,7 @@ import { EmployeeProfileContainer } from './EmployeeProfileContainer';
 import { EmployeeProfileSkeleton } from './EmployeeProfileSkeleton';
 
 export function EmployeeProfileWrapper({ employeeId }: { employeeId: number }) {
-  const { employeeData, isLoading, error } = useEmployeeProfile(employeeId);
+  const { employeeData, isLoading, error, refetch } = useEmployeeProfile(employeeId);
 
   if (isLoading) {
     return <EmployeeProfileSkeleton />;
@@ -22,7 +22,10 @@ export function EmployeeProfileWrapper({ employeeId }: { employeeId: number }) {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <EmployeeProfileContainer employeeData={employeeData} />
+      <EmployeeProfileContainer
+        employeeData={employeeData}
+        refetchEmployeeData={refetch}
+      />
     </div>
   );
 }
